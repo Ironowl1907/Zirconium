@@ -21,7 +21,7 @@ kind("SharedLib") -- Create .so shared library
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
-files({ "zirconium/src/**.cpp", "zirconium/src/**.h" })
+files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
 pic("On") -- Enable Position Independent Code for shared libraries
 
 filter("configurations:Debug")
@@ -38,7 +38,7 @@ kind("ConsoleApp") -- Create executable
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
-files({ "sandbox/src/main.cpp" })
+files({ "sandbox/src/SandboxApp.cpp" })
 includedirs({ "zirconium/src" }) -- Include zirconium headers
 links({ "zirconium" }) -- Link with the zirconium shared library
 
