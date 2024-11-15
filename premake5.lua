@@ -1,8 +1,19 @@
--- premake5.lua
-
 workspace("MyProject")
 configurations({ "Debug", "Release" })
 location("build") -- Where to place generated files
+
+-- Clean configuration
+newaction({
+	trigger = "clean",
+	description = "Clean the build and bin directories",
+	execute = function()
+		print("Cleaning build directories...")
+		os.rmdir("build")
+		os.rmdir("bin")
+		os.rmdir("bin-int")
+		print("Done.")
+	end,
+})
 
 -- Project for zirconium shared library
 project("zirconium")
