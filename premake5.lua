@@ -23,15 +23,18 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
-includedirs({ "./zirconium/vendor/spdlog/include" }) -- Include zirconium headers
+includedirs({ "zirconium/vendor/spdlog/include" }) -- Include zirconium headers
 pic("On") -- Enable Position Independent Code for shared libraries
-
 filter("configurations:Debug")
-defines({ "DEBUG" })
-symbols("On")
+defines({ "ZIR_DEBUG" })
+optimize("On")
 
 filter("configurations:Release")
-defines({ "NDEBUG" })
+defines({ "ZIR_RELESE" })
+optimize("On")
+
+filter("configurations:Dist")
+defines({ "ZIR_DIST" })
 optimize("On")
 
 -- Project for sandbox executable
@@ -40,14 +43,18 @@ kind("ConsoleApp") -- Create executable
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
-files({ "sandbox/src/SandboxApp.cpp" })
+files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" }) -- Include zirconium headers
 links({ "zirconium" }) -- Link with the zirconium shared library
 
 filter("configurations:Debug")
-defines({ "DEBUG" })
-symbols("On")
+defines({ "ZIR_DEBUG" })
+optimize("On")
 
 filter("configurations:Release")
-defines({ "NDEBUG" })
+defines({ "ZIR_RELESE" })
+optimize("On")
+
+filter("configurations:Dist")
+defines({ "ZIR_DIST" })
 optimize("On")
