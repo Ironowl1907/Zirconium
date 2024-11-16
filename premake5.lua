@@ -1,5 +1,6 @@
 workspace("MyProject")
-configurations({ "Debug", "Release" })
+architecture("x64")
+configurations({ "Debug", "Release", "dist" })
 location("build") -- Where to place generated files
 
 -- Clean configuration
@@ -22,6 +23,7 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
+includedirs({ "./zirconium/vendor/spdlog/include" }) -- Include zirconium headers
 pic("On") -- Enable Position Independent Code for shared libraries
 
 filter("configurations:Debug")
@@ -39,7 +41,7 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "sandbox/src/SandboxApp.cpp" })
-includedirs({ "zirconium/src" }) -- Include zirconium headers
+includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" }) -- Include zirconium headers
 links({ "zirconium" }) -- Link with the zirconium shared library
 
 filter("configurations:Debug")
