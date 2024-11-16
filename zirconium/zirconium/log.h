@@ -1,7 +1,7 @@
 #pragma once
 #include "spdlog/spdlog.h"
 #include <memory>
-#include <spdlog/logger.h>
+#include "spdlog/fmt/ostr.h"
 
 namespace zirconium {
 class Log {
