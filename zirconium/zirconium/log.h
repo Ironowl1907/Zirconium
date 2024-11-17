@@ -1,6 +1,5 @@
 #pragma once
 #include "spdlog/spdlog.h"
-#include <memory>
 #include "spdlog/fmt/ostr.h"
 
 namespace zirconium {

@@ -22,6 +22,7 @@ kind("SharedLib") -- Create .so shared library
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
+pchheader("./zirconium/zrpch.h")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
 includedirs({ "zirconium/vendor/spdlog/include" }) -- Include zirconium headers
 pic("On") -- Enable Position Independent Code for shared libraries

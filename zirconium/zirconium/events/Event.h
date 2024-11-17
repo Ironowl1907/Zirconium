@@ -1,8 +1,5 @@
 #pragma once
 
-#include <functional>
-#include <string>
-#include <strstream>
 
 #include "./../../core.h"
 
