@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "../zrpch.h"
+#include "../core.h"
 
 #include "../zirconium/events/ApplicationEvent.cpp"
 #include "events/Event.h"
@@ -16,6 +17,7 @@ void Application::Run() {
     ZR_TRACE(e.ToString());
   if (e.IsInCategory(EventCategoryInput))
     ZR_TRACE(e.ToString());
+  ZR_ASSERT(1>2, "Generic Error");
 }
 
 } // namespace zirconium

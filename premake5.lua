@@ -49,11 +49,12 @@ includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" }) -- Include
 links({ "zirconium" }) -- Link with the zirconium shared library
 
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
 optimize("On")
 
 filter("configurations:Release")
-defines({ "ZIR_RELESE" })
+defines({ "ZIR_RELESE", "" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
 optimize("On")
 
 filter("configurations:Dist")

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../../zrpch.h"
-#include "../events/Event.h"
-
 namespace zirconium {
 
 struct WindowProps {
@@ -23,6 +20,7 @@ public:
   virtual unsigned int GetWidth() const = 0;
   virtual unsigned int GetHeight() const = 0;
   virtual void SetVSync(bool enbabled) = 0;
+  virtual bool IsVSyncOn() = 0;
 
   static Window *Create(const WindowProps &props = WindowProps());
 };
