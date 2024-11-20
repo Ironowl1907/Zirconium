@@ -1,4 +1,5 @@
 workspace("MyProject")
+-- warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "dist" })
 location("build") -- Where to place generated files
