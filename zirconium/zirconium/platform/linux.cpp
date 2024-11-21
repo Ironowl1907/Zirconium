@@ -3,7 +3,7 @@
 #include "../../zrpch.h"
 #include "../events/Event.h"
 #include "../log.h"
-#include <GLFW/glfw3.h>
+#include "../../vendor/glfw/include/GLFW/glfw3.h"
 
 namespace zirconium {
 static bool s_GLFWInitialized = false;

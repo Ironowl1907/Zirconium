@@ -17,6 +17,11 @@ newaction({
 	end,
 })
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
+
+include("./zirconium/vendor/glfw/")
+
 -- Project for zirconium shared library
 project("zirconium")
 kind("SharedLib") -- Create .so shared library
@@ -25,7 +30,8 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
-includedirs({ "zirconium/vendor/spdlog/include" }) -- Include zirconium headers
+includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"] }) -- Include zirconium headers
+links({ "GLFW", "GL", "m", "dl", "X11", "pthread" })
 pic("On") -- Enable Position Independent Code for shared libraries
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG" })

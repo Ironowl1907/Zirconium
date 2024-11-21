@@ -1,6 +1,6 @@
 #pragma once
 #include "../window.h"
-#include <GLFW/glfw3.h>
+#include "../../vendor/glfw/include/GLFW/glfw3.h"
 
 namespace zirconium {
 
