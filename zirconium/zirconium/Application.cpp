@@ -1,23 +1,23 @@
 #include "Application.h"
-#include "../zrpch.h"
 #include "../core.h"
+#include "../zrpch.h"
 
-#include "../zirconium/events/ApplicationEvent.cpp"
-#include "events/Event.h"
-#include "log.h"
+#include "GLFW/glfw3.h"
+#include <GL/gl.h>
 
 namespace zirconium {
 
-Application::Application() {}
+Application::Application() {
+  m_Window = std::unique_ptr<Window>(Window::Create());
+}
 Application::~Application() {}
 
 void Application::Run() {
-  WindowResizeEvent e(1920, 1080);
-  if (e.IsInCategory(EventCategoryApplication))
-    ZR_TRACE(e.ToString());
-  if (e.IsInCategory(EventCategoryInput))
-    ZR_TRACE(e.ToString());
-  ZR_ASSERT(1>2, "Generic Error");
+  while (m_Running){
+    glClearColor(1,1,1,1);
+    glClear(GL_COLOR_BUFFER_BIT);
+     m_Window->onUpdate();
+  }
 }
 
 } // namespace zirconium

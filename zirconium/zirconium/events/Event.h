@@ -1,7 +1,8 @@
 #pragma once
 
-
 #include "./../../core.h"
+#include <string>
+#include <functional>
 
 namespace zirconium {
 // This will be a blocking event handler, it will halt the main execution
@@ -61,8 +62,8 @@ private:
   Event &m_Event;
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Event& event) {
-    return os << event.ToString();
+inline std::ostream &operator<<(std::ostream &os, const Event &event) {
+  return os << event.ToString();
 }
 
 } // namespace zirconium
