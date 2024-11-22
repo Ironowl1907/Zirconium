@@ -1,62 +1,27 @@
-#include "../../zrpch.h"
-#include "Event.h"
+#include "ApplicationEvent.h"
 
 namespace zirconium {
 
-class WindowResizeEvent : public Event {
-public:
-  WindowResizeEvent(unsigned int width, unsigned int height)
-      : m_Width(width), m_Height(height) {}
+// Implementation of WindowResizeEvent
+WindowResizeEvent::WindowResizeEvent(unsigned int width, unsigned int height)
+    : m_Width(width), m_Height(height) {}
 
-  inline unsigned int GetWidth() const { return m_Width; };
-  inline unsigned int GetHeight() const { return m_Height; };
+unsigned int WindowResizeEvent::GetWidth() const { return m_Width; }
 
-  const std::string ToString() const override {
-    std::stringstream ss;
-    ss << "WindowResizeEvent: Width: " << m_Width << ", Height: " << m_Height;
-    return ss.str();
-  }
-  EVENT_CLASS_TYPE(WindowResize);
-  EVENT_CLASS_CATEGORY(EventCategoryApplication);
+unsigned int WindowResizeEvent::GetHeight() const { return m_Height; }
 
-private:
-  unsigned int m_Width, m_Height;
-};
+const std::string WindowResizeEvent::ToString() const {
+  std::stringstream ss;
+  ss << "WindowResizeEvent: Width: " << m_Width << ", Height: " << m_Height;
+  return ss.str();
+}
 
-class WindowCloseEvent : public Event {
+WindowCloseEvent::WindowCloseEvent() {}
 
-public:
-  WindowCloseEvent() {}
+AppTickEvent::AppTickEvent() {}
 
-  EVENT_CLASS_TYPE(WindowClose);
-  EVENT_CLASS_CATEGORY(EventCategoryApplication);
-};
+AppUpdateEvent::AppUpdateEvent() {}
 
-class AppTickEvent : public Event {
-
-public:
-  AppTickEvent() {}
-
-  EVENT_CLASS_TYPE(AppTick)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
-
-class AppUpdateEvent : public Event {
-
-public:
-  AppUpdateEvent() {}
-
-  EVENT_CLASS_TYPE(AppUpdate)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
-
-class AppRender : public Event {
-
-public:
-  AppRender() {}
-
-  EVENT_CLASS_TYPE(AppRender)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+AppRender::AppRender() {}
 
 } // namespace zirconium

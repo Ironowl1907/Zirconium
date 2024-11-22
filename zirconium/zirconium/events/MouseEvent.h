@@ -10,7 +10,7 @@ public:
   inline float getXPosition() const { return m_xPosition; };
   inline float getYPosition() const { return m_yPosition; };
 
-  std::string ToString() const override {
+  std::string const ToString() const override {
     std::stringstream ss;
     ss << "MouseMovementEvent: " << m_xPosition << ' ' << m_yPosition;
     return ss.str();
@@ -31,7 +31,7 @@ public:
   inline float getXOffset() const { return m_xScrollOffset; };
   inline float getYOffset() const { return m_yScrollOffset; };
 
-  std::string ToString() const override {
+  std::string const ToString() const override {
     std::stringstream ss;
     ss << "MouseScrollEvent: " << m_xScrollOffset << ", " << m_yScrollOffset;
     return ss.str();

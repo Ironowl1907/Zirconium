@@ -19,7 +19,7 @@ public:
       : KeyEvent(keyCode), m_RepeatCount(repeatedCount) {}
 
   inline int GetRepeatedCount() const { return m_RepeatCount; }
-  std::string ToString() const override {
+  std::string const ToString() const override {
     std::stringstream ss;
     ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount
        << " repeats)";

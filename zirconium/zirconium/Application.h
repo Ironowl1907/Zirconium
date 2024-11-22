@@ -10,6 +10,7 @@ public:
   Application();
   virtual ~Application();
   void Run();
+  void onEvent(Event& event);
 private:
   std::unique_ptr<Window> m_Window;
   bool m_Running = true;

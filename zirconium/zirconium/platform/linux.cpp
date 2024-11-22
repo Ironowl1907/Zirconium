@@ -1,9 +1,11 @@
 #include "linux.h"
 #include "../../core.h"
 #include "../../zrpch.h"
-#include "../events/Event.h"
 #include "../log.h"
-#include "../../vendor/glfw/include/GLFW/glfw3.h"
+
+#include "./../events/ApplicationEvent.h"
+#include "./../events/KeyEvent.h"
+#include "./../events/MouseEvent.h"
 
 namespace zirconium {
 static bool s_GLFWInitialized = false;
@@ -31,6 +33,17 @@ void LinuxWindow::init(const WindowProps &props) {
   glfwMakeContextCurrent(m_window);
   glfwSetWindowUserPointer(m_window, &m_windowData);
   SetVSync(true);
+
+  // GLFW callbacks
+  glfwSetWindowSizeCallback(
+      m_window, [](GLFWwindow *window, int width, int height) {
+        WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+        data.Width = width;
+        data.Height = height;
+
+        WindowResizeEvent event(width, height);
+        data.EventCallback(event);
+      });
 }
 LinuxWindow::LinuxWindow(const WindowProps &props) { init(props); }
 LinuxWindow::~LinuxWindow() { shutdown(); }
