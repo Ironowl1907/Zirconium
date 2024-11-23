@@ -1,8 +1,8 @@
 #pragma once
 
 #include "./../../core.h"
-#include <string>
 #include <functional>
+#include <string>
 
 namespace zirconium {
 // This will be a blocking event handler, it will halt the main execution
@@ -56,6 +56,7 @@ public:
       m_Event.m_Handled = func(*(T *)&m_Event);
       return true;
     }
+    return false;
   }
 
 private:

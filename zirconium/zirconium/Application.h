@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../zirconium/window.h"
+#include "events/ApplicationEvent.h"
 #include <memory>
 namespace zirconium {
 
@@ -12,6 +13,8 @@ public:
   void Run();
   void onEvent(Event& event);
 private:
+  bool onWindowClose(WindowCloseEvent& event);
+
   std::unique_ptr<Window> m_Window;
   bool m_Running = true;
 };

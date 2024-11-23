@@ -32,4 +32,19 @@ private:
   int m_RepeatCount;
 };
 
+class KeyReleasedEvent : public KeyEvent {
+public:
+  KeyReleasedEvent(int keyCode) : KeyEvent(keyCode) {}
+
+  std::string const ToString() const override {
+    std::stringstream ss;
+    ss << "KeyReleasedEvent: " << m_KeyCode << '\n';
+    return ss.str();
+  }
+  EVENT_CLASS_TYPE(KeyReleased);
+  EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+
+private:
+};
+
 }; // namespace zirconium

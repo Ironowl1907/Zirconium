@@ -57,23 +57,25 @@ protected:
 class MousePressedButtonEvent : public MouseButtonEvent {
 public:
   MousePressedButtonEvent(int button) : MouseButtonEvent(button) {}
-  std::string ToString() const override {
+  std::string const ToString() const override {
     std::stringstream ss;
     ss << "MouseButtonPressedEvent: " << m_Button;
     return ss.str();
   }
   EVENT_CLASS_TYPE(MouseButtonPressed)
+  EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 };
 
 class MouseReleasedButtonEvent : public MouseButtonEvent {
 public:
   MouseReleasedButtonEvent(int button) : MouseButtonEvent(button) {}
-  std::string ToString() const override {
+  std::string const ToString() const override {
     std::stringstream ss;
     ss << "MouseButtonReleasedEvent: " << m_Button;
     return ss.str();
   }
   EVENT_CLASS_TYPE(MouseButtonReleased)
+  EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 };
 
 } // namespace zirconium
