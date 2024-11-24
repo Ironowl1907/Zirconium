@@ -1,17 +1,28 @@
 workspace("MyProject")
-warnings("Extra")
+-- warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
 location("build")
 
 newaction({
 	trigger = "clean",
-	description = "Clean the build and bin directories",
+	description = "Clean the build and bin directories recursively",
 	execute = function()
 		print("Cleaning build directories...")
-		os.rmdir("build")
-		os.rmdir("bin")
-		os.rmdir("bin-int")
+
+		-- Ensure platform-specific compatibility
+		local deleteCommand
+		if os.host() == "windows" then
+			deleteCommand = "rmdir /S /Q"
+		else
+			deleteCommand = "rm -rf"
+		end
+
+		-- Remove the directories
+		os.execute(deleteCommand .. " build")
+		os.execute(deleteCommand .. " bin")
+		os.execute(deleteCommand .. " bin-int")
+
 		print("Done.")
 	end,
 })
@@ -19,7 +30,9 @@ newaction({
 -- Include directories
 IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
+IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 
+include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
 
 -- Project for zirconium shared library
@@ -30,8 +43,8 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
-includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"] })
-links({ "GLFW", "GL", "m", "dl", "X11", "pthread" }) -- Link with pthread
+includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"], IncludeDir["Glad"] })
+links({ "Glad", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 pic("On") -- Enable Position Independent Code for shared libraries
 
@@ -63,7 +76,7 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" })
-links({ "zirconium" }) -- Link with the zirconium shared library
+links({ "zirconium", "Glad" }) -- Link with the zirconium shared library
 
 -- Linux-specific settings
 filter("system:linux")
@@ -72,7 +85,7 @@ linkoptions({ "-pthread" })
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
 optimize("Debug")
 
 -- Release Configuration

@@ -69,6 +69,7 @@ inline std::ostream &operator<<(std::ostream &os, const Event &event) {
 
 } // namespace zirconium
 
+
 #define EVENT_CLASS_TYPE(type)                                                 \
   static EventType GetStaticType() { return EventType::type; }                 \
   EventType GetEventType() const override { return GetStaticType(); }          \

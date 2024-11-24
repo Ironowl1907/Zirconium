@@ -1,7 +1,10 @@
-#include "linux.h"
+#include "../../vendor/glad/include/glad/glad.h"
+#include "../../vendor/glfw/include/GLFW/glfw3.h"
+
 #include "../../core.h"
 #include "../../zrpch.h"
 #include "../log.h"
+#include "linux.h"
 
 #include "./../events/ApplicationEvent.h"
 #include "./../events/KeyEvent.h"
@@ -37,6 +40,8 @@ void LinuxWindow::init(const WindowProps &props) {
   m_window = glfwCreateWindow((int)props.Width, (int)props.Height,
                               props.Title.c_str(), nullptr, nullptr);
   glfwMakeContextCurrent(m_window);
+  int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+  ZR_CORE_ASSERT(status, "Failed to initialize GLAD!");
   glfwSetWindowUserPointer(m_window, &m_windowData);
   SetVSync(true);
 
@@ -111,6 +116,7 @@ void LinuxWindow::init(const WindowProps &props) {
         data.EventCallback(event);
       });
 }
+
 LinuxWindow::LinuxWindow(const WindowProps &props) { init(props); }
 LinuxWindow::~LinuxWindow() { shutdown(); }
 

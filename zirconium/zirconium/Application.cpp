@@ -5,7 +5,7 @@
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "log.h"
-#include <GLFW/glfw3.h>
+#include "../vendor/glad/include/glad/glad.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
@@ -14,6 +14,9 @@ namespace zirconium {
 Application::Application() {
   m_Window = std::unique_ptr<Window>(Window::Create());
   m_Window->SetEventCallback(BIND_EVENT_FN(onEvent));
+
+  unsigned int id;
+  glGenVertexArrays(1, &id);
 }
 Application::~Application() {}
 
