@@ -1,10 +1,9 @@
 workspace("MyProject")
--- warnings("Extra")
+warnings("Extra")
 architecture("x64")
-configurations({ "Debug", "Release", "dist" })
-location("build") -- Where to place generated files
+configurations({ "Debug", "Release", "Dist" })
+location("build")
 
--- Clean configuration
 newaction({
 	trigger = "clean",
 	description = "Clean the build and bin directories",
@@ -17,6 +16,7 @@ newaction({
 	end,
 })
 
+-- Include directories
 IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
 
@@ -30,20 +30,30 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
-includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"] }) -- Include zirconium headers
-links({ "GLFW", "GL", "m", "dl", "X11", "pthread" })
+includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"] })
+links({ "GLFW", "GL", "m", "dl", "X11", "pthread" }) -- Link with pthread
+
 pic("On") -- Enable Position Independent Code for shared libraries
+
+-- Linux-specific settings
+filter("system:linux")
+buildoptions({ "-pthread" })
+linkoptions({ "-pthread" })
+
+-- Debug Configuration
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG" })
-optimize("On")
+optimize("Debug") -- Disable optimizations for Debug builds
 
+-- Release Configuration
 filter("configurations:Release")
-defines({ "ZIR_RELESE" })
-optimize("On")
+defines({ "ZIR_RELEASE" })
+optimize("On") -- Enable optimizations for Release builds
 
+-- Distribution Configuration
 filter("configurations:Dist")
 defines({ "ZIR_DIST" })
-optimize("On")
+optimize("On") -- Optimizations for Distribution
 
 -- Project for sandbox executable
 project("sandbox")
@@ -52,18 +62,25 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
-includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" }) -- Include zirconium headers
+includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" })
 links({ "zirconium" }) -- Link with the zirconium shared library
 
+-- Linux-specific settings
+filter("system:linux")
+buildoptions({ "-pthread" })
+linkoptions({ "-pthread" })
+
+-- Debug Configuration
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
-optimize("On")
+optimize("Debug")
 
+-- Release Configuration
 filter("configurations:Release")
-defines({ "ZIR_RELESE", "" })
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
+defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
 optimize("On")
 
+-- Distribution Configuration
 filter("configurations:Dist")
 defines({ "ZIR_DIST" })
 optimize("On")

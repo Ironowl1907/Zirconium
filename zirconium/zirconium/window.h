@@ -4,13 +4,13 @@
 namespace zirconium {
 
 struct WindowProps {
-  WindowProps(const std::string& title = "Zirconium Engine", unsigned int width = 1280,
-              unsigned int height = 720)
+  WindowProps(const std::string &title = "Zirconium Engine",
+              unsigned int width = 1280, unsigned int height = 720)
       : Title(title), Width(width), Height(height) {}
 
+  std::string Title;
   unsigned int Width;
   unsigned int Height;
-  std::string Title;
 };
 
 class Window {
