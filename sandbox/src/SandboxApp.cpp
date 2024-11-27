@@ -1,11 +1,11 @@
-#include "../../zirconium/zirconium.h"
+#include "zirconium.h"
 #include <cstdio>
 
 class ExampleLayer : public zirconium::Layer {
 public:
   ExampleLayer() : Layer("Example") {}
 
-  void OnUpdate() override { ZR_INFO("ExampleLayer::Update"); }
+  void OnUpdate() override {}
 
   void Onevent(zirconium::Event &event) override {
     ZR_TRACE("{0}", event.ToString());
@@ -15,7 +15,10 @@ public:
 class SandBox : public zirconium::Application {
 
 public:
-  SandBox() { PushLayer(new ExampleLayer()); }
+  SandBox() {
+    PushLayer(new ExampleLayer());
+    PushOverlay(new zirconium::ImGuiLayer());
+  }
   ~SandBox() {}
 };
 

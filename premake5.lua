@@ -31,7 +31,7 @@ newaction({
 IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
 IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
-IncludeDir["ImGui"] = "./zirconium/vendor/ImGui/"
+IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 
 include(".//zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
