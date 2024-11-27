@@ -31,9 +31,11 @@ newaction({
 IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
 IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
+IncludeDir["ImGui"] = "./zirconium/vendor/ImGui/"
 
-include("./zirconium/vendor/glad/")
+include(".//zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
+include("./zirconium/vendor/imgui/")
 
 -- Project for zirconium shared library
 project("zirconium")
@@ -43,8 +45,15 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
 files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
-includedirs({ "zirconium/vendor/spdlog/include", IncludeDir["GLFW"], IncludeDir["Glad"] })
-links({ "Glad", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+includedirs({
+	"./zirconium/",
+	"./zirconium/zirconium/",
+	"zirconium/vendor/spdlog/include",
+	IncludeDir["GLFW"],
+	IncludeDir["Glad"],
+	IncludeDir["ImGui"],
+})
+links({ "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
 pic("On") -- Enable Position Independent Code for shared libraries
 
@@ -75,7 +84,7 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
-includedirs({ "zirconium/src", "./zirconium/vendor/spdlog/include" })
+includedirs({ "zirconium/src", "zirconium/", "./zirconium/vendor/spdlog/include" })
 links({ "zirconium", "Glad" }) -- Link with the zirconium shared library
 
 -- Linux-specific settings

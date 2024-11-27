@@ -5,7 +5,7 @@
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "log.h"
-#include "../vendor/glad/include/glad/glad.h"
+#include "glad/glad.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 

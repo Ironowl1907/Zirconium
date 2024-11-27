@@ -4,3 +4,6 @@
 [submodule "zirconium/vendor/glfw"]
 	path = zirconium/vendor/glfw
 	url = https://github.com/ironowl1907/glfw
+[submodule "zirconium/vendor/imgui"]
+	path = zirconium/vendor/imgui
+	url = https://github.com/Ironowl1907/imgui.git

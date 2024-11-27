@@ -1,14 +1,14 @@
-#include "../../vendor/glad/include/glad/glad.h"
-#include "../../vendor/glfw/include/GLFW/glfw3.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
-#include "../../core.h"
-#include "../../zrpch.h"
-#include "../log.h"
+#include "core.h"
+#include "zrpch.h"
+#include "log.h"
 #include "linux.h"
 
-#include "./../events/ApplicationEvent.h"
-#include "./../events/KeyEvent.h"
-#include "./../events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
+#include "events/KeyEvent.h"
+#include "events/MouseEvent.h"
 
 namespace zirconium {
 static bool s_GLFWInitialized = false;
