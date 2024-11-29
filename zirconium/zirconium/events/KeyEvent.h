@@ -47,4 +47,18 @@ public:
 private:
 };
 
+class KeyTypedEvent : public KeyEvent {
+public:
+  KeyTypedEvent(int keyCode) : KeyEvent(keyCode) {}
+
+  std::string const ToString() const override {
+    std::stringstream ss;
+    ss << "KeyTypedEvent: " << m_KeyCode << '\n';
+    return ss.str();
+  }
+  EVENT_CLASS_TYPE(KeyTyped);
+  EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+
+};
+
 }; // namespace zirconium

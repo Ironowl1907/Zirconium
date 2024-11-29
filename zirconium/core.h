@@ -16,3 +16,5 @@
 #define ZR_ASSERT(x, ...)  ((void)0)
 #define ZR_CORE_ASSERT(x, ...)  ((void)0)
 #endif
+
+#define ZR_BIND_EVENT_FN(x) std::bind(x, this, std::placeholders::_1)

@@ -2,9 +2,9 @@
 #include "GLFW/glfw3.h"
 
 #include "core.h"
-#include "zrpch.h"
-#include "log.h"
 #include "linux.h"
+#include "log.h"
+#include "zrpch.h"
 
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
@@ -59,6 +59,12 @@ void LinuxWindow::init(const WindowProps &props) {
   glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window) {
     WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
     WindowCloseEvent event;
+    data.EventCallback(event);
+  });
+
+  glfwSetCharCallback(m_window, [](GLFWwindow *window, unsigned int codepoint) {
+    WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+    KeyTypedEvent event(codepoint);
     data.EventCallback(event);
   });
 

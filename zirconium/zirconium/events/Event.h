@@ -16,7 +16,7 @@ enum class EventType {
   None = 0,
   WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
   AppTick, AppUpdate, AppRender, 
-  KeyPressed, KeyReleased,
+  KeyPressed, KeyReleased, KeyTyped,
   MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
 };
 
@@ -68,7 +68,6 @@ inline std::ostream &operator<<(std::ostream &os, const Event &event) {
 }
 
 } // namespace zirconium
-
 
 #define EVENT_CLASS_TYPE(type)                                                 \
   static EventType GetStaticType() { return EventType::type; }                 \
