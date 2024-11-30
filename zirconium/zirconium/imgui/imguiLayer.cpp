@@ -14,9 +14,12 @@
 #include "imgui.h"
 #include "platform/openGl/imGuiOpenGlRenderer.h"
 
+
 // Temporary
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+
+#include "imguiKeyMap.h"
 
 namespace zirconium {
 
@@ -109,7 +112,7 @@ bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent &e) {
   ImGuiIO &io = ImGui::GetIO();
 
 
-  io.AddKeyEvent(ImGuiKey(e.GetKeyCode()), true);
+  io.AddKeyEvent(ImGuiKey(MapKeyCodeToImGuiKey(e.GetKeyCode())), true);
 
   io.AddKeyEvent(ImGuiMod_Ctrl, e.GetKeyCode() == GLFW_KEY_LEFT_CONTROL ||
                                     e.GetKeyCode() == GLFW_KEY_RIGHT_CONTROL);
@@ -126,7 +129,7 @@ bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent &e) {
 bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent &e) {
   ImGuiIO &io = ImGui::GetIO();
 
-  io.AddKeyEvent(ImGuiKey(e.GetKeyCode()), false);
+  io.AddKeyEvent(ImGuiKey(MapKeyCodeToImGuiKey(e.GetKeyCode())), false);
 
   return false;
 }

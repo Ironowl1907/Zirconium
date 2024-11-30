@@ -1,9 +1,9 @@
 #pragma once
 
-#include "events/ApplicationEvent.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
-#include "layers/Layer.h"
+#include "../events/ApplicationEvent.h"
+#include "../events/KeyEvent.h"
+#include "../events/MouseEvent.h"
+#include "../layers/Layer.h"
 
 namespace zirconium {
 class ImGuiLayer : public Layer {
