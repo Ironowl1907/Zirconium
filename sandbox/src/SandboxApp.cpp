@@ -1,5 +1,5 @@
 #include "zirconium.h"
-#include <cstdio>
+
 
 class ExampleLayer : public zirconium::Layer {
 public:

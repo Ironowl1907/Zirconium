@@ -1,5 +1,5 @@
 workspace("MyProject")
--- warnings("Extra")
+warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
 location("build")
@@ -32,6 +32,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
 IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
+IncludeDir["glm"] = "./zirconium/vendor/glm/"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
@@ -52,6 +53,7 @@ includedirs({
 	IncludeDir["GLFW"],
 	IncludeDir["Glad"],
 	IncludeDir["ImGui"],
+	IncludeDir["glm"],
 })
 links({ "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
@@ -84,7 +86,7 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
-includedirs({ "zirconium/src", "zirconium/", "./zirconium/vendor/spdlog/include" })
+includedirs({ "zirconium/src", "zirconium/", "./zirconium/vendor/spdlog/include", IncludeDir["glm"] })
 links({ "zirconium", "Glad" }) -- Link with the zirconium shared library
 
 -- Linux-specific settings
