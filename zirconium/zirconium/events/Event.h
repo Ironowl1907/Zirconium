@@ -9,7 +9,6 @@ namespace zirconium {
 // until the funciton that manages the event is done.
 // TODO: Maybe in the future bufffer this event and only process them during the
 // event managment time.
-//
 
 // clang-format off
 enum class EventType {

@@ -6,6 +6,13 @@
 #include "zirconium/layers/Layer.h"
 #include "zirconium/layers/StackLayer.h"
 
+#include "zirconium/input.h"
+
+// ---- Key Codes -----
+#include "zirconium/keycodes.h"
+#include "zirconium/mouseButtonCodes.h"
+
+
 // --- Logger ---
 #include "zirconium/log.h"
 

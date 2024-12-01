@@ -39,7 +39,7 @@ void Application::onEvent(Event &event) {
   EventDispatcher dispatcher(event);
   dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
 
-  ZR_CORE_TRACE("{0}", event.ToString());
+  /*ZR_CORE_TRACE("{0}", event.ToString());*/
 
   for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
     --it;
