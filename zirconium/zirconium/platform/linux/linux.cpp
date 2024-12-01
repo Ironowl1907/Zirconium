@@ -5,6 +5,7 @@
 #include "linux.h"
 #include "log.h"
 #include "zrpch.h"
+#include "linuxInput.h"
 
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
@@ -44,6 +45,7 @@ void LinuxWindow::init(const WindowProps &props) {
   ZR_CORE_ASSERT(status, "Failed to initialize GLAD!");
   glfwSetWindowUserPointer(m_window, &m_windowData);
   SetVSync(true);
+
 
   // GLFW callbacks
   glfwSetWindowSizeCallback(

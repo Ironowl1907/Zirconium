@@ -7,6 +7,8 @@
 #include "glad/glad.h"
 #include "log.h"
 
+#include "input.h"
+
 namespace zirconium {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
@@ -41,7 +43,7 @@ void Application::onEvent(Event &event) {
 
   for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
     --it;
-    (*it)->Onevent(event);
+    (*it)->OnEvent(event);
     if (event.Handled)
       break;
   }

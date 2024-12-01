@@ -14,7 +14,7 @@ public:
   void OnAttach();
   void OnDetach();
   void OnUpdate();
-  void Onevent(Event &event);
+  void OnEvent(Event &event);
 
 private:
   float m_time;

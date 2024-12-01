@@ -7,7 +7,7 @@ public:
 
   void OnUpdate() override {}
 
-  void Onevent(zirconium::Event &event) override {
+  void OnEvent(zirconium::Event &event) override {
     ZR_TRACE("{0}", event.ToString());
   }
 };

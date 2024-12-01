@@ -20,6 +20,8 @@ public:
   void SetVSync(bool enbabled) override;
   bool IsVSyncOn() const override;
 
+  inline virtual void *GetNativeWindow() const { return m_window;}
+
 protected:
   virtual void init(const WindowProps &props);
   virtual void shutdown();

@@ -40,6 +40,8 @@ void ImGuiLayer::OnAttach() {
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
   ImGui_ImplOpenGL3_Init("#version 410");
+
+  ZR_INFO("ImGuiLayer attached!");
 }
 
 void ImGuiLayer::OnDetach() {}
@@ -63,7 +65,7 @@ void ImGuiLayer::OnUpdate() {
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-void ImGuiLayer::Onevent(Event &event) {
+void ImGuiLayer::OnEvent(Event &event) {
   EventDispatcher dispatcher(event);
   dispatcher.Dispatch<MousePressedButtonEvent>(
       ZR_BIND_EVENT_FN(&ImGuiLayer::OnMouseButtonPressedEvent));
