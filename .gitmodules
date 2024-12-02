@@ -7,6 +7,7 @@
 [submodule "zirconium/vendor/imgui"]
 	path = zirconium/vendor/imgui
 	url = https://github.com/Ironowl1907/imgui.git
+	branch = docking
 [submodule "zirconium/vendor/glm"]
 	path = zirconium/vendor/glm
 	url = https://github.com/g-truc/glm.git
