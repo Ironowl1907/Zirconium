@@ -38,9 +38,9 @@ include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
 include("./zirconium/vendor/imgui/")
 
--- Project for zirconium shared library
+-- Project for zirconium static library
 project("zirconium")
-kind("SharedLib") -- Create .so shared library
+kind("StaticLib")
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
@@ -57,7 +57,7 @@ includedirs({
 })
 links({ "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
-pic("On") -- Enable Position Independent Code for shared libraries
+pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
 
 -- Linux-specific settings
 filter("system:linux")
@@ -79,9 +79,9 @@ filter("configurations:Dist")
 defines({ "ZIR_DIST" })
 optimize("On") -- Optimizations for Distribution
 
--- Project for sandbox executable
+-- Project for sandbox static library
 project("sandbox")
-kind("ConsoleApp") -- Create executable
+kind("StaticLib") -- Changed from ConsoleApp to StaticLib
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
@@ -93,7 +93,7 @@ includedirs({
 	IncludeDir["glm"],
 	IncludeDir["ImGui"],
 })
-links({ "zirconium", "Glad", "ImGui" }) -- Link with the zirconium shared library
+links({ "zirconium", "Glad", "ImGui" }) -- Link with the zirconium static library
 
 -- Linux-specific settings
 filter("system:linux")
