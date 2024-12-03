@@ -5,9 +5,7 @@
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "glad/glad.h"
-#include "log.h"
-
-#include "input.h"
+#include "imgui/imguiLayer.h"
 
 namespace zirconium {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -20,8 +18,8 @@ Application::Application() {
   m_Window = std::unique_ptr<Window>(Window::Create());
   m_Window->SetEventCallback(BIND_EVENT_FN(onEvent));
 
-  unsigned int id;
-  glGenVertexArrays(1, &id);
+  m_ImGuiLayer = new ImGuiLayer();
+  PushOverlay(m_ImGuiLayer);
 }
 Application::~Application() {}
 
@@ -62,6 +60,11 @@ void Application::Run() {
 
     for (Layer *layer : m_layerStack)
       layer->OnUpdate();
+
+    m_ImGuiLayer->Begin();
+    for (Layer *layer : m_layerStack)
+      layer->OnImGuiRender();
+    m_ImGuiLayer->End();
 
     m_Window->onUpdate();
   }

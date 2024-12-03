@@ -21,6 +21,6 @@ public:
 
 private:
   LayerVector m_Layers;
-  LayerVector::iterator m_LayerInsert;
+  unsigned int m_LayerInsertIndex = 0;
 };
 } // namespace zirconium

@@ -1,5 +1,5 @@
 workspace("MyProject")
-warnings("Extra")
+-- warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
 location("build")
@@ -86,8 +86,14 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
-includedirs({ "zirconium/src", "zirconium/", "./zirconium/vendor/spdlog/include", IncludeDir["glm"] })
-links({ "zirconium", "Glad" }) -- Link with the zirconium shared library
+includedirs({
+	"zirconium/src",
+	"zirconium/",
+	"./zirconium/vendor/spdlog/include",
+	IncludeDir["glm"],
+	IncludeDir["ImGui"],
+})
+links({ "zirconium", "Glad", "ImGui" }) -- Link with the zirconium shared library
 
 -- Linux-specific settings
 filter("system:linux")

@@ -11,22 +11,15 @@ public:
   ImGuiLayer();
   ~ImGuiLayer();
 
-  void OnAttach();
-  void OnDetach();
-  void OnUpdate();
-  void OnEvent(Event &event);
+  virtual void OnAttach() override;
+  virtual void OnDetach() override;
+  virtual void OnImGuiRender() override;
+
+  static void Begin();
+  static void End();
 
 private:
-  float m_time;
-
-  bool OnMouseButtonPressedEvent(MousePressedButtonEvent &e);
-  bool OnMouseButtonReleasedEvent(MouseReleasedButtonEvent &e);
-  bool OnMouseMovedEvent(MouseMovedEvent &e);
-  bool OnMouseScrollEvent(MouseScrollEvent &e);
-  bool OnWindowResizeEvent(WindowResizeEvent &e);
-  bool OnKeyPressedEvent(KeyPressedEvent &e);
-  bool OnKeyReleasedEvent(KeyReleasedEvent &e);
-  bool OnKeyTypedEvent(KeyTypedEvent &e);
+  float m_time = 0.0f;
 };
 
 } // namespace zirconium
