@@ -1,5 +1,5 @@
 workspace("MyProject")
--- warnings("Extra")
+warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
 location("build")
@@ -30,6 +30,7 @@ newaction({
 -- Include directories
 IncludeDir = {}
 IncludeDir["GLFW"] = "./zirconium/vendor/glfw/include/"
+IncludeDir["spdlog"] = "./zirconium/vendor/spdlog/include/"
 IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 IncludeDir["glm"] = "./zirconium/vendor/glm/"
@@ -37,6 +38,7 @@ IncludeDir["glm"] = "./zirconium/vendor/glm/"
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
 include("./zirconium/vendor/imgui/")
+include("./zirconium/vendor/spdlog/")
 
 -- Project for zirconium static library
 project("zirconium")
@@ -49,13 +51,12 @@ files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
 includedirs({
 	"./zirconium/",
 	"./zirconium/zirconium/",
-	"zirconium/vendor/spdlog/include",
 	IncludeDir["GLFW"],
 	IncludeDir["Glad"],
 	IncludeDir["ImGui"],
 	IncludeDir["glm"],
 })
-links({ "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
+links({ "spdLog", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
 
@@ -81,7 +82,7 @@ optimize("On") -- Optimizations for Distribution
 
 -- Project for sandbox static library
 project("sandbox")
-kind("StaticLib") -- Changed from ConsoleApp to StaticLib
+kind("ConsoleApp") -- Changed from ConsoleApp to StaticLib
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
@@ -89,11 +90,10 @@ files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({
 	"zirconium/src",
 	"zirconium/",
-	"./zirconium/vendor/spdlog/include",
 	IncludeDir["glm"],
 	IncludeDir["ImGui"],
 })
-links({ "zirconium", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+links({ "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 -- Linux-specific settings
 filter("system:linux")
