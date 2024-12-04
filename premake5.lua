@@ -40,7 +40,7 @@ include("./zirconium/vendor/imgui/")
 
 -- Project for zirconium static library
 project("zirconium")
-kind("StaticLib")
+kind("staticLib") -- Create .so shared library
 language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
@@ -93,7 +93,7 @@ includedirs({
 	IncludeDir["glm"],
 	IncludeDir["ImGui"],
 })
-links({ "zirconium", "Glad", "ImGui" }) -- Link with the zirconium static library
+links({ "zirconium", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 -- Linux-specific settings
 filter("system:linux")
