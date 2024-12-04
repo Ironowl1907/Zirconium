@@ -1,6 +1,8 @@
 #pragma once
 #include "window.h"
 
+#include "Renderer/GraphicsContext.h"
+
 struct GLFWwindow;
 
 namespace zirconium {
@@ -21,6 +23,9 @@ public:
   bool IsVSyncOn() const override;
 
   inline virtual void *GetNativeWindow() const { return m_window;}
+
+private: 
+  GraphicsContext* m_Context;
 
 protected:
   virtual void init(const WindowProps &props);

@@ -1,15 +1,16 @@
-#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 #include "core.h"
 #include "linux.h"
+#include "linuxInput.h"
 #include "log.h"
 #include "zrpch.h"
-#include "linuxInput.h"
 
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
+
+#include "platform/OpenGL/OpenGLContext.h"
 
 namespace zirconium {
 static bool s_GLFWInitialized = false;
@@ -40,12 +41,11 @@ void LinuxWindow::init(const WindowProps &props) {
   }
   m_window = glfwCreateWindow((int)props.Width, (int)props.Height,
                               props.Title.c_str(), nullptr, nullptr);
-  glfwMakeContextCurrent(m_window);
-  int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-  ZR_CORE_ASSERT(status, "Failed to initialize GLAD!");
+  m_Context = new OpenGLContext(m_window);
+  m_Context->Init();
+
   glfwSetWindowUserPointer(m_window, &m_windowData);
   SetVSync(true);
-
 
   // GLFW callbacks
   glfwSetWindowSizeCallback(
@@ -130,7 +130,7 @@ LinuxWindow::~LinuxWindow() { shutdown(); }
 
 void LinuxWindow::onUpdate() {
   glfwPollEvents();
-  glfwSwapBuffers(m_window);
+  m_Context->SwapBuffers();
 }
 void LinuxWindow::SetEventCallback(const EventCallbackFn &callback) {
   m_windowData.EventCallback = callback;

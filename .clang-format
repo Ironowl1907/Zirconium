@@ -1,0 +1,40 @@
+# .clang-format
+---
+BasedOnStyle: LLVM
+IndentWidth: 4          # Use 4 spaces for indentation
+TabWidth: 4             # Set tab width for alignment
+
+# Line breaking and wrapping
+ColumnLimit: 100        # Limit lines to 100 characters
+BreakBeforeBraces: All  # Break braces before the function, class, etc. (e.g., "if (x)\n{")
+
+# Spacing preferences
+SpaceAfterCStyleCast: true # Add a space after C-style casts
+SpaceBeforeParens: ControlStatements # Add space before parentheses in control statements
+SpacesInAngles: false    # No spaces inside angle brackets (< >)
+
+# Namespace formatting
+NamespaceIndentation: All # Indent everything inside namespaces
+
+# Pointer and reference alignment
+PointerAlignment: Left   # Align pointers and references to the left (e.g., "int* a")
+ReferenceAlignment: Right # Align references to the left (e.g., "int& a")
+
+# Include sorting
+SortIncludes: true       # Sort includes alphabetically
+IncludeBlocks: Preserve  # Preserve include blocks as written
+
+# Comment formatting
+ReflowComments: true     # Reflow long comments into multiple lines
+
+# Template formatting
+AlignAfterOpenBracket: AlwaysBreak # Break template parameters after opening brackets
+
+# Function declarations
+AllowShortFunctionsOnASingleLine: InlineOnly # Only inline very short functions
+AlwaysBreakAfterReturnType: None             # Keep return type and function name on the same line
+BreakConstructorInitializersBeforeComma: true # Break constructor initializers onto new lines
+
+# Miscellaneous
+CompactNamespaces: false # Don't combine namespaces; use full namespace definitions
+DerivePointerAlignment: false # Use explicitly set PointerAlignment
