@@ -1,6 +1,6 @@
 [submodule "zirconium/vendor/spdlog"]
 	path = zirconium/vendor/spdlog
-	url = https://github.com/gabime/spdlog.git
+	url = https://github.com/Ironowl1907/spdlog.git
 [submodule "zirconium/vendor/glfw"]
 	path = zirconium/vendor/glfw
 	url = https://github.com/ironowl1907/glfw
