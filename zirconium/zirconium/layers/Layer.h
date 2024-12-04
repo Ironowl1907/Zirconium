@@ -13,7 +13,7 @@ public:
   virtual void OnDetach() {}
   virtual void OnUpdate() {}
   virtual void OnImGuiRender() {}
-  virtual void OnEvent(Event &event) {}
+  virtual void OnEvent([[maybe_unused]] Event &event) {}
 
   inline const std::string GetName() const { return m_DName; }
 
