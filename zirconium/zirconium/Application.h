@@ -5,6 +5,8 @@
 #include "imgui/imguiLayer.h"
 #include "layers/StackLayer.h"
 #include <memory>
+
+#include "Renderer/Shader.h"
 namespace zirconium {
 
 class Application {
@@ -27,6 +29,7 @@ private:
   bool m_Running = true;
   LayerStack m_layerStack;
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+  std::unique_ptr<Shader> m_Shader;
 
   static Application *s_Instance;
 };

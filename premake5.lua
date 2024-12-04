@@ -67,18 +67,18 @@ linkoptions({ "-pthread" })
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG" })
-optimize("Debug") -- Disable optimizations for Debug builds
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
+optimize("Debug")
 
 -- Release Configuration
 filter("configurations:Release")
-defines({ "ZIR_RELEASE" })
-optimize("On") -- Enable optimizations for Release builds
+defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
+optimize("On")
 
 -- Distribution Configuration
 filter("configurations:Dist")
 defines({ "ZIR_DIST" })
-optimize("On") -- Optimizations for Distribution
+optimize("On")
 
 -- Project for sandbox static library
 project("sandbox")

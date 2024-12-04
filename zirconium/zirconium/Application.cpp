@@ -2,10 +2,13 @@
 #include "../core.h"
 #include "../zrpch.h"
 
+#include "Renderer/Shader.h"
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "glad/glad.h"
 #include "imgui/imguiLayer.h"
+
+#include "Renderer/Shader.h"
 
 namespace zirconium {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -48,6 +51,27 @@ Application::Application() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                GL_STATIC_DRAW);
   // Shader
+  std::string vertexShaderSrc = R"(
+#version 330 core
+
+layout(location = 0) in vec3 a_Position;
+
+void main() {
+    gl_Position = vec4(a_Position, 1.0);
+}
+  )";
+
+  std::string fragmentShaderSrc = R"(
+#version 330 core
+
+layout(location = 0) out vec4 color;
+
+void main() {
+    color = vec4(0.8f, 0.2f, 0.3f, 1.0f);
+}
+  )";
+
+  m_Shader.reset(new Shader(vertexShaderSrc, fragmentShaderSrc));
 }
 Application::~Application() {}
 
@@ -86,6 +110,7 @@ void Application::Run() {
     glClearColor(0.1804, 0.1804, 0.1804, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    m_Shader->Bind();
     glBindVertexArray(m_VertexArray);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
