@@ -5,6 +5,7 @@
 #include "zrpch.h"
 
 namespace zirconium {
+RenderAPI Renderer::s_RenderAPI = RenderAPI::OpenGL;
 VertexBuffer *VertexBuffer::Create(float *vertices, uint32_t size) {
   switch (Renderer::GetRenderAPI()) {
   case zirconium::RenderAPI::None:

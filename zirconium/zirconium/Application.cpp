@@ -25,9 +25,6 @@ Application::Application() {
   m_ImGuiLayer = new ImGuiLayer();
   PushOverlay(m_ImGuiLayer);
 
-  // Vertex Array
-  glGenVertexArrays(1, &m_VertexArray);
-  glBindVertexArray(m_VertexArray);
 
   // clang-format off
   float vertices[3*3] = {
@@ -35,12 +32,10 @@ Application::Application() {
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f
   };
+  // clang-format on
 
   m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
   m_VertexBuffer->Bind();
-  // clang-format on
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
   // Index Buffer
   unsigned int indices[3] = {0, 1, 2};
