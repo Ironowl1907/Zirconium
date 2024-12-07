@@ -12,7 +12,6 @@
 #include "zirconium/keycodes.h"
 #include "zirconium/mouseButtonCodes.h"
 
-
 // --- Logger ---
 #include "zirconium/log.h"
 
