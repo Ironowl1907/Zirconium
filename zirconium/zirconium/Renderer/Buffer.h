@@ -1,6 +1,6 @@
 #pragma once
-#include <cstdint>
 #include "core.h"
+#include <cstdint>
 
 namespace zirconium {
 
@@ -49,7 +49,6 @@ struct BufferElement {
                 bool normalized = false)
       : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0),
         Normalized(normalized) {}
-
 };
 // clang-format off
 inline uint32_t GetComponentCount(ShaderDataType type) {
@@ -87,6 +86,13 @@ public:
     return m_BufferElements.begin();
   }
   std::vector<BufferElement>::iterator end() { return m_BufferElements.end(); }
+
+  std::vector<BufferElement>::const_iterator begin() const {
+    return m_BufferElements.begin();
+  }
+  std::vector<BufferElement>::const_iterator end() const {
+    return m_BufferElements.end();
+  }
 
 private:
   void CalculateOffsetAndStride() {

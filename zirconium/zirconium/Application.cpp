@@ -3,6 +3,7 @@
 #include "../zrpch.h"
 
 #include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "glad/glad.h"
@@ -12,39 +13,16 @@
 #include "Renderer/Shader.h"
 #include <GL/gl.h>
 #include <cstdint>
+#include <memory>
 
 namespace zirconium {
+
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 Application *Application::s_Instance = nullptr;
 
-#include <glad/glad.h> // Include for OpenGL enums like GL_FLOAT
-
-static GLenum ShaderDataTypeToOpenGlBaseType(ShaderDataType type) {
-  switch (type) {
-  case ShaderDataType::Float:
-  case ShaderDataType::Float2:
-  case ShaderDataType::Float3:
-  case ShaderDataType::Float4:
-  case ShaderDataType::Mat3:
-  case ShaderDataType::Mat4:
-    return GL_FLOAT;
-
-  case ShaderDataType::Int:
-  case ShaderDataType::Int2:
-  case ShaderDataType::Int3:
-  case ShaderDataType::Int4:
-    return GL_INT;
-
-  case ShaderDataType::Bool:
-    return GL_BOOL;
-  }
-  ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
-  return 0;
-}
-
 Application::Application() {
-  ZR_ASSERT(!s_Instance, "Application Alredy Exists!");
+  ZR_ASSERT(!s_Instance, "Application Already Exists!");
   s_Instance = this;
   m_Window = std::unique_ptr<Window>(Window::Create());
   m_Window->SetEventCallback(BIND_EVENT_FN(onEvent));
@@ -52,46 +30,63 @@ Application::Application() {
   m_ImGuiLayer = new ImGuiLayer();
   PushOverlay(m_ImGuiLayer);
 
-  // clang-format off
-  float vertices[3*7] = {
+  // Create vertex array for the triangle
+  m_VertexArray.reset(VertexArray::Create());
+
+  // Triangle vertices with color data
+  float vertices[3 * 7] = {
     -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.2f, 1.0f,
     0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.2f, 1.0f,
     0.0f, 0.5f, 0.0f,    0.0f, 0.3f, 0.9f, 1.0f,
   };
-  // clang-format on
 
   m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
   m_VertexBuffer->Bind();
-  // clang-format off
 
   BufferLayout layout = {
     {ShaderDataType::Float3, "a_Position"},
     {ShaderDataType::Float4, "a_Color"},
   };
-  // clang-format on
-
   m_VertexBuffer->SetLayout(layout);
+  m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 
-  uint32_t index = 0;
-  layout = m_VertexBuffer->GetLayout();
-
-  for (const auto &element : layout) {
-    glEnableVertexAttribArray(index);
-    glVertexAttribPointer(index++, GetComponentCount(element.Type),
-                          ShaderDataTypeToOpenGlBaseType(element.Type),
-                          element.Normalized ? GL_TRUE : GL_FALSE,
-                          layout.GetStride(), (const void *)element.Offset);
-  }
-
-  // Index Buffer
+  // Index Buffer for the triangle
   unsigned int indices[3] = {0, 1, 2};
-  m_IndexBuffer.reset(
-      IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+  m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+  m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-  // Shader
+  m_VertexArray->Unbind();
+  m_VertexBuffer->Unbind();
+  m_IndexBuffer->Unbind();
+
+  // Create vertex array for the square
+  m_SquareVertexArray.reset(VertexArray::Create());
+
+  // Square vertices (no color, just position)
+  float squareVertices[3 * 4] = {
+    -0.5f, 0.5f, 0.0f,
+    0.5f, 0.5f, 0.0f,
+   -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+  };
+
+  m_SquareVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+  m_SquareVertexBuffer->Bind();
+
+  BufferLayout squareLayout = {
+    {ShaderDataType::Float3, "a_Position"},
+  };
+  m_SquareVertexBuffer->SetLayout(squareLayout);
+  m_SquareVertexArray->AddVertexBuffer(m_SquareVertexBuffer);
+
+  // Index Buffer for the square
+  unsigned int squareIndices[6] = {0, 1, 2, 2, 1, 3};
+  m_SquareIndexBuffer.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+  m_SquareVertexArray->SetIndexBuffer(m_SquareIndexBuffer);
+
+  // Shaders
   std::string vertexShaderSrc = R"(
 #version 330 core
-
     layout(location = 0) in vec3 a_Position;
     layout(location = 1) in vec4 a_Color;
 
@@ -105,9 +100,7 @@ Application::Application() {
 
   std::string fragmentShaderSrc = R"(
 #version 330 core
-
     layout(location = 0) out vec4 color;
-
     in vec4 v_Color;
 
     void main() {
@@ -116,7 +109,29 @@ Application::Application() {
   )";
 
   m_Shader.reset(new Shader(vertexShaderSrc, fragmentShaderSrc));
+
+  // Shader for the square (basic white color)
+  std::string vertexShaderSrc2 = R"(
+#version 330 core
+    layout(location = 0) in vec3 a_Position;
+
+    void main() {
+        gl_Position = vec4(a_Position, 1.0);
+    }
+)";
+
+  std::string fragmentShaderSrc2 = R"(
+#version 330 core
+    layout(location = 0) out vec4 color;
+
+    void main() {
+        color = vec4(1.0f, 1.0f, 1.0f, 1.0f);  // White color for the square
+    }
+)";
+
+  m_Shader2.reset(new Shader(vertexShaderSrc2, fragmentShaderSrc2));
 }
+
 Application::~Application() {}
 
 void Application::PushLayer(Layer *layer) {
@@ -133,8 +148,6 @@ void Application::onEvent(Event &event) {
   EventDispatcher dispatcher(event);
   dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
 
-  /*ZR_CORE_TRACE("{0}", event.ToString());*/
-
   for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
     --it;
     (*it)->OnEvent(event);
@@ -150,21 +163,30 @@ bool Application::onWindowClose(WindowCloseEvent &event) {
 
 void Application::Run() {
   while (m_Running) {
-    glClearColor(0.1804, 0.1804, 0.1804, 1);
+    glClearColor(0.1804, 0.1804, 0.1804, 1);  // Set clear color (dark gray)
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_Shader->Bind();
-    glBindVertexArray(m_VertexArray);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    // Draw square using Shader2
+    m_Shader2->Bind();
+    m_SquareVertexArray->Bind();
+    glDrawElements(GL_TRIANGLES, m_SquareIndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 
+    // Draw triangle using Shader
+    m_Shader->Bind();
+    m_VertexArray->Bind();
+    glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+
+    // Update layers
     for (Layer *layer : m_layerStack)
       layer->OnUpdate();
 
+    // Render ImGui UI
     m_ImGuiLayer->Begin();
     for (Layer *layer : m_layerStack)
       layer->OnImGuiRender();
     m_ImGuiLayer->End();
 
+    // Update window (swap buffers, poll events, etc.)
     m_Window->onUpdate();
   }
 }
