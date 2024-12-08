@@ -11,9 +11,6 @@
 
 #include "Renderer/Buffer.h"
 #include "Renderer/Shader.h"
-#include <GL/gl.h>
-#include <cstdint>
-#include <memory>
 
 namespace zirconium {
 
@@ -30,6 +27,12 @@ Application::Application() {
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
 
+    std::shared_ptr<zirconium::VertexBuffer> VertexBuffer;
+    std::shared_ptr<zirconium::IndexBuffer> IndexBuffer;
+
+    std::shared_ptr<zirconium::VertexBuffer> SquareVertexBuffer;
+    std::shared_ptr<zirconium::IndexBuffer> SquareIndexBuffer;
+
     // Create vertex array for the triangle
     m_VertexArray.reset(VertexArray::Create());
 
@@ -39,24 +42,20 @@ Application::Application() {
         1.0f,  0.2f,  1.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.3f, 0.9f,  1.0f,
     };
 
-    m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-    m_VertexBuffer->Bind();
+    VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+    VertexBuffer->Bind();
 
     BufferLayout layout = {
         {ShaderDataType::Float3, "a_Position"},
         {ShaderDataType::Float4, "a_Color"},
     };
-    m_VertexBuffer->SetLayout(layout);
-    m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+    VertexBuffer->SetLayout(layout);
+    m_VertexArray->AddVertexBuffer(VertexBuffer);
 
     // Index Buffer for the triangle
     unsigned int indices[3] = {0, 1, 2};
-    m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-    m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-
-    m_VertexArray->Unbind();
-    m_VertexBuffer->Unbind();
-    m_IndexBuffer->Unbind();
+    IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+    m_VertexArray->SetIndexBuffer(IndexBuffer);
 
     // Create vertex array for the square
     m_SquareVertexArray.reset(VertexArray::Create());
@@ -66,19 +65,19 @@ Application::Application() {
         -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
     };
 
-    m_SquareVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-    m_SquareVertexBuffer->Bind();
+    SquareVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+    SquareVertexBuffer->Bind();
 
     BufferLayout squareLayout = {
         {ShaderDataType::Float3, "a_Position"},
     };
-    m_SquareVertexBuffer->SetLayout(squareLayout);
-    m_SquareVertexArray->AddVertexBuffer(m_SquareVertexBuffer);
+    SquareVertexBuffer->SetLayout(squareLayout);
+    m_SquareVertexArray->AddVertexBuffer(SquareVertexBuffer);
 
     // Index Buffer for the square
     unsigned int squareIndices[6] = {0, 1, 2, 2, 1, 3};
-    m_SquareIndexBuffer.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
-    m_SquareVertexArray->SetIndexBuffer(m_SquareIndexBuffer);
+    SquareIndexBuffer.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+    m_SquareVertexArray->SetIndexBuffer(SquareIndexBuffer);
 
     // Shaders
     std::string vertexShaderSrc = R"(
@@ -165,12 +164,12 @@ void Application::Run() {
         // Draw square using Shader2
         m_Shader2->Bind();
         m_SquareVertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_SquareIndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, m_SquareVertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
         // Draw triangle using Shader
         m_Shader->Bind();
         m_VertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
         // Update layers
         for (Layer* layer : m_layerStack)
