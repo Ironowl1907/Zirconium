@@ -4,20 +4,7 @@
 
 namespace zirconium {
 
-enum class ShaderDataType : uint8_t {
-  None = 0,
-  Float,
-  Float2,
-  Float3,
-  Float4,
-  Mat3,
-  Mat4,
-  Int,
-  Int2,
-  Int3,
-  Int4,
-  Bool
-};
+enum class ShaderDataType : uint8_t { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
 
 // clang-format off
 static uint32_t ShaderDataTypeSize(ShaderDataType type) {
@@ -39,16 +26,18 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
 // clang-format on
 
 struct BufferElement {
-  std::string Name;
-  ShaderDataType Type;
-  bool Normalized;
-  uint32_t Offset;
-  uint32_t Size;
+    std::string Name;
+    ShaderDataType Type;
+    bool Normalized;
+    uint32_t Offset;
+    uint32_t Size;
 
-  BufferElement(const ShaderDataType type, const std::string &name,
-                bool normalized = false)
-      : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0),
-        Normalized(normalized) {}
+    BufferElement(const ShaderDataType type, const std::string& name, bool normalized = false)
+        : Name(name)
+        , Type(type)
+        , Size(ShaderDataTypeSize(type))
+        , Offset(0)
+        , Normalized(normalized) {}
 };
 // clang-format off
 inline uint32_t GetComponentCount(ShaderDataType type) {
@@ -72,66 +61,70 @@ inline uint32_t GetComponentCount(ShaderDataType type) {
 
 class BufferLayout {
 public:
-  BufferLayout(const std::initializer_list<BufferElement> &elements)
-      : m_BufferElements(elements) {
-    CalculateOffsetAndStride();
-  }
-
-  inline uint32_t GetStride() const { return m_Stride; }
-  inline const std::vector<BufferElement> &GetElements() const {
-    return m_BufferElements;
-  }
-
-  std::vector<BufferElement>::iterator begin() {
-    return m_BufferElements.begin();
-  }
-  std::vector<BufferElement>::iterator end() { return m_BufferElements.end(); }
-
-  std::vector<BufferElement>::const_iterator begin() const {
-    return m_BufferElements.begin();
-  }
-  std::vector<BufferElement>::const_iterator end() const {
-    return m_BufferElements.end();
-  }
-
-private:
-  void CalculateOffsetAndStride() {
-    m_Stride = 0;
-    uint32_t offset = 0;
-    for (auto &element : m_BufferElements) {
-      element.Offset = offset;
-      offset += element.Size;
-      m_Stride += element.Size;
+    BufferLayout(const std::initializer_list<BufferElement>& elements)
+        : m_BufferElements(elements) {
+        CalculateOffsetAndStride();
     }
-  }
+
+    inline uint32_t GetStride() const {
+        return m_Stride;
+    }
+    inline const std::vector<BufferElement>& GetElements() const {
+        return m_BufferElements;
+    }
+
+    std::vector<BufferElement>::iterator begin() {
+        return m_BufferElements.begin();
+    }
+    std::vector<BufferElement>::iterator end() {
+        return m_BufferElements.end();
+    }
+
+    std::vector<BufferElement>::const_iterator begin() const {
+        return m_BufferElements.begin();
+    }
+    std::vector<BufferElement>::const_iterator end() const {
+        return m_BufferElements.end();
+    }
 
 private:
-  std::vector<BufferElement> m_BufferElements;
-  uint32_t m_Stride = 0;
+    void CalculateOffsetAndStride() {
+        m_Stride = 0;
+        uint32_t offset = 0;
+        for (auto& element : m_BufferElements) {
+            element.Offset = offset;
+            offset += element.Size;
+            m_Stride += element.Size;
+        }
+    }
+
+private:
+    std::vector<BufferElement> m_BufferElements;
+    uint32_t m_Stride = 0;
 };
 
 class VertexBuffer {
 public:
-  virtual ~VertexBuffer() {}
+    virtual ~VertexBuffer() {}
 
-  static VertexBuffer *Create(float *vertices, uint32_t size);
+    static VertexBuffer* Create(float* vertices, uint32_t size);
 
-  virtual void Bind() const = 0;
-  virtual void Unbind() const = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
 
-  virtual void SetLayout(const BufferLayout &layout) = 0;
-  virtual BufferLayout &GetLayout() = 0;
+    virtual void SetLayout(const BufferLayout& layout) = 0;
+    virtual BufferLayout& GetLayout() = 0;
 };
 
 class IndexBuffer {
 public:
-  virtual ~IndexBuffer() {}
+    virtual ~IndexBuffer() {}
 
-  static IndexBuffer *Create(uint32_t *indices, uint32_t size);
+    static IndexBuffer* Create(uint32_t* indices, uint32_t size);
 
-  virtual void Bind() const = 0;
-  virtual void Unbind() const = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
 
-  virtual uint32_t GetCount() const = 0;
+    virtual uint32_t GetCount() const = 0;
 };
 } // namespace zirconium

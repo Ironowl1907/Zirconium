@@ -31,47 +31,60 @@ enum EventCategory {
 
 class Event {
 public:
-  virtual EventType GetEventType() const = 0;
-  virtual const char *GetName() const = 0;
-  virtual int GetCategoryFlags() const = 0;
-  virtual const std::string ToString() const { return GetName(); };
+    virtual EventType GetEventType() const = 0;
+    virtual const char* GetName() const = 0;
+    virtual int GetCategoryFlags() const = 0;
+    virtual const std::string ToString() const {
+        return GetName();
+    };
 
-  inline bool IsInCategory(EventCategory category) {
-    return GetCategoryFlags() & category;
-  }
+    inline bool IsInCategory(EventCategory category) {
+        return GetCategoryFlags() & category;
+    }
 
 public:
-  bool Handled = false;
+    bool Handled = false;
 };
 
 class EventDispatcher {
-  template <typename T> using EventFn = std::function<bool(T &)>;
+    template <typename T>
+    using EventFn = std::function<bool(T&)>;
 
 public:
-  EventDispatcher(Event &event) : m_Event(event) {}
+    EventDispatcher(Event& event)
+        : m_Event(event) {}
 
-  template <typename T> bool Dispatch(EventFn<T> func) {
-    if (m_Event.GetEventType() == T::GetStaticType()) {
-      m_Event.Handled = func(*(T *)&m_Event);
-      return true;
+    template <typename T>
+    bool Dispatch(EventFn<T> func) {
+        if (m_Event.GetEventType() == T::GetStaticType()) {
+            m_Event.Handled = func(*(T*)&m_Event);
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
 private:
-  Event &m_Event;
+    Event& m_Event;
 };
 
-inline std::ostream &operator<<(std::ostream &os, const Event &event) {
-  return os << event.ToString();
+inline std::ostream& operator<<(std::ostream& os, const Event& event) {
+    return os << event.ToString();
 }
 
 } // namespace zirconium
 
-#define EVENT_CLASS_TYPE(type)                                                 \
-  static EventType GetStaticType() { return EventType::type; }                 \
-  EventType GetEventType() const override { return GetStaticType(); }          \
-  const char *GetName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)                \
+    static EventType GetStaticType() {        \
+        return EventType::type;               \
+    }                                         \
+    EventType GetEventType() const override { \
+        return GetStaticType();               \
+    }                                         \
+    const char* GetName() const override {    \
+        return #type;                         \
+    }
 
-#define EVENT_CLASS_CATEGORY(category)                                         \
-  virtual int GetCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category)              \
+    virtual int GetCategoryFlags() const override { \
+        return category;                            \
+    }

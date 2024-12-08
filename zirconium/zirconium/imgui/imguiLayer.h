@@ -8,18 +8,18 @@
 namespace zirconium {
 class ImGuiLayer : public Layer {
 public:
-  ImGuiLayer();
-  ~ImGuiLayer();
+    ImGuiLayer();
+    ~ImGuiLayer();
 
-  virtual void OnAttach() override;
-  virtual void OnDetach() override;
-  virtual void OnImGuiRender() override;
+    virtual void OnAttach() override;
+    virtual void OnDetach() override;
+    virtual void OnImGuiRender() override;
 
-  static void Begin();
-  static void End();
+    static void Begin();
+    static void End();
 
 private:
-  float m_time = 0.0f;
+    float m_time = 0.0f;
 };
 
 } // namespace zirconium
