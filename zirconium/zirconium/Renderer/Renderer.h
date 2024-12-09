@@ -1,21 +1,21 @@
 #pragma once
+#include "RenderCommand.h"
+#include "VertexArray.h"
 
 namespace zirconium {
-enum class RenderAPI {
-    None = 0,
-    OpenGL = 1,
-};
 
 class Renderer {
 public:
-    static inline RenderAPI GetRenderAPI() {
-        return s_RenderAPI;
-    }
-    static inline void SetRenderAPI(RenderAPI api) {
-        s_RenderAPI = api;
+    static void BeginScene();
+    static void EndScene();
+
+    static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+
+    inline static RendererAPI::API GetAPI() {
+        return RendererAPI::GetAPI();
     }
 
 private:
-    static RenderAPI s_RenderAPI;
+    static Renderer s_RendererAPI;
 };
 } // namespace zirconium

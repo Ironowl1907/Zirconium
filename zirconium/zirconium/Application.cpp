@@ -2,14 +2,16 @@
 #include "../core.h"
 #include "../zrpch.h"
 
+#include "Renderer/RenderCommand.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
-#include "glad/glad.h"
 #include "imgui/imguiLayer.h"
 
 #include "Renderer/Buffer.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 
 namespace zirconium {
@@ -158,24 +160,23 @@ bool Application::onWindowClose(WindowCloseEvent& event) {
 
 void Application::Run() {
     while (m_Running) {
-        glClearColor(0.1804, 0.1804, 0.1804, 1); // Set clear color (dark gray)
-        glClear(GL_COLOR_BUFFER_BIT);
+        RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
+        RenderCommand::Clear();
 
-        // Draw square using Shader2
-        m_Shader2->Bind();
-        m_SquareVertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_SquareVertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        {
+            Renderer::BeginScene();
 
-        // Draw triangle using Shader
-        m_Shader->Bind();
-        m_VertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+            m_Shader2->Bind();
+            Renderer::Submit(m_SquareVertexArray);
 
-        // Update layers
+            m_Shader->Bind();
+            Renderer::Submit(m_VertexArray);
+
+            Renderer::EndScene();
+        }
         for (Layer* layer : m_layerStack)
             layer->OnUpdate();
 
-        // Render ImGui UI
         m_ImGuiLayer->Begin();
         for (Layer* layer : m_layerStack)
             layer->OnImGuiRender();

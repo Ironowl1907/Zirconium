@@ -9,11 +9,11 @@
 namespace zirconium {
 
 VertexArray * VertexArray::Create() {
-  switch (Renderer::GetRenderAPI()) {
-  case zirconium::RenderAPI::None:
+  switch (Renderer::GetAPI()) {
+  case zirconium::RendererAPI::API::None:
     ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
     return nullptr;
-  case zirconium::RenderAPI::OpenGL:
+  case zirconium::RendererAPI::API::OpenGL:
     return new OpenGLVertexArray();
   }
   ZR_CORE_ASSERT(false, "Unknown RenderAPI!");

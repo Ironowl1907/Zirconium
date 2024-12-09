@@ -5,29 +5,28 @@
 #include "zrpch.h"
 
 namespace zirconium {
-RenderAPI Renderer::s_RenderAPI = RenderAPI::OpenGL;
-VertexBuffer *VertexBuffer::Create(float *vertices, uint32_t size) {
-  switch (Renderer::GetRenderAPI()) {
-  case zirconium::RenderAPI::None:
-    ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
+VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size) {
+    switch (Renderer::GetAPI()) {
+    case zirconium::RendererAPI::API::None:
+        ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
+        return nullptr;
+    case zirconium::RendererAPI::API::OpenGL:
+        return new OpenGLVertexBuffer(vertices, size);
+    }
+    ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
     return nullptr;
-  case zirconium::RenderAPI::OpenGL:
-    return new OpenGLVertexBuffer(vertices, size);
-  }
-  ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
-  return nullptr;
 }
 
-IndexBuffer *IndexBuffer::Create(uint32_t *indices, uint32_t size) {
-  switch (Renderer::GetRenderAPI()) {
-  case zirconium::RenderAPI::None:
-    ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
+IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size) {
+    switch (Renderer::GetAPI()) {
+      case zirconium::RendererAPI::API::None:
+        ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
+        return nullptr;
+        case zirconium::RendererAPI::API::OpenGL:
+        return new OpenGLIndexBuffer(indices, size);
+    }
+    ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
     return nullptr;
-  case zirconium::RenderAPI::OpenGL:
-    return new OpenGLIndexBuffer(indices, size);
-  }
-  ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
-  return nullptr;
 }
 
 } // namespace zirconium
