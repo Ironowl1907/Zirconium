@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
+#include "glm/glm.hpp"
 
 namespace zirconium {
 
@@ -12,6 +11,9 @@ public:
 
     void Bind() const;
     void Unbind() const;
+
+    // Uniforms
+    void SetUniformMatrix4fx(const std::string &name, const glm::mat4& mat);
 
 private:
     uint32_t m_RendererID;

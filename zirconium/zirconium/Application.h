@@ -8,9 +8,11 @@
 #include "Renderer/Buffer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Camera.h"
 
 #include "platform/OpenGL/OpenGLBuffer.h"
 #include <cmath>
+#include <cstdint>
 
 namespace zirconium {
 
@@ -40,8 +42,9 @@ private:
     std::shared_ptr<Shader> m_Shader;
     std::shared_ptr<VertexArray> m_VertexArray;
 
-    std::shared_ptr<Shader> m_Shader2;
-    std::shared_ptr<VertexArray> m_SquareVertexArray;
+    Camera m_OrthoCamera;
+
+    uint32_t m_UniformProjViewLocation;
 
     static Application* s_Instance;
 };

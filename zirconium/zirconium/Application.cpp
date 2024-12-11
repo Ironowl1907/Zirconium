@@ -9,6 +9,7 @@
 #include "imgui/imguiLayer.h"
 
 #include "Renderer/Buffer.h"
+#include "Renderer/Camera.h"
 #include "Renderer/Renderer.h"
 
 namespace zirconium {
@@ -17,7 +18,8 @@ namespace zirconium {
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application() {
+Application::Application()
+    : m_OrthoCamera(-1.0f, 1.0f, -1.0f, 1.0f) {
     ZR_ASSERT(!s_Instance, "Application Already Exists!");
     s_Instance = this;
     m_Window = std::unique_ptr<Window>(Window::Create());
@@ -37,8 +39,9 @@ Application::Application() {
 
     // Triangle vertices with color data
     float vertices[3 * 7] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.2f, 1.0f, 0.5f, -0.5f, 0.0f, 1.0f,
-        1.0f,  0.2f,  1.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.3f, 0.9f,  1.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.2f, 1.0f, //
+        0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.2f, 1.0f, //
+        0.0f,  0.5f,  0.0f, 0.0f, 0.3f, 0.9f, 1.0f, //
     };
 
     VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
@@ -56,44 +59,47 @@ Application::Application() {
     IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
     m_VertexArray->SetIndexBuffer(IndexBuffer);
 
-    // Create vertex array for the square
-    m_SquareVertexArray.reset(VertexArray::Create());
+    // // Create vertex array for the square
+    // m_SquareVertexArray.reset(VertexArray::Create());
 
-    // Square vertices (no color, just position)
-    float squareVertices[3 * 4] = {
-        -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
-    };
+    // // Square vertices (no color, just position)
+    // float squareVertices[3 * 4] = {
+    //     -0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
+    // };
 
-    SquareVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-    SquareVertexBuffer->Bind();
+    // SquareVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+    // SquareVertexBuffer->Bind();
 
-    BufferLayout squareLayout = {
-        {ShaderDataType::Float3, "a_Position"},
-    };
-    SquareVertexBuffer->SetLayout(squareLayout);
-    m_SquareVertexArray->AddVertexBuffer(SquareVertexBuffer);
+    // BufferLayout squareLayout = {
+    //     {ShaderDataType::Float3, "a_Position"},
+    // };
+    // SquareVertexBuffer->SetLayout(squareLayout);
+    // m_SquareVertexArray->AddVertexBuffer(SquareVertexBuffer);
 
-    // Index Buffer for the square
-    unsigned int squareIndices[6] = {0, 1, 2, 2, 1, 3};
-    SquareIndexBuffer.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
-    m_SquareVertexArray->SetIndexBuffer(SquareIndexBuffer);
+    // // Index Buffer for the square
+    // unsigned int squareIndices[6] = {0, 1, 2, 2, 1, 3};
+    // SquareIndexBuffer.reset(
+    //     IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+    // m_SquareVertexArray->SetIndexBuffer(SquareIndexBuffer);
 
     // Shaders
     std::string vertexShaderSrc = R"(
-#version 330 core
+    #version 330 core
     layout(location = 0) in vec3 a_Position;
     layout(location = 1) in vec4 a_Color;
 
     out vec4 v_Color;
 
+    uniform mat4 u_ProjectionViewMatrix;
+
     void main() {
-        gl_Position = vec4(a_Position, 1.0);
+        gl_Position = u_ProjectionViewMatrix * vec4(a_Position, 1.0);
         v_Color = a_Color;
     }
   )";
 
     std::string fragmentShaderSrc = R"(
-#version 330 core
+    #version 330 core
     layout(location = 0) out vec4 color;
     in vec4 v_Color;
 
@@ -103,27 +109,6 @@ Application::Application() {
   )";
 
     m_Shader.reset(new Shader(vertexShaderSrc, fragmentShaderSrc));
-
-    // Shader for the square (basic white color)
-    std::string vertexShaderSrc2 = R"(
-#version 330 core
-    layout(location = 0) in vec3 a_Position;
-
-    void main() {
-        gl_Position = vec4(a_Position, 1.0);
-    }
-)";
-
-    std::string fragmentShaderSrc2 = R"(
-#version 330 core
-    layout(location = 0) out vec4 color;
-
-    void main() {
-        color = vec4(1.0f, 1.0f, 1.0f, 1.0f);  // White color for the square
-    }
-)";
-
-    m_Shader2.reset(new Shader(vertexShaderSrc2, fragmentShaderSrc2));
 }
 
 Application::~Application() {}
@@ -159,15 +144,10 @@ void Application::Run() {
     while (m_Running) {
         RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         RenderCommand::Clear();
-
         {
-            Renderer::BeginScene();
+            Renderer::BeginScene(m_OrthoCamera);
 
-            m_Shader2->Bind();
-            Renderer::Submit(m_SquareVertexArray);
-
-            m_Shader->Bind();
-            Renderer::Submit(m_VertexArray);
+            Renderer::Submit(m_VertexArray, m_Shader);
 
             Renderer::EndScene();
         }
