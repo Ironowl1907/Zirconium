@@ -4,15 +4,12 @@
 
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
 #include "imgui/imguiLayer.h"
 
 #include "Renderer/Buffer.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Shader.h"
 
 namespace zirconium {
 
