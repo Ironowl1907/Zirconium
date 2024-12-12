@@ -1,5 +1,5 @@
 #pragma once
-#include "./zirconium/Application.h"
+#include "zirconium/Application.h"
 
 // ---- Layers -----
 #include "zirconium/imgui/imguiLayer.h"
@@ -14,6 +14,17 @@
 
 // --- Logger ---
 #include "zirconium/log.h"
+
+//--- Renderer ---
+#include "Renderer/Buffer.h"
+#include "Renderer/Camera.h"
+#include "Renderer/GraphicsContext.h"
+#include "Renderer/RenderCommand.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/RendererAPI.h"
+#include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
+
 
 // --- Entry Point ---
 #include "zirconium/entryPoint.h"

@@ -41,10 +41,6 @@ private:
     bool m_Running = true;
     LayerStack m_layerStack;
 
-    std::shared_ptr<Shader> m_Shader;
-    std::shared_ptr<VertexArray> m_VertexArray;
-
-    Camera m_OrthoCamera;
 
     uint32_t m_UniformProjViewLocation;
 
