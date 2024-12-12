@@ -1,15 +1,16 @@
 #pragma once
 
 #include "../zirconium/window.h"
+#include "Timestep.h"
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
 #include "imgui/imguiLayer.h"
 #include "layers/StackLayer.h"
 
 #include "Renderer/Buffer.h"
+#include "Renderer/Camera.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
-#include "Renderer/Camera.h"
 
 #include "platform/OpenGL/OpenGLBuffer.h"
 #include <cmath>
@@ -41,6 +42,7 @@ private:
     bool m_Running = true;
     LayerStack m_layerStack;
 
+    float m_LastFrameTime;
 
     uint32_t m_UniformProjViewLocation;
 

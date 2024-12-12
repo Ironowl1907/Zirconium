@@ -64,21 +64,21 @@ public:
         m_Shader.reset(new zirconium::Shader(vertexShaderSrc, fragmentShaderSrc));
     }
 
-    virtual void OnUpdate() override {
+    virtual void OnUpdate(zirconium::TimeStep delta) override {
         if (zirconium::Input::IsKeyPressed(ZR_KEY_UP)) {
-            m_CameraPosition.y -= m_CameraSpeed;
+          m_CameraPosition.y -= m_CameraSpeed * delta;
         } else if (zirconium::Input::IsKeyPressed(ZR_KEY_DOWN)) {
-            m_CameraPosition.y += m_CameraSpeed;
+            m_CameraPosition.y += m_CameraSpeed * delta;
         }
         if (zirconium::Input::IsKeyPressed(ZR_KEY_RIGHT)) {
-            m_CameraPosition.x -= m_CameraSpeed;
+            m_CameraPosition.x -= m_CameraSpeed * delta;
         } else if (zirconium::Input::IsKeyPressed(ZR_KEY_LEFT)) {
-            m_CameraPosition.x += m_CameraSpeed;
+            m_CameraPosition.x += m_CameraSpeed * delta;
         }
         if (zirconium::Input::IsKeyPressed(ZR_KEY_Q)) {
-          m_CameraRotation += m_CameraSpeed * 100;
+            m_CameraRotation += m_CameraSpeed * 100 * delta;
         } else if (zirconium::Input::IsKeyPressed(ZR_KEY_E)) {
-          m_CameraRotation -= m_CameraSpeed * 100;
+            m_CameraRotation -= m_CameraSpeed * 100 * delta;
         }
 
         zirconium::RenderCommand::SetClearColor(
@@ -103,7 +103,7 @@ private:
     std::shared_ptr<zirconium::VertexArray> m_VertexArray;
     zirconium::Camera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
-    float m_CameraSpeed = 0.1f;
+    float m_CameraSpeed = 1.0f;
     float m_CameraRotation = 0.0f;
 };
 

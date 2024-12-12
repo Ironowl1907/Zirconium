@@ -6,6 +6,8 @@
 #include "events/Event.h"
 #include "imgui/imguiLayer.h"
 
+#include "GLFW/glfw3.h"
+#include "Timestep.h"
 
 namespace zirconium {
 
@@ -54,8 +56,11 @@ bool Application::onWindowClose(WindowCloseEvent& event) {
 
 void Application::Run() {
     while (m_Running) {
+        float time = glfwGetTime();
+        TimeStep deltaTime(time - m_LastFrameTime);
+        m_LastFrameTime = time;
         for (Layer* layer : m_layerStack)
-            layer->OnUpdate();
+            layer->OnUpdate(deltaTime);
 
         m_ImGuiLayer->Begin();
         for (Layer* layer : m_layerStack)

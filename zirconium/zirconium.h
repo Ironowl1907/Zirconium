@@ -12,6 +12,9 @@
 #include "zirconium/keycodes.h"
 #include "zirconium/mouseButtonCodes.h"
 
+// --- Time---
+#include "zirconium/Timestep.h"
+
 // --- Logger ---
 #include "zirconium/log.h"
 
@@ -24,7 +27,6 @@
 #include "Renderer/RendererAPI.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
-
 
 // --- Entry Point ---
 #include "zirconium/entryPoint.h"

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../events/Event.h"
+#include "events/Event.h"
+#include "Timestep.h"
 
 namespace zirconium {
 
@@ -11,7 +12,7 @@ public:
 
     virtual void OnAttach() {}
     virtual void OnDetach() {}
-    virtual void OnUpdate() {}
+    virtual void OnUpdate(TimeStep delta) {}
     virtual void OnImGuiRender() {}
     virtual void OnEvent([[maybe_unused]] Event& event) {}
 
