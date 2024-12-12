@@ -11,12 +11,11 @@ public:
     virtual void OnImGuiRender() override {}
 
     virtual void OnEvent(zirconium::Event& event) override {
-        /*ZR_TRACE("{0}", event.ToString());*/
+        // ZR_TRACE("{0}", event.ToString());
     }
 };
 
 class SandBox : public zirconium::Application {
-
 public:
     SandBox() {
         PushLayer(new ExampleLayer());

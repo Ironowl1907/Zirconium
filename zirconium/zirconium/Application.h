@@ -2,6 +2,7 @@
 
 #include "../zirconium/window.h"
 #include "events/ApplicationEvent.h"
+#include "events/KeyEvent.h"
 #include "imgui/imguiLayer.h"
 #include "layers/StackLayer.h"
 
@@ -34,6 +35,7 @@ public:
 
 private:
     bool onWindowClose(WindowCloseEvent& event);
+    bool onKeyPress(KeyEvent& event);
     std::unique_ptr<Window> m_Window;
     ImGuiLayer* m_ImGuiLayer;
     bool m_Running = true;

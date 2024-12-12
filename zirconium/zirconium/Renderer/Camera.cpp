@@ -16,11 +16,11 @@ Camera::Camera(float left, float right, float up, float down)
 void Camera::RecalculateViewMatrix() {
     // First rotate the camera around the origin, then translate it to its position
     glm::mat4 transform =
-        glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *  // Rotation first
-        glm::translate(glm::mat4(1.0f), -m_SelfPosition);  // Translate the camera position after rotation
+        glm::translate(glm::mat4(1.0f), -m_SelfPosition) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    m_ViewMat = glm::inverse(transform);  // Inverse for view matrix
-    m_ViewProjtectionMat = m_ViewMat * m_ProjectionMat;  // Final view-projection matrix
+    m_ViewMat = glm::inverse(transform);                // Inverse for view matrix
+    m_ViewProjtectionMat = m_ViewMat * m_ProjectionMat; // Final view-projection matrix
 }
 
 }; // namespace zirconium

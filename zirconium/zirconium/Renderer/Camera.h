@@ -40,7 +40,7 @@ private:
 
 private:
     glm::vec3 m_SelfPosition;
-    float m_Rotation = 45.0f;
+    float m_Rotation = 0.0f;
 
     glm::mat4 m_ProjectionMat;
     glm::mat4 m_ViewMat;

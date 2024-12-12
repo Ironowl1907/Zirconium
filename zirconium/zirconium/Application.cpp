@@ -6,11 +6,13 @@
 #include "Renderer/Renderer.h"
 #include "events/ApplicationEvent.h"
 #include "events/Event.h"
+#include "events/KeyEvent.h"
 #include "imgui/imguiLayer.h"
 
 #include "Renderer/Buffer.h"
 #include "Renderer/Camera.h"
 #include "Renderer/Renderer.h"
+#include "log.h"
 
 namespace zirconium {
 
@@ -126,6 +128,7 @@ void Application::PushOverlay(Layer* overlay) {
 void Application::onEvent(Event& event) {
     EventDispatcher dispatcher(event);
     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+    dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(onKeyPress));
 
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
         --it;
@@ -140,10 +143,17 @@ bool Application::onWindowClose(WindowCloseEvent& event) {
     return true;
 }
 
+bool Application::onKeyPress(KeyEvent& event) {
+
+    return true;
+}
+
 void Application::Run() {
+    float rotation = 0.0f;
     while (m_Running) {
         RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         RenderCommand::Clear();
+        m_OrthoCamera.SetRotation(rotation++);
         {
             Renderer::BeginScene(m_OrthoCamera);
 
