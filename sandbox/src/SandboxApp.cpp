@@ -12,8 +12,7 @@ struct Transform {
     glm::vec3 Scale;
     glm::vec3 Rotation;
 
-    Transform(glm::vec3 position, glm::vec3 rotation = {0.0f, 0.0f, 0.0f},
-              glm::vec3 scale = {1.0f, 1.0f, 1.0f})
+    Transform(glm::vec3 position, glm::vec3 rotation = {0.0f, 0.0f, 0.0f}, glm::vec3 scale = {1.0f, 1.0f, 1.0f})
         : Position(position)
         , Scale(scale)
         , Rotation(rotation) {}
@@ -39,6 +38,8 @@ public:
         : Layer("Example")
         , m_OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f)
         , m_CameraPosition(0.0f, 0.0f, 0.0f)
+        , m_PrimaryColor(0.8f, 0.1f, 0.2f, 1.0f)
+        , m_SecondaryColor(0.1f, 0.1f, 0.7f, 1.0f)
         , m_Transformation({0.0f, 0.0f, 0.0f}) {
 
         std::shared_ptr<zirconium::VertexBuffer> VertexBuffer;
@@ -64,8 +65,7 @@ public:
         m_VertexArray->AddVertexBuffer(VertexBuffer);
 
         unsigned int indices[] = {0, 1, 2, 2, 1, 3};
-        IndexBuffer.reset(
-            zirconium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        IndexBuffer.reset(zirconium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(IndexBuffer);
 
         // Shaders
@@ -77,11 +77,12 @@ public:
            out vec4 v_Color;
 
            uniform mat4 u_ProjectionViewMatrix;
+           uniform vec4 u_Color;
            uniform mat4 u_ModelMatrix;
 
            void main() {
                gl_Position = u_ProjectionViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
-               v_Color = a_Color;
+               v_Color = u_Color;
            }
          )";
 
@@ -95,7 +96,7 @@ public:
            }
          )";
 
-        m_Shader.reset(new zirconium::Shader(vertexShaderSrc, fragmentShaderSrc));
+        m_FlatColorShader.reset(zirconium::Shader::Create(vertexShaderSrc, fragmentShaderSrc));
     }
 
     virtual void OnUpdate(zirconium::TimeStep delta) override {
@@ -115,18 +116,27 @@ public:
             m_CameraRotation -= m_CameraSpeed * 100 * delta;
         }
 
-        zirconium::RenderCommand::SetClearColor(
-            {0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
+        zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         zirconium::RenderCommand::Clear();
 
         m_OrthoCamera.SetRotation(m_CameraRotation);
         m_OrthoCamera.SetPosition(m_CameraPosition);
         zirconium::Renderer::BeginScene(m_OrthoCamera);
+
+        m_FlatColorShader->Bind();
+
+        // Bad code, I know...
         for (int i = 1; i <= 50; ++i) {
             for (int a = 1; a <= 50; ++a) {
-                m_Transformation =
-                    Transform({0.11 * i, 0.11f * a, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.1f, 0.1, 0.1f});
-                zirconium::Renderer::Submit(m_VertexArray, m_Shader, m_Transformation);
+                if ((i + a) % 2 == 0)
+                    std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_FlatColorShader)
+                        ->SetUniformFloat4("u_Color", m_PrimaryColor);
+                else
+                    std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_FlatColorShader)
+                        ->SetUniformFloat4("u_Color", m_SecondaryColor);
+
+                m_Transformation = Transform({0.11 * i, 0.11f * a, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.1f, 0.1, 0.1f});
+                zirconium::Renderer::Submit(m_VertexArray, m_FlatColorShader, m_Transformation);
             }
         }
         zirconium::Renderer::EndScene();
@@ -134,6 +144,14 @@ public:
 
     virtual void OnImGuiRender() override {
         m_OrthoCamera.CameraDebugUI();
+
+        ImGui::Begin("Color Picker");
+
+        // Use glm::value_ptr to pass glm::vec4 data as float pointers
+        ImGui::ColorEdit4("Primary", glm::value_ptr(m_PrimaryColor));
+        ImGui::ColorEdit4("Secondary", glm::value_ptr(m_SecondaryColor));
+
+        ImGui::End();
     }
 
     virtual void OnEvent(zirconium::Event& event) override {
@@ -141,12 +159,15 @@ public:
     }
 
 private:
-    std::shared_ptr<zirconium::Shader> m_Shader;
+    std::shared_ptr<zirconium::Shader> m_FlatColorShader;
     std::shared_ptr<zirconium::VertexArray> m_VertexArray;
     zirconium::Camera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;
     float m_CameraSpeed = 1.0f;
+
+    glm::vec4 m_PrimaryColor;
+    glm::vec4 m_SecondaryColor;
 
     Transform m_Transformation;
 };

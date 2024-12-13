@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "platform/OpenGL/OpenGLShader.h"
+#include <memory>
 
 namespace zirconium {
 
@@ -13,11 +15,12 @@ void Renderer::BeginScene(const Camera& orthoCamera) {
 }
 void Renderer::EndScene() {}
 
-void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray,
-                      const std::shared_ptr<Shader>& shader, const glm::mat4& transformation) {
+void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader,
+                      const glm::mat4& transformation) {
     shader->Bind();
-    shader->SetUniformMatrix4fx("u_ProjectionViewMatrix", s_SceneData->ViewProjMatrix);
-    shader->SetUniformMatrix4fx("u_ModelMatrix", transformation);
+    std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniformMatrix4f("u_ProjectionViewMatrix",
+                                                                        s_SceneData->ViewProjMatrix);
+    std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniformMatrix4f("u_ModelMatrix", transformation);
     vertexArray->Bind();
     RenderCommand::DrawIndexed(vertexArray);
 }

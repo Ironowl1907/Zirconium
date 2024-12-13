@@ -1,6 +1,9 @@
 #pragma once
 #include "zirconium/Application.h"
 
+// --- This shouldn't de here ---
+#include "platform/OpenGL/OpenGLShader.h"
+
 // ---- Layers -----
 #include "zirconium/imgui/imguiLayer.h"
 #include "zirconium/layers/Layer.h"
