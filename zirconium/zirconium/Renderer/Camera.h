@@ -2,6 +2,8 @@
 #include "glm/glm.hpp"
 #include <glm/geometric.hpp>
 
+#include "imgui.h"
+
 namespace zirconium {
 class Camera {
 public:
@@ -35,6 +37,8 @@ public:
         return m_ViewProjtectionMat;
     }
 
+    void CameraDebugUI();
+
 private:
     void RecalculateViewMatrix();
 
@@ -49,4 +53,5 @@ private:
     glm::vec3 m_Target;
     glm::vec3 m_CameraDirection;
 };
+
 }; // namespace zirconium

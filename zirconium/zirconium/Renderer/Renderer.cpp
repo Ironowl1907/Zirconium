@@ -14,9 +14,10 @@ void Renderer::BeginScene(const Camera& orthoCamera) {
 void Renderer::EndScene() {}
 
 void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray,
-                      const std::shared_ptr<Shader>& shader) {
+                      const std::shared_ptr<Shader>& shader, const glm::mat4& transformation) {
     shader->Bind();
     shader->SetUniformMatrix4fx("u_ProjectionViewMatrix", s_SceneData->ViewProjMatrix);
+    shader->SetUniformMatrix4fx("u_ModelMatrix", transformation);
     vertexArray->Bind();
     RenderCommand::DrawIndexed(vertexArray);
 }

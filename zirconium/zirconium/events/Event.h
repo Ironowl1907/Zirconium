@@ -5,6 +5,7 @@
 #include <string>
 
 namespace zirconium {
+
 // This will be a blocking event handler, it will halt the main execution
 // until the funciton that manages the event is done.
 // TODO: Maybe in the future bufffer this event and only process them during the
