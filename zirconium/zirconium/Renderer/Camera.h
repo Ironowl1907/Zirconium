@@ -34,7 +34,7 @@ public:
     }
 
     inline const glm::mat4& GetProjectionViewMatrix() const {
-        return m_ViewProjtectionMat;
+        return m_ViewProjectionMat;
     }
 
     void CameraDebugUI();
@@ -44,11 +44,11 @@ private:
 
 private:
     glm::vec3 m_SelfPosition;
-    float m_Rotation = 0.0f;
+    float m_Rotation;
 
     glm::mat4 m_ProjectionMat;
     glm::mat4 m_ViewMat;
-    glm::mat4 m_ViewProjtectionMat;
+    glm::mat4 m_ViewProjectionMat;
 
     glm::vec3 m_Target;
     glm::vec3 m_CameraDirection;

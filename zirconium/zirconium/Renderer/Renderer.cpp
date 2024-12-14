@@ -15,8 +15,7 @@ void Renderer::BeginScene(const Camera& orthoCamera) {
 }
 void Renderer::EndScene() {}
 
-void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader,
-                      const glm::mat4& transformation) {
+void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transformation) {
     shader->Bind();
     std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniformMatrix4f("u_ProjectionViewMatrix",
                                                                         s_SceneData->ViewProjMatrix);

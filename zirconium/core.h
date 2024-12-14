@@ -1,4 +1,4 @@
-#include <cassert>
+#include <memory>
 #define BIT(x) (1 << x)
 #ifdef ZR_ENABLE_ASSERTS
 #    define ZR_ASSERT(x, ...)                               \
@@ -18,3 +18,12 @@
 #endif
 
 #define ZR_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
+namespace zirconium {
+template <typename T>
+using Scope = std::unique_ptr<T>;
+
+template <typename T>
+using Ref = std::shared_ptr<T>;
+
+} // namespace zirconium

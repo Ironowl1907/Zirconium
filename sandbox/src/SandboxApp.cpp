@@ -38,20 +38,21 @@ public:
         : Layer("Example")
         , m_OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f)
         , m_CameraPosition(0.0f, 0.0f, 0.0f)
+        , m_CameraRotation(0.0f)
         , m_PrimaryColor(0.8f, 0.1f, 0.2f, 1.0f)
         , m_SecondaryColor(0.1f, 0.1f, 0.7f, 1.0f)
         , m_Transformation({0.0f, 0.0f, 0.0f}) {
 
-        std::shared_ptr<zirconium::VertexBuffer> VertexBuffer;
-        std::shared_ptr<zirconium::IndexBuffer> IndexBuffer;
+        zirconium::Ref<zirconium::VertexBuffer> VertexBuffer;
+        zirconium::Ref<zirconium::IndexBuffer> IndexBuffer;
 
         m_VertexArray.reset(zirconium::VertexArray::Create());
 
-        float vertices[4 * 7] = {
-            -0.5f, 0.5f,  0.0f, 0.0f, 0.3f, 0.9f, 1.0f, //
-            -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.2f, 1.0f, //
-            0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 0.2f, 1.0f, //
-            0.5f,  -0.5f, 0.0f, 0.0f, 0.3f, 0.9f, 1.0f, //
+        float vertices[4 * 5] = {
+            -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, // Top-left
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // Bottom-left
+            0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // Top-right
+            0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // Bottom-right
         };
 
         VertexBuffer.reset(zirconium::VertexBuffer::Create(vertices, sizeof(vertices)));
@@ -59,7 +60,7 @@ public:
 
         zirconium::BufferLayout layout = {
             {zirconium::ShaderDataType::Float3, "a_Position"},
-            {zirconium::ShaderDataType::Float4, "a_Color"},
+            {zirconium::ShaderDataType::Float2, "a_TexCoord"},
         };
         VertexBuffer->SetLayout(layout);
         m_VertexArray->AddVertexBuffer(VertexBuffer);
@@ -72,7 +73,6 @@ public:
         std::string vertexShaderSrc = R"(
            #version 330 core
            layout(location = 0) in vec3 a_Position;
-           layout(location = 1) in vec4 a_Color;
 
            out vec4 v_Color;
 
@@ -97,9 +97,41 @@ public:
          )";
 
         m_FlatColorShader.reset(zirconium::Shader::Create(vertexShaderSrc, fragmentShaderSrc));
+
+        // Tex Shader
+        std::string texVertexShaderSrc = R"(
+           #version 330 core
+           layout(location = 0) in vec3 a_Position;
+           layout(location = 0) in vec2 a_TexCoords;
+
+           out vec2 v_TexCoords;
+
+           uniform mat4 u_ProjectionViewMatrix;
+           uniform vec4 u_Color;
+           uniform mat4 u_ModelMatrix;
+
+           void main() {
+               gl_Position = u_ProjectionViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
+               v_TexCoords = a_TexCoords;
+           }
+         )";
+
+        std::string texFragmentShaderSrc = R"(
+           #version 330 core
+           layout(location = 0) out vec4 color;
+
+           in vec2 v_TexCoords;
+
+           void main() {
+               color = vec4(v_TexCoords, 0.0f, 1.0f);
+           }
+         )";
+
+        m_TextureShader.reset(zirconium::Shader::Create(texVertexShaderSrc, texFragmentShaderSrc));
     }
 
     virtual void OnUpdate(zirconium::TimeStep delta) override {
+
         if (zirconium::Input::IsKeyPressed(ZR_KEY_UP)) {
             m_CameraPosition.y -= m_CameraSpeed * delta;
         } else if (zirconium::Input::IsKeyPressed(ZR_KEY_DOWN)) {
@@ -121,29 +153,18 @@ public:
 
         m_OrthoCamera.SetRotation(m_CameraRotation);
         m_OrthoCamera.SetPosition(m_CameraPosition);
+
         zirconium::Renderer::BeginScene(m_OrthoCamera);
 
-        m_FlatColorShader->Bind();
 
-        // Bad code, I know...
-        for (int i = 1; i <= 50; ++i) {
-            for (int a = 1; a <= 50; ++a) {
-                if ((i + a) % 2 == 0)
-                    std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_FlatColorShader)
-                        ->SetUniformFloat4("u_Color", m_PrimaryColor);
-                else
-                    std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_FlatColorShader)
-                        ->SetUniformFloat4("u_Color", m_SecondaryColor);
+        m_Transformation = Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, glm::vec3(1.5f));
+        zirconium::Renderer::Submit(m_VertexArray, m_TextureShader, m_Transformation);
 
-                m_Transformation = Transform({0.11 * i, 0.11f * a, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.1f, 0.1, 0.1f});
-                zirconium::Renderer::Submit(m_VertexArray, m_FlatColorShader, m_Transformation);
-            }
-        }
         zirconium::Renderer::EndScene();
     }
 
     virtual void OnImGuiRender() override {
-        m_OrthoCamera.CameraDebugUI();
+      m_OrthoCamera.CameraDebugUI();
 
         ImGui::Begin("Color Picker");
 
@@ -159,8 +180,8 @@ public:
     }
 
 private:
-    std::shared_ptr<zirconium::Shader> m_FlatColorShader;
-    std::shared_ptr<zirconium::VertexArray> m_VertexArray;
+    zirconium::Ref<zirconium::Shader> m_FlatColorShader, m_TextureShader;
+    zirconium::Ref<zirconium::VertexArray> m_VertexArray;
     zirconium::Camera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;
