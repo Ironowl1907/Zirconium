@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
+#include <filesystem>
 
 struct Transform {
     glm::vec3 Position;
@@ -43,7 +45,8 @@ public:
         , m_SecondaryColor(0.1f, 0.1f, 0.7f, 1.0f)
         , m_Transformation({0.0f, 0.0f, 0.0f}) {
 
-        zirconium::Ref<zirconium::VertexBuffer> VertexBuffer;
+          ZR_CORE_TRACE("Working path:: {0}", std::filesystem::current_path().c_str());
+          zirconium::Ref<zirconium::VertexBuffer> VertexBuffer;
         zirconium::Ref<zirconium::IndexBuffer> IndexBuffer;
 
         m_VertexArray.reset(zirconium::VertexArray::Create());
@@ -122,12 +125,19 @@ public:
 
            in vec2 v_TexCoords;
 
+           uniform sampler2D u_Texture;
+
            void main() {
-               color = vec4(v_TexCoords, 0.0f, 1.0f);
+               color =  texture(u_Texture, v_TexCoords);
            }
          )";
 
         m_TextureShader.reset(zirconium::Shader::Create(texVertexShaderSrc, texFragmentShaderSrc));
+
+        m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
+
+        std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_TextureShader)->Bind();
+        std::dynamic_pointer_cast<zirconium::OpenGLShader>(m_TextureShader)->SetUniformInt("u_Texture", 0);
     }
 
     virtual void OnUpdate(zirconium::TimeStep delta) override {
@@ -156,15 +166,15 @@ public:
 
         zirconium::Renderer::BeginScene(m_OrthoCamera);
 
-
         m_Transformation = Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, glm::vec3(1.5f));
+        m_Texture->Bind();
         zirconium::Renderer::Submit(m_VertexArray, m_TextureShader, m_Transformation);
 
         zirconium::Renderer::EndScene();
     }
 
     virtual void OnImGuiRender() override {
-      m_OrthoCamera.CameraDebugUI();
+        m_OrthoCamera.CameraDebugUI();
 
         ImGui::Begin("Color Picker");
 
@@ -182,6 +192,7 @@ public:
 private:
     zirconium::Ref<zirconium::Shader> m_FlatColorShader, m_TextureShader;
     zirconium::Ref<zirconium::VertexArray> m_VertexArray;
+    zirconium::Ref<zirconium::Texture2D> m_Texture;
     zirconium::Camera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;

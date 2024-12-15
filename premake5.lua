@@ -1,30 +1,30 @@
 workspace("MyProject")
-warnings("Extra")
+-- warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
 location("build")
 
 newaction({
-	trigger = "clean",
-	description = "Clean the build and bin directories recursively",
-	execute = function()
-		print("Cleaning build directories...")
+    trigger = "clean",
+    description = "Clean the build and bin directories recursively",
+    execute = function()
+        print("Cleaning build directories...")
 
-		-- Ensure platform-specific compatibility
-		local deleteCommand
-		if os.host() == "windows" then
-			deleteCommand = "rmdir /S /Q"
-		else
-			deleteCommand = "rm -rf"
-		end
+        -- Ensure platform-specific compatibility
+        local deleteCommand
+        if os.host() == "windows" then
+            deleteCommand = "rmdir /S /Q"
+        else
+            deleteCommand = "rm -rf"
+        end
 
-		-- Remove the directories
-		os.execute(deleteCommand .. " build")
-		os.execute(deleteCommand .. " bin")
-		os.execute(deleteCommand .. " bin-int")
+        -- Remove the directories
+        os.execute(deleteCommand .. " build")
+        os.execute(deleteCommand .. " bin")
+        os.execute(deleteCommand .. " bin-int")
 
-		print("Done.")
-	end,
+        print("Done.")
+    end,
 })
 
 -- Include directories
@@ -34,6 +34,7 @@ IncludeDir["spdlog"] = "./zirconium/vendor/spdlog/include/"
 IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 IncludeDir["glm"] = "./zirconium/vendor/glm/"
+IncludeDir["stb_image"] = "./zirconium/vendor/stb_image/"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
@@ -47,14 +48,20 @@ language("C++")
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
-files({ "zirconium/zirconium/**.h", "zirconium/zirconium/**.cpp" })
+files({
+    "zirconium/zirconium/**.h",
+    "zirconium/zirconium/**.cpp",
+    "./zirconium/vendor/stb_image/**.h",
+    "./zirconium/vendor/stb_image/**.cpp"
+})
 includedirs({
-	"./zirconium/",
-	"./zirconium/zirconium/",
-	IncludeDir["GLFW"],
-	IncludeDir["Glad"],
-	IncludeDir["ImGui"],
-	IncludeDir["glm"],
+    "./zirconium/",
+    "./zirconium/zirconium/",
+    IncludeDir["GLFW"],
+    IncludeDir["Glad"],
+    IncludeDir["ImGui"],
+    IncludeDir["glm"],
+    IncludeDir["stb_image"],
 })
 links({ "spdLog", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
@@ -88,11 +95,11 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({
-	"zirconium/src",
-	"zirconium/",
-	"./zirconium/zirconium/",
-	IncludeDir["glm"],
-	IncludeDir["ImGui"],
+    "zirconium/src",
+    "zirconium/",
+    "./zirconium/zirconium/",
+    IncludeDir["glm"],
+    IncludeDir["ImGui"],
 })
 links({ "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 

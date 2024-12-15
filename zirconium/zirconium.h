@@ -30,6 +30,8 @@
 #include "Renderer/RendererAPI.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/Texture.h"
 
 // --- Entry Point ---
 #include "zirconium/entryPoint.h"

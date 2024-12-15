@@ -102,4 +102,10 @@ void OpenGLShader::SetUniformFloat4(const std::string& name, const glm::vec4 vec
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform4fv(location, 1, glm::value_ptr(vec));
 }
+
+void OpenGLShader::SetUniformInt(const std::string& name, const int n) {
+    glUseProgram(m_RendererID);
+    uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1i(location,  n);
+}
 } // namespace zirconium
