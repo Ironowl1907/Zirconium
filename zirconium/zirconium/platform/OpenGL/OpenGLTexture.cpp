@@ -24,9 +24,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
     } else if (channels == 4) {
         internalFormat = GL_RGBA8;
         dataFormat = GL_RGBA;
-    } else {
+    } else
         ZR_CORE_ASSERT(false, "Format not supported!");
-    }
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
     glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);

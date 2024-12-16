@@ -11,6 +11,8 @@ namespace zirconium {
 
 class Renderer {
 public:
+    static void Init();
+
     static void BeginScene(const Camera& orthoCamera);
     static void EndScene();
 

@@ -6,6 +6,8 @@
 #include "events/Event.h"
 #include "imgui/imguiLayer.h"
 
+#include "Renderer/Renderer.h"
+
 #include "GLFW/glfw3.h"
 #include "Timestep.h"
 
@@ -20,6 +22,8 @@ Application::Application() {
     s_Instance = this;
     m_Window = std::unique_ptr<Window>(Window::Create());
     m_Window->SetEventCallback(BIND_EVENT_FN(onEvent));
+
+    Renderer::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);

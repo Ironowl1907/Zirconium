@@ -14,6 +14,10 @@ public:
         s_RendererAPI->DrawIndexed(vertexArray);
     }
 
+    static inline void Init() {
+      s_RendererAPI->Init();
+    }
+
     inline static void SetClearColor(glm::vec4 color) {
         s_RendererAPI->SetClearColor(color);
     }
