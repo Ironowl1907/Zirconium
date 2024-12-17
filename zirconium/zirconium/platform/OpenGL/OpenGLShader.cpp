@@ -8,7 +8,8 @@
 
 namespace zirconium {
 
-OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc) {
+OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+    : m_Name(name) {
     std::unordered_map<GLenum, std::string> shaderMap;
     shaderMap[GL_VERTEX_SHADER] = vertexSrc;
     shaderMap[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -20,6 +21,14 @@ OpenGLShader::OpenGLShader(const std::string& filePath) {
     std::string shaderSrc = ReadFile(filePath);
     auto shaderSrcs = PreProcess(shaderSrc);
     Compile(shaderSrcs);
+
+    auto lastSlash = filePath.find_last_of("/");
+    auto lastDot = filePath.find_last_of(".");
+
+    if (lastSlash == std::string::npos) lastSlash = -1;
+    if (lastDot == std::string::npos) lastDot = filePath.size();
+
+    m_Name = filePath.substr(lastSlash + 1, lastDot - lastSlash - 1);
 }
 
 std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& shaderSrc) {

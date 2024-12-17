@@ -7,7 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <memory>
 
 struct Transform {
     glm::vec3 Position;
@@ -41,8 +40,7 @@ public:
         , m_OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f)
         , m_CameraPosition(0.0f, 0.0f, 0.0f)
         , m_CameraRotation(0.0f)
-        , m_PrimaryColor(0.8f, 0.1f, 0.2f, 1.0f)
-        , m_SecondaryColor(0.1f, 0.1f, 0.7f, 1.0f)
+        , m_ShaderLib()
         , m_Transformation({0.0f, 0.0f, 0.0f}) {
 
         ZR_CORE_INFO("Working path:: {0}", std::filesystem::current_path().c_str());
@@ -99,10 +97,11 @@ public:
            }
          )";
 
-        m_FlatColorShader.reset(zirconium::Shader::Create(vertexShaderSrc, fragmentShaderSrc));
+        m_FlatColorShader = zirconium::Shader::Create("TriangleShader", vertexShaderSrc, fragmentShaderSrc);
 
-        m_TextureShader.reset(zirconium::Shader::Create("../sandbox/res/shaders/texture.glsl"));
+        m_TextureShader = zirconium::Shader::Create("../sandbox/res/shaders/TextureShader.glsl");
 
+        // Textures
         m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
         m_VLCTexture = zirconium::Texture2D::Create("../sandbox/res/textures/circle.png");
 
@@ -148,14 +147,6 @@ public:
 
     virtual void OnImGuiRender() override {
         m_OrthoCamera.CameraDebugUI();
-
-        ImGui::Begin("Color Picker");
-
-        // Use glm::value_ptr to pass glm::vec4 data as float pointers
-        ImGui::ColorEdit4("Primary", glm::value_ptr(m_PrimaryColor));
-        ImGui::ColorEdit4("Secondary", glm::value_ptr(m_SecondaryColor));
-
-        ImGui::End();
     }
 
     virtual void OnEvent(zirconium::Event& event) override {
@@ -163,16 +154,17 @@ public:
     }
 
 private:
+    zirconium::Ref<zirconium::ShaderLibrary> m_ShaderLib;
     zirconium::Ref<zirconium::Shader> m_FlatColorShader, m_TextureShader;
+
     zirconium::Ref<zirconium::VertexArray> m_VertexArray;
+
     zirconium::Ref<zirconium::Texture2D> m_Texture, m_VLCTexture;
+
     zirconium::Camera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;
     float m_CameraSpeed = 1.0f;
-
-    glm::vec4 m_PrimaryColor;
-    glm::vec4 m_SecondaryColor;
 
     Transform m_Transformation;
 };
