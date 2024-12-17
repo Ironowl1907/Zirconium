@@ -23,4 +23,18 @@ Shader* Shader::Create(const std::string& vertexSrc, const std::string& fragment
     ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
     return nullptr;
 }
+
+Shader* Shader::Create(const std::string& filePath) {
+    switch (Renderer::GetAPI()) {
+
+    case zirconium::RendererAPI::API::None:
+        ZR_CORE_ASSERT(false, "'None' Render API is not supproted");
+        return nullptr;
+
+    case zirconium::RendererAPI::API::OpenGL:
+        return new OpenGLShader(filePath);
+    }
+    ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
+    return nullptr;
+}
 } // namespace zirconium

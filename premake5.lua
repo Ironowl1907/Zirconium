@@ -45,6 +45,7 @@ include("./zirconium/vendor/spdlog/")
 project("zirconium")
 kind("staticLib") -- Create .so shared library
 language("C++")
+cppdialect "C++20"
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/zirconium")
 pchheader("./zirconium/zrpch.h")
@@ -91,6 +92,7 @@ optimize("On")
 project("sandbox")
 kind("ConsoleApp") -- Changed from ConsoleApp to StaticLib
 language("C++")
+cppdialect "C++20"
 targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
@@ -111,14 +113,17 @@ linkoptions({ "-pthread" })
 -- Debug Configuration
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
-optimize("Debug")
+symbols("On")     -- Enable debug symbols
+optimize("Debug") -- Optimize for debugging
 
 -- Release Configuration
 filter("configurations:Release")
 defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
-optimize("On")
+symbols("Off") -- Disable debug symbols for release
+optimize("On") -- Optimize for performance
 
 -- Distribution Configuration
 filter("configurations:Dist")
 defines({ "ZIR_DIST" })
-optimize("On")
+symbols("Off") -- Disable debug symbols for distribution
+optimize("On") -- Optimize for maximum performance

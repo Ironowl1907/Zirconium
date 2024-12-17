@@ -22,6 +22,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
         case ShaderDataType::Bool:   return 1;     // 1 byte for a boolean
     ZR_CORE_ASSERT(false, "Unknown Shader Type!");
     }
+return 0;
 }
 // clang-format on
 

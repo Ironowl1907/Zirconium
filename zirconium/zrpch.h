@@ -10,4 +10,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include <cstdint>
+#include <cstring>
+#include <fstream>
+
 #include "zirconium/log.h"
