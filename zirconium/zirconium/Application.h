@@ -35,10 +35,12 @@ public:
 
 private:
     bool onWindowClose(WindowCloseEvent& event);
+    bool onWindowResize(WindowResizeEvent& event);
     bool onKeyPress(KeyEvent& event);
     std::unique_ptr<Window> m_Window;
     ImGuiLayer* m_ImGuiLayer;
     bool m_Running = true;
+    bool m_Minimized = false;
     LayerStack m_layerStack;
 
     float m_LastFrameTime;

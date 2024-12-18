@@ -44,6 +44,7 @@ void Application::PushOverlay(Layer* overlay) {
 void Application::onEvent(Event& event) {
     EventDispatcher dispatcher(event);
     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+    dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
 
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
         --it;
@@ -51,6 +52,17 @@ void Application::onEvent(Event& event) {
         if (event.Handled)
             break;
     }
+}
+
+bool Application::onWindowResize(WindowResizeEvent& event) {
+    if (event.GetWidth() == 0 || event.GetHeight() == 0) {
+        m_Minimized = true;
+        return false;
+    }
+    m_Minimized = false;
+    Renderer::OnWindowResize(0, 0, event.GetWidth(), event.GetHeight());
+
+    return false;
 }
 
 bool Application::onWindowClose(WindowCloseEvent& event) {
@@ -63,8 +75,11 @@ void Application::Run() {
         float time = glfwGetTime();
         TimeStep deltaTime(time - m_LastFrameTime);
         m_LastFrameTime = time;
-        for (Layer* layer : m_layerStack)
-            layer->OnUpdate(deltaTime);
+
+        if (!m_Minimized) {
+            for (Layer* layer : m_layerStack)
+                layer->OnUpdate(deltaTime);
+        }
 
         m_ImGuiLayer->Begin();
         for (Layer* layer : m_layerStack)

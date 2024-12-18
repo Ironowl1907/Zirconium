@@ -10,13 +10,17 @@ namespace zirconium {
 Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData();
 
 void Renderer::Init() {
-  RenderCommand::Init();
+    RenderCommand::Init();
 }
 
 void Renderer::BeginScene(const OrthoCamera& orthoCamera) {
     s_SceneData->ViewProjMatrix = orthoCamera.GetProjectionViewMatrix();
 }
 void Renderer::EndScene() {}
+
+void Renderer::OnWindowResize(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+    RenderCommand::SetViewport(0, 0, width, height);
+}
 
 void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transformation) {
     shader->Bind();

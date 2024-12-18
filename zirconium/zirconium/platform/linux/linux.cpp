@@ -38,8 +38,7 @@ void LinuxWindow::init(const WindowProps& props) {
         glfwSetErrorCallback(GLFWErorrCallback);
         s_GLFWInitialized = true;
     }
-    m_window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr,
-                                nullptr);
+    m_window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
     m_Context = new OpenGLContext(m_window);
     m_Context->Init();
 
@@ -48,7 +47,6 @@ void LinuxWindow::init(const WindowProps& props) {
 
     // GLFW callbacks
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height); // FIXME: Not the place for glViewport call
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
         data.Width = width;
         data.Height = height;
@@ -69,27 +67,26 @@ void LinuxWindow::init(const WindowProps& props) {
         data.EventCallback(event);
     });
 
-    glfwSetKeyCallback(m_window,
-                       [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-                           WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-                           switch (action) {
-                           case GLFW_RELEASE: {
-                               KeyReleasedEvent event(key);
-                               data.EventCallback(event);
-                               break;
-                           }
-                           case GLFW_PRESS: {
-                               KeyPressedEvent event(key, 0);
-                               data.EventCallback(event);
-                               break;
-                           }
-                           case GLFW_REPEAT: {
-                               KeyPressedEvent event(key, 1);
-                               data.EventCallback(event);
-                               break;
-                           }
-                           }
-                       });
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        switch (action) {
+        case GLFW_RELEASE: {
+            KeyReleasedEvent event(key);
+            data.EventCallback(event);
+            break;
+        }
+        case GLFW_PRESS: {
+            KeyPressedEvent event(key, 0);
+            data.EventCallback(event);
+            break;
+        }
+        case GLFW_REPEAT: {
+            KeyPressedEvent event(key, 1);
+            data.EventCallback(event);
+            break;
+        }
+        }
+    });
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
