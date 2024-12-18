@@ -1,7 +1,7 @@
 #pragma once
 #include "zirconium/Application.h"
 
-// --- This shouldn't de here ---
+// --- This shouldn't be here ---
 #include "platform/OpenGL/OpenGLShader.h"
 
 // ---- Layers -----
@@ -24,6 +24,7 @@
 //--- Renderer ---
 #include "Renderer/Buffer.h"
 #include "Renderer/Camera.h"
+#include "Renderer/OrthoCameraController.h"
 #include "Renderer/GraphicsContext.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Renderer.h"

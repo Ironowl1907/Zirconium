@@ -37,7 +37,7 @@ class ExampleLayer : public zirconium::Layer {
 public:
     ExampleLayer()
         : Layer("Example")
-        , m_OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f)
+        , m_CameraControlloer(16.0f / 9.0f, true)
         , m_CameraPosition(0.0f, 0.0f, 0.0f)
         , m_CameraRotation(0.0f)
         , m_ShaderLib()
@@ -111,29 +111,12 @@ public:
 
     virtual void OnUpdate(zirconium::TimeStep delta) override {
 
-        if (zirconium::Input::IsKeyPressed(ZR_KEY_UP)) {
-            m_CameraPosition.y -= m_CameraSpeed * delta;
-        } else if (zirconium::Input::IsKeyPressed(ZR_KEY_DOWN)) {
-            m_CameraPosition.y += m_CameraSpeed * delta;
-        }
-        if (zirconium::Input::IsKeyPressed(ZR_KEY_RIGHT)) {
-            m_CameraPosition.x -= m_CameraSpeed * delta;
-        } else if (zirconium::Input::IsKeyPressed(ZR_KEY_LEFT)) {
-            m_CameraPosition.x += m_CameraSpeed * delta;
-        }
-        if (zirconium::Input::IsKeyPressed(ZR_KEY_Q)) {
-            m_CameraRotation += m_CameraSpeed * 100 * delta;
-        } else if (zirconium::Input::IsKeyPressed(ZR_KEY_E)) {
-            m_CameraRotation -= m_CameraSpeed * 100 * delta;
-        }
+      m_CameraControlloer.OnUpdate(delta);
 
         zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         zirconium::RenderCommand::Clear();
 
-        m_OrthoCamera.SetRotation(m_CameraRotation);
-        m_OrthoCamera.SetPosition(m_CameraPosition);
-
-        zirconium::Renderer::BeginScene(m_OrthoCamera);
+        zirconium::Renderer::BeginScene(m_CameraControlloer.GetCamera());
 
         m_Transformation = Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, glm::vec3(1.5f));
 
@@ -146,11 +129,12 @@ public:
     }
 
     virtual void OnImGuiRender() override {
-        m_OrthoCamera.CameraDebugUI();
+        m_CameraControlloer.CameraDebugUI();
     }
 
     virtual void OnEvent(zirconium::Event& event) override {
-        zirconium::EventDispatcher dispatcher(event);
+      m_CameraControlloer.OnEvent(event);
+      zirconium::EventDispatcher dispatcher(event);
     }
 
 private:
@@ -161,7 +145,7 @@ private:
 
     zirconium::Ref<zirconium::Texture2D> m_Texture, m_VLCTexture;
 
-    zirconium::OrthoCamera m_OrthoCamera;
+    zirconium::OrthoCameraController m_CameraControlloer;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;
     float m_CameraSpeed = 1.0f;

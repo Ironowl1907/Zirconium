@@ -2,12 +2,12 @@
 #include "glm/glm.hpp"
 #include <glm/geometric.hpp>
 
-#include "imgui.h"
 
 namespace zirconium {
 class OrthoCamera {
 public:
     OrthoCamera(float left, float right, float up, float down);
+    void SetProyection(float left, float right, float up, float down);
 
     void SetTarget(glm::vec3 targetPos) {
         m_Target = targetPos;
@@ -31,6 +31,11 @@ public:
 
     inline const float& GetRotation() const {
         return m_Rotation;
+    }
+
+
+    inline const glm::vec3& GetTarget() const {
+        return m_Target;
     }
 
     inline const glm::mat4& GetProjectionViewMatrix() const {
