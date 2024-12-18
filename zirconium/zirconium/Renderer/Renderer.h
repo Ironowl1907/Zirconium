@@ -13,7 +13,7 @@ class Renderer {
 public:
     static void Init();
 
-    static void BeginScene(const Camera& orthoCamera);
+    static void BeginScene(const OrthoCamera& orthoCamera);
     static void EndScene();
 
     static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader,

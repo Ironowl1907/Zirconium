@@ -5,9 +5,9 @@
 #include "imgui.h"
 
 namespace zirconium {
-class Camera {
+class OrthoCamera {
 public:
-    Camera(float left, float right, float up, float down);
+    OrthoCamera(float left, float right, float up, float down);
 
     void SetTarget(glm::vec3 targetPos) {
         m_Target = targetPos;

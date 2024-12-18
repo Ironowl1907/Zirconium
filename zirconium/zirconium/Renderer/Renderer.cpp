@@ -13,7 +13,7 @@ void Renderer::Init() {
   RenderCommand::Init();
 }
 
-void Renderer::BeginScene(const Camera& orthoCamera) {
+void Renderer::BeginScene(const OrthoCamera& orthoCamera) {
     s_SceneData->ViewProjMatrix = orthoCamera.GetProjectionViewMatrix();
 }
 void Renderer::EndScene() {}

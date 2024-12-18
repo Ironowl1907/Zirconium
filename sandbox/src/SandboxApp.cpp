@@ -161,7 +161,7 @@ private:
 
     zirconium::Ref<zirconium::Texture2D> m_Texture, m_VLCTexture;
 
-    zirconium::Camera m_OrthoCamera;
+    zirconium::OrthoCamera m_OrthoCamera;
     glm::vec3 m_CameraPosition;
     float m_CameraRotation;
     float m_CameraSpeed = 1.0f;

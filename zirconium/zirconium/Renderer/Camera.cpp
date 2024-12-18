@@ -6,7 +6,7 @@
 
 namespace zirconium {
 
-Camera::Camera(float left, float right, float up, float down)
+OrthoCamera::OrthoCamera(float left, float right, float up, float down)
     : m_ProjectionMat(glm::ortho(left, right, up, down, -1.0f, 1.0f))
     , m_SelfPosition({0.0f, 0.0f, 0.0f})
     , m_Rotation(0.0f)
@@ -17,7 +17,7 @@ Camera::Camera(float left, float right, float up, float down)
     RecalculateViewMatrix();
 }
 
-void Camera::RecalculateViewMatrix() {
+void OrthoCamera::RecalculateViewMatrix() {
     glm::mat4 transform = glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
                           glm::translate(glm::mat4(1.0f), -m_SelfPosition);
 
@@ -25,7 +25,7 @@ void Camera::RecalculateViewMatrix() {
     m_ViewProjectionMat = m_ProjectionMat * m_ViewMat;
 }
 
-void Camera::CameraDebugUI() {
+void OrthoCamera::CameraDebugUI() {
     ImGui::Begin("Camera Debugger");
 
     glm::vec3 position = GetPosition();
