@@ -2,11 +2,11 @@
 
 #include "core.h"
 
-#include "OrthoCameraController.h"
+#include "zirconium/Renderer/OrthoCameraController.h"
 #include "imgui.h"
 
-#include "input.h"
-#include "keycodes.h"
+#include "zirconium/Core/input.h"
+#include "zirconium/Core/keycodes.h"
 
 namespace zirconium {
 

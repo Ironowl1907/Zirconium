@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Camera.h"
-#include "Timestep.h"
+#include "zirconium/Renderer/Camera.h"
+#include "zirconium/Core/Timestep.h"
 
-#include "events/ApplicationEvent.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
+#include "zirconium/Events/ApplicationEvent.h"
+#include "zirconium/Events/KeyEvent.h"
+#include "zirconium/Events/MouseEvent.h"
 
 namespace zirconium {
 

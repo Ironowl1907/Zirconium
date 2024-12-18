@@ -1,6 +1,6 @@
-#include "linuxInput.h"
-#include "Application.h"
 #include "zrpch.h"
+#include "zirconium/Platform/linux/linuxInput.h"
+#include "zirconium/Core/Application.h"
 
 #include "GLFW/glfw3.h"
 

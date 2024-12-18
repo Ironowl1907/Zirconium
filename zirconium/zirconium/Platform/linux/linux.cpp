@@ -1,16 +1,17 @@
-#include "GLFW/glfw3.h"
-
-#include "core.h"
-#include "linux.h"
-#include "linuxInput.h"
-#include "log.h"
 #include "zrpch.h"
 
-#include "events/ApplicationEvent.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
+#include "GLFW/glfw3.h"
+#include "core.h"
+#include "zirconium/Core/log/log.h"
+#include "zrpch.h"
+#include "zirconium/Platform/linux/linux.h"
+#include "zirconium/Platform/linux/linuxInput.h"
 
-#include "platform/OpenGL/OpenGLContext.h"
+#include "zirconium/Events/ApplicationEvent.h"
+#include "zirconium/Events/KeyEvent.h"
+#include "zirconium/Events/MouseEvent.h"
+
+#include "zirconium/Platform/OpenGL/OpenGLContext.h"
 #include <GL/gl.h>
 
 namespace zirconium {

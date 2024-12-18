@@ -1,8 +1,8 @@
-#include "RendererAPI.h"
+#include "zirconium/Renderer/RendererAPI.h"
 #include "zrpch.h"
-#include "RenderCommand.h"
+#include "zirconium/Renderer/RenderCommand.h"
 
-#include "../platform/OpenGL/OpenGLRendererAPI.h"
+#include "zirconium/Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace zirconium {
   RendererAPI* RenderCommand::s_RendererAPI = new OpenGLRenderAPI();

@@ -1,10 +1,10 @@
-#include "VertexArray.h"
-#include "Renderer.h"
-#include "core.h"
 #include "zrpch.h"
+#include "core.h"
 
-#include "platform/OpenGL/OpenGLVertexArray.h"
-#include <cmath>
+#include "zirconium/Renderer/VertexArray.h"
+#include "zirconium/Renderer/Renderer.h"
+
+#include "zirconium/Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace zirconium {
 

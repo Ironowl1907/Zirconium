@@ -1,19 +1,17 @@
 #pragma once
 
-#include "../zirconium/window.h"
-#include "Timestep.h"
-#include "events/ApplicationEvent.h"
-#include "events/KeyEvent.h"
-#include "imgui/imguiLayer.h"
-#include "layers/StackLayer.h"
+#include "zirconium/Core/window.h"
+#include "zirconium/Core/Timestep.h"
+#include "zirconium/Events/ApplicationEvent.h"
+#include "zirconium/Events/KeyEvent.h"
+#include "zirconium/ImGui/imguiLayer.h"
+#include "zirconium/Layers/StackLayer.h"
 
-#include "Renderer/Buffer.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
+#include "zirconium/Renderer/Buffer.h"
+#include "zirconium/Renderer/Shader.h"
+#include "zirconium/Renderer/VertexArray.h"
 
-#include "platform/OpenGL/OpenGLBuffer.h"
-#include <cmath>
-#include <cstdint>
+#include "zirconium/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace zirconium {
 

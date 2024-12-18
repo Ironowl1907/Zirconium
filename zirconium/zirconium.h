@@ -1,38 +1,37 @@
 #pragma once
-#include "zirconium/Application.h"
+#include "zirconium/Core/Application.h"
 
 // --- This shouldn't be here ---
-#include "platform/OpenGL/OpenGLShader.h"
+#include "zirconium/Platform/OpenGL/OpenGLShader.h"
 
 // ---- Layers -----
-#include "zirconium/imgui/imguiLayer.h"
-#include "zirconium/layers/Layer.h"
-#include "zirconium/layers/StackLayer.h"
+#include "zirconium/ImGui/imguiLayer.h"
+#include "zirconium/Layers/Layer.h"
+#include "zirconium/Layers/StackLayer.h"
 
-#include "zirconium/input.h"
+#include "zirconium/Core/input.h"
 
 // ---- Key Codes -----
-#include "zirconium/keycodes.h"
-#include "zirconium/mouseButtonCodes.h"
+#include "zirconium/Core/keycodes.h"
+#include "zirconium/Core/mouseButtonCodes.h"
 
 // --- Time---
-#include "zirconium/Timestep.h"
+#include "zirconium/Core/Timestep.h"
 
 // --- Logger ---
-#include "zirconium/log.h"
+#include "zirconium/Core/log/log.h"
 
 //--- Renderer ---
-#include "Renderer/Buffer.h"
-#include "Renderer/Camera.h"
-#include "Renderer/OrthoCameraController.h"
-#include "Renderer/GraphicsContext.h"
-#include "Renderer/RenderCommand.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/RendererAPI.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Texture.h"
+#include "zirconium/Renderer/Buffer.h"
+#include "zirconium/Renderer/Camera.h"
+#include "zirconium/Renderer/OrthoCameraController.h"
+#include "zirconium/Renderer/GraphicsContext.h"
+#include "zirconium/Renderer/RenderCommand.h"
+#include "zirconium/Renderer/Renderer.h"
+#include "zirconium/Renderer/RendererAPI.h"
+#include "zirconium/Renderer/Shader.h"
+#include "zirconium/Renderer/VertexArray.h"
+#include "zirconium/Renderer/Texture.h"
 
 // --- Entry Point ---
-#include "zirconium/entryPoint.h"
+#include "zirconium/Core/entryPoint.h"

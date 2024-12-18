@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/RendererAPI.h"
+#include "zirconium/Renderer/RendererAPI.h"
 
 namespace zirconium {
 class OpenGLRenderAPI : public RendererAPI {

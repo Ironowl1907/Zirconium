@@ -1,24 +1,21 @@
-#include "imguiLayer.h"
-#include "Application.h"
-#include "core.h"
+#include "zirconium/ImGui/imguiLayer.h"
+#include "zirconium/Core/Application.h"
 
-#include "events/ApplicationEvent.h"
-#include "events/Event.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
+#include "zirconium/Events/ApplicationEvent.h"
+#include "zirconium/Events/Event.h"
+#include "zirconium/Events/KeyEvent.h"
+#include "zirconium/Events/MouseEvent.h"
 
-#include "layers/Layer.h"
-
-#include "zrpch.h"
+#include "zirconium/Layers/Layer.h"
 
 #include "imgui.h"
-#include "imgui/ImGuiBuild.h"
+#include "zirconium/ImGui/ImGuiBuild.h"
 
 // Temporary
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "imguiKeyMap.h"
+#include "zirconium/ImGui/imguiKeyMap.h"
 
 namespace zirconium {
 

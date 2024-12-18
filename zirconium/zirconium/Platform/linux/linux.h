@@ -1,7 +1,7 @@
 #pragma once
-#include "window.h"
 
-#include "Renderer/GraphicsContext.h"
+#include "zirconium/Core/window.h"
+#include "zirconium/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
 

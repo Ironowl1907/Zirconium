@@ -1,7 +1,7 @@
 #pragma once
 
-#include "events/Event.h"
-#include "Timestep.h"
+#include "zirconium/Events/Event.h"
+#include "zirconium/Core/Timestep.h"
 
 namespace zirconium {
 

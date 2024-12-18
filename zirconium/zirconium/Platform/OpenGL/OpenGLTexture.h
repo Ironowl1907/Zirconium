@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/Texture.h"
+#include "zirconium/Renderer/Texture.h"
 #include <cstdint>
 
 namespace zirconium {

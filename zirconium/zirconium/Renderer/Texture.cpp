@@ -1,9 +1,9 @@
 #include "core.h"
 #include "zrpch.h"
 
-#include "Renderer.h"
-#include "Texture.h"
-#include "platform/OpenGL/OpenGLTexture.h"
+#include "zirconium/Renderer/Renderer.h"
+#include "zirconium/Renderer/Texture.h"
+#include "zirconium/Platform/OpenGL/OpenGLTexture.h"
 
 namespace zirconium {
 Ref<Texture2D> Texture2D::Create(const std::string& path) {

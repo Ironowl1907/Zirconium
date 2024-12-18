@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Renderer/Shader.h"
-#include "glm/glm.hpp"
+#include "zirconium/Renderer/Shader.h"
+#include <glm/glm.hpp>
 #include <GL/gl.h>
 #include <string>
 #include <unistd.h>
-#include <unordered_map>
 
 namespace zirconium {
 

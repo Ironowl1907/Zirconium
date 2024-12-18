@@ -1,15 +1,15 @@
-#include "Application.h"
+#include "zirconium/Core/Application.h"
 #include "core.h"
 #include "zrpch.h"
 
-#include "events/ApplicationEvent.h"
-#include "events/Event.h"
-#include "imgui/imguiLayer.h"
+#include "zirconium/Events/ApplicationEvent.h"
+#include "zirconium/Events/Event.h"
+#include "zirconium/ImGui/imguiLayer.h"
 
-#include "Renderer/Renderer.h"
+#include "zirconium/Renderer/Renderer.h"
 
-#include "GLFW/glfw3.h"
-#include "Timestep.h"
+#include <GLFW/glfw3.h>
+#include "zirconium/Core/Timestep.h"
 
 namespace zirconium {
 

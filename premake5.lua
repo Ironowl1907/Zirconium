@@ -57,7 +57,6 @@ files({
 })
 includedirs({
     "./zirconium/",
-    "./zirconium/zirconium/",
     IncludeDir["GLFW"],
     IncludeDir["Glad"],
     IncludeDir["ImGui"],
@@ -97,9 +96,7 @@ targetdir("bin/%{cfg.buildcfg}")
 objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({
-    "zirconium/src",
     "zirconium/",
-    "./zirconium/zirconium/",
     IncludeDir["glm"],
     IncludeDir["ImGui"],
 })

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Renderer/Buffer.h"
-#include <cstdint>
+#include "zirconium/Renderer/Buffer.h"
 
 namespace zirconium {
 

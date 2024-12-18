@@ -1,9 +1,9 @@
-#include "RenderCommand.h"
+#include "zirconium/Renderer/RenderCommand.h"
 #include "zrpch.h"
 
-#include "Camera.h"
-#include "Renderer.h"
-#include "platform/OpenGL/OpenGLShader.h"
+#include "zirconium/Renderer/Camera.h"
+#include "zirconium/Renderer/Renderer.h"
+#include "zirconium/Platform/OpenGL/OpenGLShader.h"
 
 namespace zirconium {
 

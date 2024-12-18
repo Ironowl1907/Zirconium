@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Renderer/VertexArray.h"
-#include <cstdint>
-#include <memory>
-#include <vector>
+#include "zirconium/Renderer/VertexArray.h"
 
 namespace zirconium {
 

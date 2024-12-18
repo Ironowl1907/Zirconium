@@ -1,10 +1,9 @@
-#include "Shader.h"
-#include "Renderer.h"
-#include "core.h"
 #include "zrpch.h"
+#include "core.h"
 
-#include "platform/OpenGL/OpenGLShader.h"
-#include <cmath>
+#include "zirconium/Renderer/Shader.h"
+#include "zirconium/Renderer/Renderer.h"
+#include "zirconium/Platform/OpenGL/OpenGLShader.h"
 
 namespace zirconium {
 
