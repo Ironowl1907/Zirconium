@@ -26,7 +26,7 @@ public:
     void SetVSync(bool enbabled) override;
     bool IsVSyncOn() const override;
 
-    inline virtual void* GetNativeWindow() const {
+    inline virtual void* GetNativeWindow() const override{
         return m_window;
     }
 

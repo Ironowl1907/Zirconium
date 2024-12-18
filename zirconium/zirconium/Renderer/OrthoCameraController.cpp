@@ -12,8 +12,8 @@ namespace zirconium {
 
 OrthoCameraController::OrthoCameraController(const float aspectRatio, const float rotation)
     : m_AspectRatio(aspectRatio)
-    , m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
-    , m_EnableRotation(rotation) {}
+    , m_EnableRotation(rotation)
+    , m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel) {}
 
 void OrthoCameraController::OnUpdate(TimeStep delta) {
 

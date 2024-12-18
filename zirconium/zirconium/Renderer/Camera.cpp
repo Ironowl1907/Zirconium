@@ -7,9 +7,9 @@
 namespace zirconium {
 
 OrthoCamera::OrthoCamera(float left, float right, float up, float down)
-    : m_ProjectionMat(glm::ortho(left, right, up, down, -1.0f, 1.0f))
-    , m_SelfPosition({0.0f, 0.0f, 0.0f})
+    : m_SelfPosition({0.0f, 0.0f, 0.0f})
     , m_Rotation(0.0f)
+    , m_ProjectionMat(glm::ortho(left, right, up, down, -1.0f, 1.0f))
     , m_ViewMat(1.0f)
     , m_ViewProjectionMat(1.0f)
     , m_Target(0.0f, 0.0f, 0.0f)

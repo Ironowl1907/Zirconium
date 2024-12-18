@@ -19,7 +19,7 @@ public:
     static void End();
 
 private:
-    float m_time = 0.0f;
+    // float m_time = 0.0f;
 };
 
 } // namespace zirconium

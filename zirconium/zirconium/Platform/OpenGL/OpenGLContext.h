@@ -1,7 +1,6 @@
 #pragma once
 #include "zirconium/Renderer/GraphicsContext.h"
-
-class GLFWwindow;
+#include "GLFW/glfw3.h"
 
 namespace zirconium {
 class OpenGLContext : public GraphicsContext {

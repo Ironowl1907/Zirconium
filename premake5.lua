@@ -1,4 +1,5 @@
 workspace("MyProject")
+workspace("MyProject")
 -- warnings("Extra")
 architecture("x64")
 configurations({ "Debug", "Release", "Dist" })
@@ -86,6 +87,13 @@ optimize("On")
 filter("configurations:Dist")
 defines({ "ZIR_DIST" })
 optimize("On")
+
+-- Add warnings for all compilers
+filter "toolset:gcc or clang"
+buildoptions { "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter" } -- Enable all warnings for GCC/Clang, but suppress unused parameter warnings (remove after finish)
+
+filter "toolset:msc"                                                    -- For MSVC (Microsoft compiler)
+buildoptions { "/W4", "/WX" }                                           -- Enable most warnings and treat warnings as errors (remove after finish)
 
 -- Project for sandbox static library
 project("sandbox")

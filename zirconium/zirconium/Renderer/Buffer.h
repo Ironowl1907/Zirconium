@@ -4,11 +4,25 @@
 
 namespace zirconium {
 
-enum class ShaderDataType : uint8_t { None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool };
+enum class ShaderDataType : uint8_t {
+    None = 0,
+    Float,
+    Float2,
+    Float3,
+    Float4,
+    Mat3,
+    Mat4,
+    Int,
+    Int2,
+    Int3,
+    Int4,
+    Bool
+};
 
 // clang-format off
 static uint32_t ShaderDataTypeSize(ShaderDataType type) {
     switch (type) {
+      case zirconium::ShaderDataType::None: return 0;
         case ShaderDataType::Float:  return 4;
         case ShaderDataType::Float2: return 4 * 2; // 2 floats
         case ShaderDataType::Float3: return 4 * 3; // 3 floats
@@ -36,9 +50,9 @@ struct BufferElement {
     BufferElement(const ShaderDataType type, const std::string& name, bool normalized = false)
         : Name(name)
         , Type(type)
-        , Size(ShaderDataTypeSize(type))
+        , Normalized(normalized)
         , Offset(0)
-        , Normalized(normalized) {}
+        , Size(ShaderDataTypeSize(type)) {}
 };
 // clang-format off
 inline uint32_t GetComponentCount(ShaderDataType type) {
