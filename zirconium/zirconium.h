@@ -33,8 +33,6 @@
 #include "zirconium/Renderer/VertexArray.h"
 #include "zirconium/Renderer/Texture.h"
 
-// --- Entry Point ---
-#include "zirconium/Core/entryPoint.h"
 
 
 // --- Helpers ---

@@ -1,10 +1,10 @@
-#include "imgui.h"
 #include "zirconium.h"
-#include <glm/ext/matrix_transform.hpp>
+#include "zirconium/Core/entryPoint.h"
+#include "Sandbox2D.h"
 
+#include "imgui.h"
 // Tempo
 #include <filesystem>
-
 
 class ExampleLayer : public zirconium::Layer {
 public:
@@ -20,7 +20,7 @@ public:
         zirconium::Ref<zirconium::VertexBuffer> VertexBuffer;
         zirconium::Ref<zirconium::IndexBuffer> IndexBuffer;
 
-        m_VertexArray.reset(zirconium::VertexArray::Create());
+        m_VertexArray = zirconium::VertexArray::Create();
 
         float vertices[4 * 5] = {
             -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, // Top-left
@@ -29,7 +29,7 @@ public:
             0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // Bottom-right
         };
 
-        VertexBuffer.reset(zirconium::VertexBuffer::Create(vertices, sizeof(vertices)));
+        VertexBuffer = zirconium::VertexBuffer::Create(vertices, sizeof(vertices));
         VertexBuffer->Bind();
 
         zirconium::BufferLayout layout = {
@@ -40,7 +40,7 @@ public:
         m_VertexArray->AddVertexBuffer(VertexBuffer);
 
         unsigned int indices[] = {0, 1, 2, 2, 1, 3};
-        IndexBuffer.reset(zirconium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        IndexBuffer = zirconium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(IndexBuffer);
 
         // Shaders
@@ -84,7 +84,7 @@ public:
 
     virtual void OnUpdate(zirconium::TimeStep delta) override {
 
-      m_CameraControlloer.OnUpdate(delta);
+        m_CameraControlloer.OnUpdate(delta);
 
         zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         zirconium::RenderCommand::Clear();
@@ -106,8 +106,8 @@ public:
     }
 
     virtual void OnEvent(zirconium::Event& event) override {
-      m_CameraControlloer.OnEvent(event);
-      zirconium::EventDispatcher dispatcher(event);
+        m_CameraControlloer.OnEvent(event);
+        zirconium::EventDispatcher dispatcher(event);
     }
 
 private:
@@ -129,7 +129,8 @@ private:
 class SandBox : public zirconium::Application {
 public:
     SandBox() {
-        PushLayer(new ExampleLayer());
+        // PushLayer(new ExampleLayer());
+        PushLayer(new Sandbox2D());
     }
     ~SandBox() {}
 };

@@ -80,7 +80,7 @@ optimize("Debug")
 
 -- Release Configuration
 filter("configurations:Release")
-defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
+defines({ "ZIR_RELEASE", "ZR_ENABLE_ASSERTS" })
 optimize("On")
 
 -- Distribution Configuration

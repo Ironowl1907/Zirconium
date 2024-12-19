@@ -1,8 +1,8 @@
 #pragma once
 
 #include "zirconium/Renderer/Shader.h"
-#include <glm/glm.hpp>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
 #include <string>
 #include <unistd.h>
 
