@@ -1,9 +1,8 @@
-#include "OpenGLContext.h"
-#include "core.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 #include "zrpch.h"
-#include <GL/gl.h>
+
+#include "glad/glad.h"
+#include "zirconium/Platform/OpenGL/OpenGLContext.h"
+#include "core.h"
 
 namespace zirconium {
 
