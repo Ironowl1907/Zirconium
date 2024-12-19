@@ -4,34 +4,7 @@
 
 // Tempo
 #include <filesystem>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-struct Transform {
-    glm::vec3 Position;
-    glm::vec3 Scale;
-    glm::vec3 Rotation;
-
-    Transform(glm::vec3 position, glm::vec3 rotation = {0.0f, 0.0f, 0.0f}, glm::vec3 scale = {1.0f, 1.0f, 1.0f})
-        : Position(position)
-        , Scale(scale)
-        , Rotation(rotation) {}
-
-    operator glm::mat4() const {
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), Position);
-
-        glm::mat4 rotationX = glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 rotationY = glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 rotationZ = glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
-        glm::mat4 rotationMatrix = rotationZ * rotationY * rotationX;
-
-        glm::mat4 scalingMatrix = glm::scale(glm::mat4(1.0f), Scale);
-
-        return translationMatrix * rotationMatrix * scalingMatrix;
-    }
-};
 
 class ExampleLayer : public zirconium::Layer {
 public:
@@ -118,7 +91,7 @@ public:
 
         zirconium::Renderer::BeginScene(m_CameraControlloer.GetCamera());
 
-        m_Transformation = Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, glm::vec3(1.5f));
+        m_Transformation = zirconium::Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, glm::vec3(1.5f));
 
         m_Texture->Bind();
         zirconium::Renderer::Submit(m_VertexArray, m_TextureShader, m_Transformation);
@@ -150,7 +123,7 @@ private:
     float m_CameraRotation;
     float m_CameraSpeed = 1.0f;
 
-    Transform m_Transformation;
+    zirconium::Transform m_Transformation;
 };
 
 class SandBox : public zirconium::Application {
