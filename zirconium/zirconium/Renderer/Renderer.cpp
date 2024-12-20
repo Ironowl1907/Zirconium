@@ -1,9 +1,10 @@
 #include "zirconium/Renderer/RenderCommand.h"
 #include "zrpch.h"
 
+#include "zirconium/Platform/OpenGL/OpenGLShader.h"
 #include "zirconium/Renderer/Camera.h"
 #include "zirconium/Renderer/Renderer.h"
-#include "zirconium/Platform/OpenGL/OpenGLShader.h"
+#include "zirconium/Renderer/Renderer2D.h"
 
 namespace zirconium {
 
@@ -11,6 +12,7 @@ Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData();
 
 void Renderer::Init() {
     RenderCommand::Init();
+    Renderer2D::Init();
 }
 
 void Renderer::BeginScene(const OrthoCamera& orthoCamera) {

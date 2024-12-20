@@ -19,7 +19,6 @@ private:
     // This shouldn't be here TEMP
     zirconium::Ref<zirconium::VertexArray> m_VertexArray;
     zirconium::Ref<zirconium::Shader> m_FlatColorShader;
-    // zirconium::Ref<zirconium::Texture2D> m_Texture;
 
     glm::vec4 m_SquareColor = {1.0f, 0.0f, 0.0f, 1.0f};
 };

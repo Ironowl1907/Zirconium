@@ -34,6 +34,8 @@
 #include "zirconium/Renderer/Texture.h"
 
 
+#include "zirconium/Renderer/Renderer2D.h"
+
 
 // --- Helpers ---
 #include "zirconium/Core/Transform.h"

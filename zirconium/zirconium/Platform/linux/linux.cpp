@@ -3,9 +3,9 @@
 #include "GLFW/glfw3.h"
 #include "core.h"
 #include "zirconium/Core/log/log.h"
-#include "zrpch.h"
 #include "zirconium/Platform/linux/linux.h"
 #include "zirconium/Platform/linux/linuxInput.h"
+#include "zrpch.h"
 
 #include "zirconium/Events/ApplicationEvent.h"
 #include "zirconium/Events/KeyEvent.h"
@@ -36,7 +36,6 @@ void LinuxWindow::init(const WindowProps& props) {
         // TODO: Terminate system shutdown
         int success = glfwInit();
         ZR_CORE_ASSERT(success, "Could not initialize glfw!");
-        glfwSetErrorCallback(GLFWErorrCallback);
         s_GLFWInitialized = true;
     }
     m_window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
@@ -47,6 +46,7 @@ void LinuxWindow::init(const WindowProps& props) {
     SetVSync(true);
 
     // GLFW callbacks
+    glfwSetErrorCallback(GLFWErorrCallback);
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
         data.Width = width;
