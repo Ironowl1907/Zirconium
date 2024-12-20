@@ -25,8 +25,10 @@ OpenGLShader::OpenGLShader(const std::string& filePath) {
     auto lastSlash = filePath.find_last_of("/");
     auto lastDot = filePath.find_last_of(".");
 
-    if (lastSlash == std::string::npos) lastSlash = -1;
-    if (lastDot == std::string::npos) lastDot = filePath.size();
+    if (lastSlash == std::string::npos)
+        lastSlash = -1;
+    if (lastDot == std::string::npos)
+        lastDot = filePath.size();
 
     m_Name = filePath.substr(lastSlash + 1, lastDot - lastSlash - 1);
 }
@@ -148,6 +150,16 @@ void OpenGLShader::Unbind() const {
     glUseProgram(0);
 }
 
+void OpenGLShader::SetMatrix4f(const std::string& name, const glm::mat4& mat) {
+    SetUniformMatrix4f(name, mat);
+}
+void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vec) {
+    SetUniformFloat3(name, vec);
+}
+void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vec) {
+    SetUniformFloat4(name, vec);
+}
+
 void OpenGLShader::SetUniformMatrix4f(const std::string& name, const glm::mat4& mat) {
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
@@ -158,6 +170,12 @@ void OpenGLShader::SetUniformFloat4(const std::string& name, const glm::vec4 vec
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform4fv(location, 1, glm::value_ptr(vec));
+}
+
+void OpenGLShader::SetUniformFloat3(const std::string& name, const glm::vec3 vec) {
+    glUseProgram(m_RendererID);
+    uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform3fv(location, 1, glm::value_ptr(vec));
 }
 
 void OpenGLShader::SetUniformInt(const std::string& name, const int n) {

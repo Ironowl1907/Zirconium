@@ -5,9 +5,10 @@ layout(location = 0) in vec3 a_Position;
 out vec4 v_Color;
 
 uniform mat4 u_ProjectionViewMatrix;
+uniform mat4 u_ModelMatrix;
 
 void main() {
-    gl_Position = u_ProjectionViewMatrix * vec4(a_Position, 1.0);
+    gl_Position = u_ProjectionViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
 }
 
 #type fragment

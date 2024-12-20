@@ -1,12 +1,11 @@
 #include "zrpch.h"
 
-#include "Buffer.h"
-#include "Renderer2D.h"
-
-#include "zirconium/Platform/OpenGL/OpenGLShader.h"
+#include "zirconium/Renderer/Buffer.h"
 #include "zirconium/Renderer/RenderCommand.h"
 #include "zirconium/Renderer/Renderer2D.h"
 #include "zirconium/Renderer/Shader.h"
+
+#include <glm/ext/matrix_transform.hpp>
 
 namespace zirconium {
 
@@ -49,9 +48,9 @@ void Renderer2D::Shutdown() {
 }
 
 void Renderer2D::BeginScene(const OrthoCamera& camera) {
-    std::dynamic_pointer_cast<OpenGLShader>(s_Data->QuadShader)->Bind();
-    std::dynamic_pointer_cast<OpenGLShader>(s_Data->QuadShader)
-        ->SetUniformMatrix4f("u_ProjectionViewMatrix", camera.GetProjectionViewMatrix());
+    s_Data->QuadShader->Bind();
+    s_Data->QuadShader
+        ->SetMatrix4f("u_ProjectionViewMatrix", camera.GetProjectionViewMatrix());
 }
 void Renderer2D::EndScene() {}
 
@@ -59,9 +58,12 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
     DrawQuad({position.x, position.y, 0.0f}, size, color);
 }
 void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
-  ZR_CORE_TRACE("Drawing quad");
-    std::dynamic_pointer_cast<OpenGLShader>(s_Data->QuadShader)->Bind();
-    std::dynamic_pointer_cast<OpenGLShader>(s_Data->QuadShader)->SetUniformFloat4("u_Color", color);
+    s_Data->QuadShader->Bind();
+
+    s_Data->QuadShader->SetFloat4("u_Color", color);
+
+    s_Data->QuadShader->SetMatrix4f("u_ModelMatrix", glm::translate(glm::mat4(1.0f), position) *
+                                                         glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)));
 
     s_Data->QuadVertexArray->Bind();
     RenderCommand::DrawIndexed(s_Data->QuadVertexArray);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "glm/glm.hpp"
+
 namespace zirconium {
 
 class Shader {
@@ -12,6 +14,11 @@ public:
 
     static Ref<Shader> Create(const std::string filePath);
     static Ref<Shader> Create(const std::string name, const std::string& vertexSrc, const std::string& fragmentSrc);
+
+    // Uniforms
+    virtual void SetMatrix4f(const std::string& name, const glm::mat4& mat) = 0;
+    virtual void SetFloat3(const std::string& name, const glm::vec3& vec) = 0;
+    virtual void SetFloat4(const std::string& name, const glm::vec4& vec) = 0;
 };
 
 class ShaderLibrary {
