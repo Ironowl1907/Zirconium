@@ -24,6 +24,7 @@ public:
     void SetMatrix4f(const std::string& name, const glm::mat4& mat) override;
     void SetFloat3(const std::string& name, const glm::vec3& vec) override;
     void SetFloat4(const std::string& name, const glm::vec4& vec) override;
+    void SetInt(const std::string& name, const int& n) override;
 
     // Uniforms
     void SetUniformMatrix4f(const std::string& name, const glm::mat4& mat);

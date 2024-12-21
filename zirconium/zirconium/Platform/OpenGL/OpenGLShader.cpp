@@ -159,6 +159,9 @@ void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vec) {
 void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vec) {
     SetUniformFloat4(name, vec);
 }
+void OpenGLShader::SetInt(const std::string& name, const int& n) {
+    SetUniformInt(name, n);
+}
 
 void OpenGLShader::SetUniformMatrix4f(const std::string& name, const glm::mat4& mat) {
     glUseProgram(m_RendererID);

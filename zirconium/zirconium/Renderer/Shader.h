@@ -19,6 +19,7 @@ public:
     virtual void SetMatrix4f(const std::string& name, const glm::mat4& mat) = 0;
     virtual void SetFloat3(const std::string& name, const glm::vec3& vec) = 0;
     virtual void SetFloat4(const std::string& name, const glm::vec4& vec) = 0;
+    virtual void SetInt(const std::string& name, const int& n) = 0;
 };
 
 class ShaderLibrary {
