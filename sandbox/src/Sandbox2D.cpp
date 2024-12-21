@@ -1,4 +1,5 @@
 #include "Sandbox2D.h"
+#include "Timer.h"
 #include "imgui.h"
 #include "zirconium.h"
 
@@ -8,10 +9,13 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach() {
     m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
+
+    m_ProfilingResults = std::vector<ProfileResult>();
 }
 void Sandbox2D::OnDetach() {}
 
 void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
+    Timer timer("Sandbox2D::OnUpdate");
     // Update
     m_CameraController.OnUpdate(delta);
 
@@ -31,7 +35,16 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
     zirconium::Renderer2D::EndScene();
 }
 
-void Sandbox2D::OnImGuiRender() {}
+void Sandbox2D::OnImGuiRender() {
+    for (auto& result : m_ProfilingResults) {
+        char label[50];
+        strcpy(label, result.Name);
+        strcat(label, "  &.3fms");
+        ImGui::Text(label, result.Time);
+    }
+
+    m_ProfilingResults.clear();
+}
 void Sandbox2D::OnEvent(zirconium::Event& event) {
     m_CameraController.OnEvent(event);
 }
