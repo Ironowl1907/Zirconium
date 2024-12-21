@@ -22,22 +22,16 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
     zirconium::RenderCommand::Clear();
 
     zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+
     zirconium::Renderer2D::DrawQuad({-0.5f, -0.5f}, {1.0f, 1.0f}, {0.1f, 0.3f, 0.9f, 1.0f});
     zirconium::Renderer2D::DrawQuad({0.5f, 0.6f}, {1.3f, 1.0f}, {0.8f, 0.3f, 0.2f, 1.0f});
     zirconium::Renderer2D::DrawQuad({0.8f, -0.7f}, {1.0f, 0.5f}, {0.2f, 0.8f, 0.2f, 1.0f});
     zirconium::Renderer2D::DrawTexQuad({0.0f, 0.0f, -0.1f}, {30.0f, 30.0f}, m_Texture);
 
     zirconium::Renderer2D::EndScene();
-
-    // zirconium::Transform transformation = zirconium::Transform({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f},
-    // m_SquareColor);
 }
 
-void Sandbox2D::OnImGuiRender() {
-    ImGui::Begin("Settings");
-    ImGui::ColorEdit4("Scuare Color", glm::value_ptr(m_SquareColor));
-    ImGui::End();
-}
+void Sandbox2D::OnImGuiRender() {}
 void Sandbox2D::OnEvent(zirconium::Event& event) {
     m_CameraController.OnEvent(event);
 }
