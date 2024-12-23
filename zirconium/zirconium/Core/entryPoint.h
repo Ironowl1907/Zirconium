@@ -5,12 +5,18 @@
 extern zirconium::Application* zirconium::CreateApplication();
 
 int main(int argc, char** argv) {
+    ZR_PROFILE_BEGIN_SESSION("Startup", "Zirconium_Profile_Startup.json");
     zirconium::Log::Init();
-    ZR_CORE_INFO("Initialized core logger!");
-    ZR_INFO("Initialized client logger!");
     auto app = zirconium::CreateApplication();
+    ZR_PROFILE_END_SESSION();
+
+    ZR_PROFILE_BEGIN_SESSION("Runtime", "Zirconium_Profile_Runtime.json");
     app->Run();
+    ZR_PROFILE_END_SESSION();
+
+    ZR_PROFILE_BEGIN_SESSION("Shutdown", "Zirconium_Profile_Shutdown.json");
     delete app;
+    ZR_PROFILE_END_SESSION();
 
     return 0;
 }

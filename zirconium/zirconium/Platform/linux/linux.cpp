@@ -43,7 +43,7 @@ void LinuxWindow::init(const WindowProps& props) {
     m_Context->Init();
 
     glfwSetWindowUserPointer(m_window, &m_windowData);
-    SetVSync(false);
+    SetVSync(true);
 
     // GLFW callbacks
     glfwSetErrorCallback(GLFWErorrCallback);

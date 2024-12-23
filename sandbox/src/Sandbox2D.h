@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Timer.h"
 #include "zirconium.h"
 
 class Sandbox2D : public zirconium::Layer {
@@ -23,5 +22,4 @@ private:
 
     zirconium::Ref<zirconium::Texture2D> m_Texture;
 
-    std::vector<ProfileResult> m_ProfilingResults;
 };

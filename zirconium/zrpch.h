@@ -15,3 +15,4 @@
 #include <fstream>
 
 #include "zirconium/Core/log/log.h"
+#include "zirconium/Debug/Instrumentor.h"

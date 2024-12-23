@@ -1,5 +1,10 @@
 #include <memory>
 #define BIT(x) (1 << x)
+
+#ifdef __GNUC__
+#define __FUNCSIG__ __PRETTY_FUNCTION__
+#endif
+
 #ifdef ZR_ENABLE_ASSERTS
 #    define ZR_ASSERT(x, ...)                               \
         if (!(x)) {                                         \
