@@ -20,6 +20,9 @@ struct Renderer2DStorage {
 static Renderer2DStorage* s_Data;
 
 void Renderer2D::Init() {
+
+    ZR_PROFILE_FUNCTION();
+
     s_Data = new Renderer2DStorage();
 
     s_Data->QuadVertexArray = zirconium::VertexArray::Create();

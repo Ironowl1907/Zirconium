@@ -2,8 +2,8 @@
 
 #include "core.h"
 
-#include "zirconium/Renderer/OrthoCameraController.h"
 #include "imgui.h"
+#include "zirconium/Renderer/OrthoCameraController.h"
 
 #include "zirconium/Core/input.h"
 #include "zirconium/Core/keycodes.h"
@@ -16,6 +16,8 @@ OrthoCameraController::OrthoCameraController(const float aspectRatio, const floa
     , m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel) {}
 
 void OrthoCameraController::OnUpdate(TimeStep delta) {
+
+    ZR_PROFILE_FUNCTION();
 
     if (Input::IsKeyPressed(ZR_KEY_W)) {
         m_CameraPosition.y -= m_CameraSpeed * delta;
@@ -39,6 +41,9 @@ void OrthoCameraController::OnUpdate(TimeStep delta) {
     m_Camera.SetPosition(m_CameraPosition);
 }
 void OrthoCameraController::OnEvent(Event& e) {
+
+    ZR_PROFILE_FUNCTION();
+
     EventDispatcher dispatcher(e);
 
     dispatcher.Dispatch<MouseScrollEvent>(ZR_BIND_EVENT_FN(OrthoCameraController::onMouseScrolled));
@@ -60,6 +65,9 @@ bool OrthoCameraController::onWindowResized(WindowResizeEvent& e) {
 }
 
 void OrthoCameraController::CameraDebugUI() {
+
+    ZR_PROFILE_FUNCTION();
+
     ImGui::Begin("Camera Debugger");
 
     glm::vec3 position = m_Camera.GetPosition();

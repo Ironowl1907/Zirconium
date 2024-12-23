@@ -18,11 +18,17 @@ OrthoCamera::OrthoCamera(float left, float right, float up, float down)
 }
 
 void OrthoCamera::SetProyection(float left, float right, float up, float down) {
+
+      ZR_PROFILE_FUNCTION();
+
     m_ProjectionMat = glm::ortho(left, right, up, down, -1.0f, 1.0f);
     RecalculateViewMatrix();
 }
 
 void OrthoCamera::RecalculateViewMatrix() {
+
+    ZR_PROFILE_FUNCTION();
+
     glm::mat4 transform = glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
                           glm::translate(glm::mat4(1.0f), -m_SelfPosition);
 

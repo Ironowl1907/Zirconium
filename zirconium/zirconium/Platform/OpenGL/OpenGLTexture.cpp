@@ -12,6 +12,8 @@ OpenGLTexture2D::OpenGLTexture2D(const uint32_t& width, const uint32_t& height)
     : m_Height(height)
     , m_Width(width) {
 
+    ZR_PROFILE_FUNCTION();
+
     m_InternalFormat = GL_RGBA8;
     m_DataFormat = GL_RGBA;
 
@@ -26,9 +28,16 @@ OpenGLTexture2D::OpenGLTexture2D(const uint32_t& width, const uint32_t& height)
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
     : m_Path(path) {
+
+    ZR_PROFILE_FUNCTION();
+
     int width, height, channels;
+    stbi_uc* data = nullptr;
     stbi_set_flip_vertically_on_load(1);
-    stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    {
+        ZR_PROFILE_SCOPE("stbi_load OpenGLTexture2D::OpenGLTexture2D (const std::string)");
+        data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    }
     ZR_CORE_ASSERT(data, "Failed to load texture!");
     m_Width = width;
     m_Height = height;
@@ -60,14 +69,23 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 }
 
 OpenGLTexture2D::~OpenGLTexture2D() {
+
+    ZR_PROFILE_FUNCTION();
+
     glDeleteTextures(1, &m_RendererID);
 }
 
 void OpenGLTexture2D::Bind(const uint32_t slot) const {
+
+    ZR_PROFILE_FUNCTION();
+
     glBindTextureUnit(slot, m_RendererID);
 };
 
 void OpenGLTexture2D::SetData(const void* data, const uint32_t& size) const {
+
+    ZR_PROFILE_FUNCTION();
+
     uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     ZR_CORE_ASSERT(m_Width * m_Height * bpp == size,
                    "Texture size dismatch with width and height! Data must be the entire texture");

@@ -10,6 +10,9 @@ namespace zirconium {
 
 OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
     : m_Name(name) {
+
+        ZR_PROFILE_FUNCTION();
+
     std::unordered_map<GLenum, std::string> shaderMap;
     shaderMap[GL_VERTEX_SHADER] = vertexSrc;
     shaderMap[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -18,6 +21,9 @@ OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc
 }
 
 OpenGLShader::OpenGLShader(const std::string& filePath) {
+
+    ZR_PROFILE_FUNCTION();
+
     std::string shaderSrc = ReadFile(filePath);
     auto shaderSrcs = PreProcess(shaderSrc);
     Compile(shaderSrcs);
@@ -34,6 +40,9 @@ OpenGLShader::OpenGLShader(const std::string& filePath) {
 }
 
 std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& shaderSrc) {
+
+    ZR_PROFILE_FUNCTION();
+
     std::unordered_map<GLenum, std::string> shaderMap;
 
     const std::string typeToken = "#type";
@@ -72,6 +81,9 @@ std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::stri
 }
 
 void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSrcs) {
+
+    ZR_PROFILE_FUNCTION();
+
     uint32_t program = glCreateProgram();
 
     std::vector<GLenum> shaderIDs;
@@ -126,6 +138,9 @@ void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shader
 }
 
 std::string OpenGLShader::ReadFile(const std::string& filePath) {
+
+    ZR_PROFILE_FUNCTION();
+
     std::string result = "";
     std::ifstream in(filePath.c_str(), std::ios::in);
     if (in) {
@@ -141,47 +156,80 @@ std::string OpenGLShader::ReadFile(const std::string& filePath) {
 }
 
 OpenGLShader::~OpenGLShader() {
+
+    ZR_PROFILE_FUNCTION();
+
     glDeleteProgram(m_RendererID);
 }
 void OpenGLShader::Bind() const {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(m_RendererID);
 }
 void OpenGLShader::Unbind() const {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(0);
 }
 
 void OpenGLShader::SetMatrix4f(const std::string& name, const glm::mat4& mat) {
+
+    ZR_PROFILE_FUNCTION();
+
     SetUniformMatrix4f(name, mat);
 }
 void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vec) {
+
+    ZR_PROFILE_FUNCTION();
+
     SetUniformFloat3(name, vec);
 }
 void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vec) {
+
+    ZR_PROFILE_FUNCTION();
+
     SetUniformFloat4(name, vec);
 }
 void OpenGLShader::SetInt(const std::string& name, const int& n) {
+
+    ZR_PROFILE_FUNCTION();
+
     SetUniformInt(name, n);
 }
 
 void OpenGLShader::SetUniformMatrix4f(const std::string& name, const glm::mat4& mat) {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void OpenGLShader::SetUniformFloat4(const std::string& name, const glm::vec4 vec) {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform4fv(location, 1, glm::value_ptr(vec));
 }
 
 void OpenGLShader::SetUniformFloat3(const std::string& name, const glm::vec3 vec) {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform3fv(location, 1, glm::value_ptr(vec));
 }
 
 void OpenGLShader::SetUniformInt(const std::string& name, const int n) {
+
+    ZR_PROFILE_FUNCTION();
+
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1i(location, n);

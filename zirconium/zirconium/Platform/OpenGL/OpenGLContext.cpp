@@ -13,6 +13,9 @@ OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 }
 
 void OpenGLContext::Init() {
+
+  ZR_PROFILE_FUNCTION();
+
     glfwMakeContextCurrent(m_WindowHandle);
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     ZR_CORE_ASSERT(status, "Failed to initialize GLAD!");
@@ -35,6 +38,9 @@ void OpenGLContext::Init() {
 }
 
 void OpenGLContext::SwapBuffers() {
+
+  ZR_PROFILE_FUNCTION();
+
     glfwSwapBuffers(m_WindowHandle);
 }
 } // namespace zirconium

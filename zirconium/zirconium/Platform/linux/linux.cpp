@@ -26,6 +26,9 @@ Window* Window::Create(const WindowProps& props) {
 }
 
 void LinuxWindow::init(const WindowProps& props) {
+
+    ZR_PROFILE_FUNCTION();
+
     m_windowData.Title = props.Title;
     m_windowData.Width = props.Width;
     m_windowData.Height = props.Height;
@@ -34,11 +37,18 @@ void LinuxWindow::init(const WindowProps& props) {
 
     if (!s_GLFWInitialized) {
         // TODO: Terminate system shutdown
-        int success = glfwInit();
+        int success = false;
+        {
+            ZR_PROFILE_SCOPE("glfwInit");
+            success = glfwInit();
+        }
         ZR_CORE_ASSERT(success, "Could not initialize glfw!");
         s_GLFWInitialized = true;
     }
-    m_window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
+    {
+        ZR_PROFILE_SCOPE("glfwCreateWindow");
+        m_window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
+    }
     m_Context = new OpenGLContext(m_window);
     m_Context->Init();
 
@@ -117,9 +127,12 @@ void LinuxWindow::init(const WindowProps& props) {
         MouseMovedEvent event((float)xpos, (float)ypos);
         data.EventCallback(event);
     });
-}
+} // namespace zirconium
 
 LinuxWindow::LinuxWindow(const WindowProps& props) {
+
+    ZR_PROFILE_FUNCTION();
+
     init(props);
 }
 LinuxWindow::~LinuxWindow() {
@@ -127,6 +140,9 @@ LinuxWindow::~LinuxWindow() {
 }
 
 void LinuxWindow::onUpdate() {
+
+    ZR_PROFILE_FUNCTION();
+
     glfwPollEvents();
     m_Context->SwapBuffers();
 }
@@ -135,6 +151,9 @@ void LinuxWindow::SetEventCallback(const EventCallbackFn& callback) {
 }
 
 void LinuxWindow::SetVSync(bool enabled) {
+
+    ZR_PROFILE_FUNCTION();
+
     if (enabled)
         glfwSwapInterval(1);
     else
@@ -147,6 +166,9 @@ bool LinuxWindow::IsVSyncOn() const {
 }
 
 void LinuxWindow::shutdown() {
+
+    ZR_PROFILE_FUNCTION();
+
     glfwDestroyWindow(m_window);
 }
 

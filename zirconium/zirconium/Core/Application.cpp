@@ -6,6 +6,8 @@
 #include "zirconium/Events/Event.h"
 #include "zirconium/ImGui/imguiLayer.h"
 
+#include "zirconium/Debug/Instrumentor.h"
+
 #include "zirconium/Renderer/Renderer.h"
 
 #include "zirconium/Core/Timestep.h"
@@ -18,6 +20,9 @@ namespace zirconium {
 Application* Application::s_Instance = nullptr;
 
 Application::Application() {
+
+    ZR_PROFILE_FUNCTION();
+
     ZR_ASSERT(!s_Instance, "Application Already Exists!");
     s_Instance = this;
     m_Window = std::unique_ptr<Window>(Window::Create());
@@ -32,16 +37,25 @@ Application::Application() {
 Application::~Application() {}
 
 void Application::PushLayer(Layer* layer) {
+
+    ZR_PROFILE_FUNCTION();
+
     m_layerStack.PushLayer(layer);
     layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer* overlay) {
+
+    ZR_PROFILE_FUNCTION();
+
     m_layerStack.PushOverlay(overlay);
     overlay->OnAttach();
 }
 
 void Application::onEvent(Event& event) {
+
+    ZR_PROFILE_FUNCTION();
+
     EventDispatcher dispatcher(event);
     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
     dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
@@ -71,20 +85,29 @@ bool Application::onWindowClose(WindowCloseEvent& event) {
 }
 
 void Application::Run() {
+
+    ZR_PROFILE_FUNCTION();
+
     while (m_Running) {
+      ZR_PROFILE_SCOPE("RunLoop");
         float time = glfwGetTime();
         TimeStep deltaTime(time - m_LastFrameTime);
         m_LastFrameTime = time;
 
         if (!m_Minimized) {
-            for (Layer* layer : m_layerStack)
-                layer->OnUpdate(deltaTime);
+            {
+                ZR_PROFILE_SCOPE("Layers OnUpdate Application::Run(void)");
+                for (Layer* layer : m_layerStack)
+                    layer->OnUpdate(deltaTime);
+            }
+            m_ImGuiLayer->Begin();
+            {
+                ZR_PROFILE_SCOPE("Layers OnImGuiRender Application::Run(void");
+                for (Layer* layer : m_layerStack)
+                    layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
         }
-
-        m_ImGuiLayer->Begin();
-        for (Layer* layer : m_layerStack)
-            layer->OnImGuiRender();
-        m_ImGuiLayer->End();
 
         // Update window (swap buffers, poll events, etc.)
         m_Window->onUpdate();

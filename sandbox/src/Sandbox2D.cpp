@@ -7,17 +7,19 @@ Sandbox2D::Sandbox2D()
     , m_CameraController(1.6f / 0.9f, true) {}
 
 void Sandbox2D::OnAttach() {
+
+  ZR_PROFILE_FUNCTION();
+
     m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
 }
 void Sandbox2D::OnDetach() {}
 
 void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
-    ZR_PROFILE_FUNCTION();
-    {
-        ZR_PROFILE_SCOPE("CameraController_update");
-        // Update
-        m_CameraController.OnUpdate(delta);
-    }
+
+  ZR_PROFILE_FUNCTION();
+
+    // Update
+    m_CameraController.OnUpdate(delta);
     {
         ZR_PROFILE_SCOPE("Render");
         zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
