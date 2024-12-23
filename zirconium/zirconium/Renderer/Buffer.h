@@ -71,6 +71,7 @@ inline uint32_t GetComponentCount(ShaderDataType type) {
         case ShaderDataType::Bool:   return 1;
     ZR_CORE_ASSERT(false, "Unknown Shader Type!");
     }
+return 0;
 }
 // clang-format on
 
