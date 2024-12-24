@@ -11,7 +11,7 @@ namespace zirconium {
 OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
     : m_Name(name) {
 
-        ZR_PROFILE_FUNCTION();
+    ZR_PROFILE_FUNCTION();
 
     std::unordered_map<GLenum, std::string> shaderMap;
     shaderMap[GL_VERTEX_SHADER] = vertexSrc;
@@ -224,6 +224,15 @@ void OpenGLShader::SetUniformFloat3(const std::string& name, const glm::vec3 vec
     glUseProgram(m_RendererID);
     uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform3fv(location, 1, glm::value_ptr(vec));
+}
+
+void OpenGLShader::SetFloat(const std::string& name, const float& n) {
+
+    ZR_PROFILE_FUNCTION();
+
+    glUseProgram(m_RendererID);
+    uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1f(location, n);
 }
 
 void OpenGLShader::SetUniformInt(const std::string& name, const int n) {
