@@ -19,7 +19,7 @@ OrthoCamera::OrthoCamera(float left, float right, float up, float down)
 
 void OrthoCamera::SetProyection(float left, float right, float up, float down) {
 
-      ZR_PROFILE_FUNCTION();
+    ZR_PROFILE_FUNCTION();
 
     m_ProjectionMat = glm::ortho(left, right, up, down, -1.0f, 1.0f);
     RecalculateViewMatrix();
