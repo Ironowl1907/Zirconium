@@ -24,12 +24,12 @@ public:
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                 const glm::vec4& color, const float& tilingFactor = 1);
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
-                                const Ref<Texture>& texture, const float& tilingFactor = 1);
+                                const Ref<Texture> texture, const float& tilingFactor = 1);
 
     static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size,
-                                   const float& rotation, const Ref<Texture>& texture, const float& tilingFactor = 1);
+                                   const float& rotation, const Ref<Texture> texture, const float& tilingFactor = 1);
     static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size,
-                                   const float& rotation, const Ref<Texture>& texture, const float& tilingFactor = 1);
+                                   const float& rotation, const Ref<Texture> texture, const float& tilingFactor = 1);
 };
 
 } // namespace zirconium

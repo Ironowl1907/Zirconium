@@ -125,7 +125,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
     RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 }
 void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
-                                 const Ref<Texture>& texture, const float& tilingFactor) {
+                                 const Ref<Texture> texture, const float& tilingFactor) {
     texture->Bind();
 
     s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
@@ -141,11 +141,12 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
 }
 
 void Renderer2D::DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
-                                    const Ref<Texture>& texture, const float& tilingFactor) {
+                                    const Ref<Texture> texture, const float& tilingFactor) {
     DrawRotatedTexQuad({position.x, position.y, 1.0f}, size, rotation, texture, tilingFactor);
 }
 void Renderer2D::DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
-                                    const Ref<Texture>& texture, const float& tilingFactor) {
+                                    const Ref<Texture> texture, const float& tilingFactor) {
+    ZR_CORE_ASSERT(texture, "Texture is null!");
     texture->Bind();
 
     s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));

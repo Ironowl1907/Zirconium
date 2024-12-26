@@ -1,6 +1,8 @@
 #pragma once
+#include <cstdint>
 
 #include "zirconium.h"
+#include "Level.h"
 
 class Sandbox2D : public zirconium::Layer {
 public:
@@ -13,13 +15,11 @@ public:
     virtual void OnImGuiRender() override;
     virtual void OnEvent(zirconium::Event& event) override;
 
+    void CreateCamera2D(const uint32_t width, const uint32_t height);
+
 private:
-    zirconium::OrthoCameraController m_CameraController;
-
-    // This shouldn't be here TEMP
-    zirconium::Ref<zirconium::VertexArray> m_VertexArray;
-    zirconium::Ref<zirconium::Shader> m_FlatColorShader;
-
     zirconium::Ref<zirconium::Texture2D> m_Texture;
 
+    zirconium::Ref<zirconium::OrthoCamera> m_Camera;
+    zirconium::Ref<Level> m_Level;
 };
