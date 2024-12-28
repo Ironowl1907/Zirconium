@@ -16,6 +16,7 @@ void Sandbox2D::OnAttach() {
     ZR_PROFILE_FUNCTION();
 
     m_Level = std::make_shared<Level>();
+    m_Level->Init();
 }
 void Sandbox2D::OnDetach() {}
 void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
@@ -25,17 +26,6 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
     // Update
     {
         ZR_PROFILE_SCOPE("Render");
-        // zirconium::RenderCommand::SetClearColor({0.5294, 0.8078, 0.9216, 1.0}); // Set clear color (sky blue)
-        // zirconium::RenderCommand::Clear();
-
-        // zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-        // {
-        //     ZR_PROFILE_SCOPE("Drawing");
-        //     zirconium::Renderer2D::DrawQuad({0.0f, 0.0f}, {1.0f, 1.0f}, {0.1f, 0.3f, 0.9f, 1.0f});
-        // }
-
-        // zirconium::Renderer2D::EndScene();
 
         zirconium::RenderCommand::SetClearColor({0.5294, 0.8078, 0.9216, 1.0}); // Set clear color (sky blue)
         zirconium::RenderCommand::Clear();
@@ -50,7 +40,7 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
 }
 
 void Sandbox2D::OnImGuiRender() {
-  m_Level->GetPlayer().OnImGuiRender();
+    m_Level->GetPlayer().OnImGuiRender();
 }
 
 void Sandbox2D::OnEvent(zirconium::Event& event) {

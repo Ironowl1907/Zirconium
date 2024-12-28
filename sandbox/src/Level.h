@@ -1,5 +1,7 @@
 #pragma once
+#include "Pipe.h"
 #include "Player.h"
+// std::vector<Pipe> m_Pipes
 #include "zirconium.h"
 class Level {
 public:
@@ -18,5 +20,5 @@ public:
 
 private:
     Player m_Player;
-    // std::vector<Pipe> m_Pipes
+    PipeContainer m_Pipes;
 };
