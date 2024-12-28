@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "zrpch.h"
 #include <GL/gl.h>
+#include <cstdint>
 
 namespace zirconium {
 
@@ -19,12 +20,13 @@ void OpenGLRenderAPI::Init() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void OpenGLRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height){
-  glViewport(x, y, width, height);
+void OpenGLRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+    glViewport(x, y, width, height);
 }
 
-void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray) {
-    glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount) {
+    uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
+    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
 } // namespace zirconium

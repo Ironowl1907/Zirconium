@@ -123,6 +123,7 @@ class VertexBuffer {
 public:
     virtual ~VertexBuffer() {}
 
+    static Ref<VertexBuffer> Create(uint32_t size);
     static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 
     virtual void Bind() const = 0;
@@ -130,6 +131,8 @@ public:
 
     virtual void SetLayout(const BufferLayout& layout) = 0;
     virtual BufferLayout& GetLayout() = 0;
+
+    virtual void SetData(const void* data, const uint32_t& size) = 0;
 };
 
 class IndexBuffer {

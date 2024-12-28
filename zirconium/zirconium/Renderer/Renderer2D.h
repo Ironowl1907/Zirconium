@@ -11,6 +11,8 @@ public:
     static void BeginScene(const OrthoCamera& camera);
     static void EndScene();
 
+    static void Flush();
+
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
                          const float& tilingFactor = 1);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
@@ -26,10 +28,10 @@ public:
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                 const Ref<Texture>& texture, const float& tilingFactor = 1);
 
-    static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size,
-                                   const float& rotation, const Ref<Texture>& texture, const float& tilingFactor = 1);
-    static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size,
-                                   const float& rotation, const Ref<Texture>& texture, const float& tilingFactor = 1);
+    static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
+                                   const Ref<Texture>& texture, const float& tilingFactor = 1);
+    static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
+                                   const Ref<Texture>& texture, const float& tilingFactor = 1);
 };
 
 } // namespace zirconium

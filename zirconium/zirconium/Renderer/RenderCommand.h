@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RendererAPI.h"
+#include <cstdint>
 enum class RenderAPI {
     None = 0,
     OpenGL = 1,
@@ -10,8 +11,8 @@ namespace zirconium {
 
 class RenderCommand {
 public:
-    static inline void DrawIndexed(const Ref<VertexArray>& vertexArray) {
-        s_RendererAPI->DrawIndexed(vertexArray);
+    static inline void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0) {
+        s_RendererAPI->DrawIndexed(vertexArray, count);
     }
 
     static inline void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
