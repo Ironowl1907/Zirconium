@@ -244,4 +244,17 @@ void OpenGLShader::SetUniformInt(const std::string& name, const int n) {
     glUniform1i(location, n);
 }
 
+void OpenGLShader::SetIntArray(const std::string& name, const int* arr, size_t count) {
+    ZR_PROFILE_FUNCTION();
+
+    SetUniformIntArray(name, arr, count);
+}
+void OpenGLShader::SetUniformIntArray(const std::string& name, const int* arr, size_t count) {
+
+    ZR_PROFILE_FUNCTION();
+
+    glUseProgram(m_RendererID);
+    uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1iv(location, count, arr);
+}
 } // namespace zirconium

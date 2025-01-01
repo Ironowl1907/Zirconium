@@ -22,6 +22,10 @@ public:
 
     virtual void Bind(const uint32_t slot) const override;
 
+    virtual bool operator==(const Texture2D& other) override {
+        return ((OpenGLTexture2D&)other).m_RendererID == m_RendererID;
+    }
+
 private:
     std::string m_Path;
     uint32_t m_Height, m_Width;

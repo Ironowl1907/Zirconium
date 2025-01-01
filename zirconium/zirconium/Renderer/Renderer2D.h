@@ -18,9 +18,9 @@ public:
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
                          const float& tilingFactor = 1);
 
-    static void DrawTexQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture>& texture,
+    static void DrawTexQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                             const float& tilingFactor = 1);
-    static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture>& texture,
+    static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                             const float& tilingFactor = 1);
 
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,

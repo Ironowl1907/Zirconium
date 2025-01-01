@@ -28,11 +28,11 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
 
         {
             ZR_PROFILE_SCOPE("Drawing");
+            zirconium::Renderer2D::DrawTexQuad({10.0f, 10.0f}, {1.0f, 1.0f}, m_Texture, 50.0f);
             zirconium::Renderer2D::DrawQuad({-0.5f, -0.5f}, {1.0f, 1.0f}, {0.1f, 0.3f, 0.9f, 1.0f});
             zirconium::Renderer2D::DrawQuad({0.5f, 0.6f}, {1.3f, 1.0f}, {0.8f, 0.3f, 0.2f, 1.0f});
             zirconium::Renderer2D::DrawQuad({0.8f, -0.7f}, {1.0f, 0.5f}, {0.2f, 0.8f, 0.2f, 1.0f});
-            // zirconium::Renderer2D::DrawRotatedQuad({-0.8f, 0.7f, 0.1f}, {1.0f, 1.0f}, 45.0f, {0.5f, 0.1f, 0.8f, 1.0f});
-            // zirconium::Renderer2D::DrawRotatedTexQuad({0.0f, 0.0f, -0.1f}, {30.0f, 30.0f}, 45.0f, m_Texture,10.0f);
+            zirconium::Renderer2D::DrawTexQuad({-5.0f, -5.0f}, {10.0f, 10.0f}, m_Texture, 10.0f);
         }
 
         zirconium::Renderer2D::EndScene();

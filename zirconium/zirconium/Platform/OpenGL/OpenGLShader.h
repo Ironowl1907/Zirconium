@@ -2,6 +2,7 @@
 
 #include "zirconium/Renderer/Shader.h"
 #include <GL/gl.h>
+#include <cstddef>
 #include <glm/glm.hpp>
 #include <string>
 #include <unistd.h>
@@ -26,12 +27,14 @@ public:
     void SetFloat3(const std::string& name, const glm::vec3& vec) override;
     void SetFloat4(const std::string& name, const glm::vec4& vec) override;
     void SetInt(const std::string& name, const int& n) override;
+    void SetIntArray(const std::string& name, const int* arr, size_t count) override;
 
     // Uniforms
     void SetUniformMatrix4f(const std::string& name, const glm::mat4& mat);
     void SetUniformFloat4(const std::string& name, const glm::vec4 vec);
     void SetUniformFloat3(const std::string& name, const glm::vec3 vec);
     void SetUniformInt(const std::string& name, const int n);
+    void SetUniformIntArray(const std::string& name, const int* arr, size_t count);
 
 private:
     void Compile(const std::unordered_map<GLenum, std::string>& shaderSrcs);
