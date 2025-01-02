@@ -75,7 +75,7 @@ linkoptions({ "-pthread" })
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
 optimize("Debug")
 
 -- Release Configuration
@@ -117,7 +117,7 @@ linkoptions({ "-pthread" })
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
 symbols("On")     -- Enable debug symbols
 optimize("Debug") -- Optimize for debugging
 

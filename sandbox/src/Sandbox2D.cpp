@@ -13,11 +13,13 @@ void Sandbox2D::OnAttach() {
     m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
 }
 void Sandbox2D::OnDetach() {}
+
 void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
 
     ZR_PROFILE_FUNCTION();
 
     // Update
+
     // Reset Stats
     zirconium::Renderer2D::ResetStats();
     m_CameraController.OnUpdate(delta);
@@ -45,8 +47,8 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
 
         {
             ZR_PROFILE_SCOPE("Drawing");
-            for (float y = -5.0f; y < 5.0f; y += 0.1f) {
-                for (float x = 5.0f; x < 5.0f; x += 0.1f) {
+            for (float y = -20.0f; y < 20.0f; y += 0.1f) {
+                for (float x = -20.0f; x < 20.0f; x += 0.1f) {
                     glm::vec4 color = {(x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.4f};
                     zirconium::Renderer2D::DrawQuad({x, y, 1.0f}, {0.45f, 0.45f}, color);
                 }

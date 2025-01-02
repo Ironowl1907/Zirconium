@@ -39,7 +39,7 @@ struct Renderer2DStorage {
     static const uint32_t MaxQuads = 10000;
     static const uint32_t MaxVertices = MaxQuads * 4;
     static const uint32_t MaxIndices = MaxQuads * 6; // MUST BE DIVISIBLE FOR 6!!!
-    static const uint32_t MaxTextureSlots = 32;       // TODO: RenderCAPS
+    static const uint32_t MaxTextureSlots = 32;      // TODO: RenderCAPS
 
     Ref<VertexArray> QuadVertexArray;
     Ref<VertexBuffer> QuadVertexBuffer;
@@ -169,8 +169,11 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 
     const float texIndex = 0.0f;
 
-    glm::mat4 transform =
-        glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+    glm::mat4 transform;
+    {
+        ZR_PROFILE_SCOPE("Transformation Matrix");
+        transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+    }
 
     s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[0];
     s_Data.QuadVertexBufferPtr->Color = color;

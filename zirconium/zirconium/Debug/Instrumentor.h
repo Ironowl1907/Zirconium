@@ -113,8 +113,7 @@ private:
 };
 } // namespace zirconium
 
-#define ZR_PROFILE 1
-#if ZR_PROFILE
+#ifdef ZR_PROFILE
 #    define ZR_PROFILE_BEGIN_SESSION(name, filepath) ::zirconium::Instrumentor::Get().BeginSession(name, filepath)
 #    define ZR_PROFILE_END_SESSION() ::zirconium::Instrumentor::Get().EndSession()
 #    define ZR_PROFILE_SCOPE(name) ::zirconium::InstrumentationTimer timer##__LINE__(name)
