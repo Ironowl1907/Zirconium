@@ -32,6 +32,27 @@ public:
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
     static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
+
+private:
+    static void FlushAndReset();
+
+    // Statistics
+
+public:
+    struct Statistics {
+        uint32_t DrawCalls = 0;
+        uint32_t QuadCount = 0;
+
+        uint32_t GetTotalVertexCount() {
+            return QuadCount * 4;
+        }
+        uint32_t GetTotalIndexCount() {
+            return QuadCount * 6;
+        }
+    };
+
+    static Statistics GetStats();
+    static void ResetStats();
 };
 
 } // namespace zirconium
