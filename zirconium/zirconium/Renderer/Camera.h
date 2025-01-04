@@ -2,7 +2,6 @@
 #include "glm/glm.hpp"
 #include <glm/geometric.hpp>
 
-
 namespace zirconium {
 class OrthoCamera {
 public:
@@ -32,7 +31,6 @@ public:
     inline const float& GetRotation() const {
         return m_Rotation;
     }
-
 
     inline const glm::vec3& GetTarget() const {
         return m_Target;

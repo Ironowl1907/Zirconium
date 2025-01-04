@@ -1,6 +1,7 @@
 #pragma once
 
 #include "zirconium.h"
+#include "ParticleSystem.h"
 
 class Sandbox2D : public zirconium::Layer {
 public:
@@ -22,4 +23,6 @@ private:
 
     zirconium::Ref<zirconium::Texture2D> m_Texture;
 
+    ParticleSystem m_ParticleSystem;
+    ParticleProps m_Particle;
 };

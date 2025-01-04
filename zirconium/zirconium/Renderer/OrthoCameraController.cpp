@@ -13,7 +13,8 @@ namespace zirconium {
 OrthoCameraController::OrthoCameraController(const float aspectRatio, const float rotation)
     : m_AspectRatio(aspectRatio)
     , m_EnableRotation(rotation)
-    , m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel) {}
+    , m_Bounds({-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel})
+    , m_Camera(m_Bounds.Left, m_Bounds.Right, m_Bounds.Up, m_Bounds.Down) {}
 
 void OrthoCameraController::OnUpdate(TimeStep delta) {
 
@@ -54,13 +55,15 @@ bool OrthoCameraController::onMouseScrolled(MouseScrollEvent& e) {
     m_ZoomLevel -= e.getYOffset() * 0.1f;
     m_ZoomLevel = std::max(0.25f, m_ZoomLevel);
     m_Camera.SetProyection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    m_Bounds = {-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
 
     m_CameraSpeed = m_ZoomLevel;
     return false;
 }
 bool OrthoCameraController::onWindowResized(WindowResizeEvent& e) {
     m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-    m_Camera.SetProyection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    m_Bounds = {-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
+    m_Camera.SetProyection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Up, m_Bounds.Down);
     return false;
 }
 
