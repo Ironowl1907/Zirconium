@@ -2,6 +2,8 @@
 
 #include "ParticleSystem.h"
 #include "zirconium.h"
+#include <sys/types.h>
+#include <unordered_map>
 
 class Sandbox2D : public zirconium::Layer {
 public:
@@ -23,8 +25,10 @@ private:
 
     zirconium::Ref<zirconium::Texture2D> m_Texture;
     zirconium::Ref<zirconium::Texture2D> m_SpriteSheet;
-    zirconium::Ref<zirconium::SubTexture2D> m_Stairs, m_Barrel, m_Tree;
 
     ParticleSystem m_ParticleSystem;
     ParticleProps m_Particle;
+
+    u_int32_t m_MapWidth = 24, m_MapHeight = 13;
+    std::unordered_map<char, zirconium::Ref<zirconium::SubTexture2D>> s_TextureMap;
 };

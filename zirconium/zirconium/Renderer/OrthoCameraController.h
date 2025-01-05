@@ -28,6 +28,10 @@ public:
     void OnUpdate(TimeStep delta);
     void OnEvent(Event& e);
 
+    void SetZoomLevel(const float& zoom);
+
+    void CalculateView();
+
     OrthoCamera& GetCamera() {
         return m_Camera;
     }

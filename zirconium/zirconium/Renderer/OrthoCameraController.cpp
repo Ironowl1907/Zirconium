@@ -1,3 +1,4 @@
+#include "OrthoCameraController.h"
 #include "zrpch.h"
 
 #include "core.h"
@@ -54,16 +55,14 @@ void OrthoCameraController::OnEvent(Event& e) {
 bool OrthoCameraController::onMouseScrolled(MouseScrollEvent& e) {
     m_ZoomLevel -= e.getYOffset() * 0.1f;
     m_ZoomLevel = std::max(0.25f, m_ZoomLevel);
-    m_Camera.SetProyection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
-    m_Bounds = {-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
+    CalculateView();
 
     m_CameraSpeed = m_ZoomLevel;
     return false;
 }
 bool OrthoCameraController::onWindowResized(WindowResizeEvent& e) {
     m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-    m_Bounds = {-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
-    m_Camera.SetProyection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Up, m_Bounds.Down);
+    CalculateView();
     return false;
 }
 
@@ -97,6 +96,16 @@ void OrthoCameraController::CameraDebugUI() {
     ImGui::Text("%.2f", m_ZoomLevel);
 
     ImGui::End();
+}
+
+void OrthoCameraController::SetZoomLevel(const float& zoom) {
+    m_ZoomLevel = zoom;
+    CalculateView();
+}
+
+void OrthoCameraController::CalculateView() {
+    m_Bounds = {-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
+    m_Camera.SetProyection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Up, m_Bounds.Down);
 }
 
 } // namespace zirconium
