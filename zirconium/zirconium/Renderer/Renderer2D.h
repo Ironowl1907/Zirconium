@@ -1,5 +1,7 @@
 #pragma once
+#include "SubTexture2D.h"
 #include "zirconium/Renderer/Camera.h"
+#include "zirconium/Renderer/SubTexture2D.h"
 #include "zirconium/Renderer/Texture.h"
 
 namespace zirconium {
@@ -22,6 +24,10 @@ public:
                             const float& tilingFactor = 1);
     static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                             const float& tilingFactor = 1);
+    static void DrawTexQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture,
+                            const float& tilingFactor = 1);
+    static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture,
+                            const float& tilingFactor = 1);
 
     static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
                                 const glm::vec4& color, const float& tilingFactor = 1);
@@ -32,6 +38,10 @@ public:
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
     static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
+    static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
+                                   const Ref<SubTexture2D>& subTexture, const float& tilingFactor = 1);
+    static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
+                                   const Ref<SubTexture2D>& subTexture, const float& tilingFactor = 1);
 
 private:
     static void FlushAndReset();

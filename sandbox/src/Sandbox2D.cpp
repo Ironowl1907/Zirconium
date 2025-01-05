@@ -11,6 +11,10 @@ void Sandbox2D::OnAttach() {
     ZR_PROFILE_FUNCTION();
 
     m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
+    m_SpriteSheet = zirconium::Texture2D::Create("../sandbox/res/textures/RPGpack_sheet_2X.png");
+    m_Stairs = zirconium::SubTexture2D::CreateFromCoords(m_SpriteSheet, {7, 6}, {128, 128});
+    m_Barrel = zirconium::SubTexture2D::CreateFromCoords(m_SpriteSheet, {9, 2}, {128, 128});
+    m_Tree = zirconium::SubTexture2D::CreateFromCoords(m_SpriteSheet, {2, 1}, {128, 128}, {1, 2});
 
     m_Particle.ColorBegin = {254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f};
     m_Particle.ColorEnd = {254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f};
@@ -36,39 +40,45 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
         zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         zirconium::RenderCommand::Clear();
 
-        zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        m_ParticleSystem.OnUpdate(delta);
-        m_ParticleSystem.OnRender(m_CameraController.GetCamera());
-        zirconium::Renderer2D::EndScene();
+        // zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        // m_ParticleSystem.OnUpdate(delta);
+        // m_ParticleSystem.OnRender(m_CameraController.GetCamera());
+        // zirconium::Renderer2D::EndScene();
+
+        // zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+
+        // {
+        //     static float rotation = 0.0f;
+        //     rotation += 200.0f * delta;
+        //     ZR_PROFILE_SCOPE("Drawing");
+        //     zirconium::Renderer2D::DrawRotatedTexQuad({10.0f, 10.0f}, {1.0f, 1.0f}, 45.0f, m_Texture, 50.0f);
+        //     zirconium::Renderer2D::DrawQuad({-0.5f, -0.5f}, {1.0f, 1.0f}, {0.1f, 0.3f, 0.9f, 1.0f});
+        //     zirconium::Renderer2D::DrawQuad({0.5f, 0.6f}, {1.3f, 1.0f}, {0.8f, 0.3f, 0.2f, 1.0f});
+        //     zirconium::Renderer2D::DrawQuad({0.8f, -0.7f}, {1.0f, 0.5f}, {0.2f, 0.8f, 0.2f, 1.0f});
+        //     zirconium::Renderer2D::DrawRotatedQuad({1.8f, -1.7f}, {1.0f, 0.5f}, glm::radians(rotation),
+        //                                            {0.2f, 0.7f, 0.8f, 1.0f});
+        //     zirconium::Renderer2D::DrawTexQuad({0.0f, 0.0f}, {10.0f, 10.0f}, m_Texture, 10.0f);
+        // }
+
+        // zirconium::Renderer2D::EndScene();
+        // zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+
+        // {
+        //     ZR_PROFILE_SCOPE("Drawing");
+        //     for (float y = -20.0f; y < 20.0f; y += 0.1f) {
+        //         for (float x = -20.0f; x < 20.0f; x += 0.1f) {
+        //             glm::vec4 color = {(x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.4f};
+        //             zirconium::Renderer2D::DrawQuad({x, y, 1.0f}, {0.45f, 0.45f}, color);
+        //         }
+        //     }
+        // }
+
+        // zirconium::Renderer2D::EndScene();
 
         zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-        {
-            static float rotation = 0.0f;
-            rotation += 200.0f * delta;
-            ZR_PROFILE_SCOPE("Drawing");
-            zirconium::Renderer2D::DrawRotatedTexQuad({10.0f, 10.0f}, {1.0f, 1.0f}, 45.0f, m_Texture, 50.0f);
-            zirconium::Renderer2D::DrawQuad({-0.5f, -0.5f}, {1.0f, 1.0f}, {0.1f, 0.3f, 0.9f, 1.0f});
-            zirconium::Renderer2D::DrawQuad({0.5f, 0.6f}, {1.3f, 1.0f}, {0.8f, 0.3f, 0.2f, 1.0f});
-            zirconium::Renderer2D::DrawQuad({0.8f, -0.7f}, {1.0f, 0.5f}, {0.2f, 0.8f, 0.2f, 1.0f});
-            zirconium::Renderer2D::DrawRotatedQuad({1.8f, -1.7f}, {1.0f, 0.5f}, glm::radians(rotation),
-                                                   {0.2f, 0.7f, 0.8f, 1.0f});
-            zirconium::Renderer2D::DrawTexQuad({0.0f, 0.0f}, {10.0f, 10.0f}, m_Texture, 10.0f);
-        }
-
-        zirconium::Renderer2D::EndScene();
-        zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-        {
-            ZR_PROFILE_SCOPE("Drawing");
-            for (float y = -20.0f; y < 20.0f; y += 0.1f) {
-                for (float x = -20.0f; x < 20.0f; x += 0.1f) {
-                    glm::vec4 color = {(x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.4f};
-                    zirconium::Renderer2D::DrawQuad({x, y, 1.0f}, {0.45f, 0.45f}, color);
-                }
-            }
-        }
-
+        zirconium::Renderer2D::DrawTexQuad({0.5f, 0.0f}, {1.0f, 1.0f}, m_Stairs, 1.0f);
+        zirconium::Renderer2D::DrawTexQuad({-0.5f, 0.0f}, {1.0f, 1.0f}, m_Barrel, 1.0f);
+        zirconium::Renderer2D::DrawTexQuad({2.0f, 0.0f}, {1.0f, 2.0f}, m_Tree, 1.0f);
         zirconium::Renderer2D::EndScene();
     }
 
