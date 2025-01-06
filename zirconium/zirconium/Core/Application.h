@@ -1,7 +1,7 @@
 #pragma once
 
-#include "zirconium/Core/window.h"
 #include "zirconium/Core/Timestep.h"
+#include "zirconium/Core/window.h"
 #include "zirconium/Events/ApplicationEvent.h"
 #include "zirconium/Events/KeyEvent.h"
 #include "zirconium/ImGui/imguiLayer.h"
@@ -30,6 +30,8 @@ public:
     inline Window& GetWindow() {
         return *m_Window;
     }
+
+    void Close();
 
 private:
     bool onWindowClose(WindowCloseEvent& event);

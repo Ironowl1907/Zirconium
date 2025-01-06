@@ -2,8 +2,6 @@
 
 #include "ParticleSystem.h"
 #include "zirconium.h"
-#include <sys/types.h>
-#include <unordered_map>
 
 class Sandbox2D : public zirconium::Layer {
 public:

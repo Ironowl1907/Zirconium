@@ -13,10 +13,10 @@ struct OrthoCameraBounds {
     float Left, Right;
     float Up, Down;
 
-    float GetWidth() {
+    float GetWidth() const {
         return Right - Left;
     }
-    float GetHeight() {
+    float GetHeight() const {
         return Up - Down;
     }
 };

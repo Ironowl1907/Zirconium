@@ -11,6 +11,10 @@ public:
     OpenGLTexture2D(const uint32_t& width, const uint32_t& height);
     ~OpenGLTexture2D();
 
+    virtual uint32_t GetRendererID() const override {
+        return m_RendererID;
+    }
+
     virtual uint32_t GetWidth() const override {
         return m_Width;
     }

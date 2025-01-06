@@ -1,3 +1,4 @@
+#include "Application.h"
 #include "core.h"
 #include "zrpch.h"
 
@@ -89,7 +90,7 @@ void Application::Run() {
     ZR_PROFILE_FUNCTION();
 
     while (m_Running) {
-      ZR_PROFILE_SCOPE("RunLoop");
+        ZR_PROFILE_SCOPE("RunLoop");
         float time = glfwGetTime();
         TimeStep deltaTime(time - m_LastFrameTime);
         m_LastFrameTime = time;
@@ -112,6 +113,9 @@ void Application::Run() {
         // Update window (swap buffers, poll events, etc.)
         m_Window->onUpdate();
     }
+}
+void Application::Close() {
+    m_Running = false;
 }
 
 } // namespace zirconium
