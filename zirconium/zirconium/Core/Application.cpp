@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "core.h"
+#include "window.h"
 #include "zrpch.h"
 
 #include "zirconium/Core/Application.h"
@@ -20,13 +21,13 @@ namespace zirconium {
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application() {
+Application::Application(const std::string& name) {
 
     ZR_PROFILE_FUNCTION();
 
     ZR_ASSERT(!s_Instance, "Application Already Exists!");
     s_Instance = this;
-    m_Window = std::unique_ptr<Window>(Window::Create());
+    m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
     m_Window->SetEventCallback(BIND_EVENT_FN(onEvent));
 
     Renderer::Init();

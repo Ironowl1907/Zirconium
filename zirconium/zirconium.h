@@ -33,6 +33,7 @@
 #include "zirconium/Renderer/VertexArray.h"
 #include "zirconium/Renderer/Texture.h"
 #include "zirconium/Renderer/SubTexture2D.h"
+#include "zirconium/Renderer/FrameBuffer.h"
 
 
 #include "zirconium/Renderer/Renderer2D.h"

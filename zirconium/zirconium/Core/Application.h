@@ -17,7 +17,7 @@ namespace zirconium {
 
 class Application {
 public:
-    Application();
+    Application(const std::string& name = "Zirconium App");
     virtual ~Application();
     void Run();
     void onEvent(Event& event);

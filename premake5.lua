@@ -1,8 +1,8 @@
-workspace("MyProject")
-workspace("MyProject")
+workspace("Zirconium")
+startproject("zirconium-Editor")
 -- warnings("Extra")
 architecture("x64")
-configurations({ "Debug", "Release", "Dist" })
+configurations({ "Debug", "Release", "Profile-Debug", "Profile-Release", "Dist" })
 location("build")
 
 newaction({
@@ -44,7 +44,7 @@ include("./zirconium/vendor/spdlog/")
 
 -- Project for zirconium static library
 project("zirconium")
-kind("staticLib") -- Create .so shared library
+kind("staticLib")
 language("C++")
 cppdialect "C++20"
 targetdir("bin/%{cfg.buildcfg}")
@@ -75,12 +75,22 @@ linkoptions({ "-pthread" })
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
 optimize("Debug")
 
 -- Release Configuration
 filter("configurations:Release")
 defines({ "ZIR_RELEASE", "ZR_ENABLE_ASSERTS" })
+optimize("On")
+
+-- Profile Debug Configuration
+filter("configurations:Profile-Debug")
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+optimize("Debug")
+
+-- Profile Release Configuration
+filter("configurations:Profile-Release")
+defines({ "ZIR_RELEASE", "ZR_ENABLE_ASSERTS", "ZR_PROFILE" })
 optimize("On")
 
 -- Distribution Configuration
@@ -95,7 +105,7 @@ buildoptions { "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter" } -- Enabl
 filter "toolset:msc"                                                    -- For MSVC (Microsoft compiler)
 buildoptions { "/W4", "/WX" }                                           -- Enable most warnings and treat warnings as errors (remove after finish)
 
--- Project for sandbox static library
+
 project("sandbox")
 kind("ConsoleApp") -- Changed from ConsoleApp to StaticLib
 language("C++")
@@ -115,6 +125,10 @@ filter("system:linux")
 buildoptions({ "-pthread" })
 linkoptions({ "-pthread" })
 
+-- Windows-specific settings
+filter("system:windows")
+systemversion "latest"
+
 -- Debug Configuration
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
@@ -126,6 +140,70 @@ filter("configurations:Release")
 defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
 symbols("Off") -- Disable debug symbols for release
 optimize("On") -- Optimize for performance
+
+-- Profile Debug Configuration
+filter("configurations:Profile-Debug")
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+optimize("Debug")
+
+-- Profile Release Configuration
+filter("configurations:Profile-Release")
+defines({ "ZIR_RELEASE", "ZR_ENABLE_ASSERTS", "ZR_PROFILE" })
+optimize("On")
+
+
+-- Distribution Configuration
+filter("configurations:Dist")
+defines({ "ZIR_DIST" })
+symbols("Off") -- Disable debug symbols for distribution
+optimize("On") -- Optimize for maximum performance
+
+
+project("zirconium-Editor")
+kind("ConsoleApp") -- Changed from ConsoleApp to StaticLib
+language("C++")
+cppdialect "C++20"
+staticruntime "on"
+targetdir("bin/%{cfg.buildcfg}")
+objdir("bin-int/%{cfg.buildcfg}/zirconium-Editor")
+files({ "./zirconium-Editor/src/**.cpp", "./zirconium-Editor/src/**.h" })
+
+includedirs({
+    "zirconium/",
+    "zirconium/vendor"
+})
+links({ "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+
+-- Linux-specific settings
+filter("system:linux")
+buildoptions({ "-pthread" })
+linkoptions({ "-pthread" })
+
+-- Windows-specific settings
+filter("system:windows")
+systemversion "latest"
+
+-- Debug Configuration
+filter("configurations:Debug")
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+symbols("On")     -- Enable debug symbols
+optimize("Debug") -- Optimize for debugging
+
+-- Release Configuration
+filter("configurations:Release")
+defines({ "ZIR_RELEASE", "ZIR_DEBUG", "ZR_ENABLE_ASSERTS" })
+symbols("Off") -- Disable debug symbols for release
+optimize("On") -- Optimize for performance
+
+-- Profile Debug Configuration
+filter("configurations:Profile-Debug")
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+optimize("Debug")
+
+-- Profile Release Configuration
+filter("configurations:Profile-Release")
+defines({ "ZIR_RELEASE", "ZR_ENABLE_ASSERTS", "ZR_PROFILE" })
+optimize("On")
 
 -- Distribution Configuration
 filter("configurations:Dist")
