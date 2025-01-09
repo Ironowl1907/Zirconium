@@ -29,6 +29,7 @@ public:
     void OnEvent(Event& e);
 
     void SetZoomLevel(const float& zoom);
+    void OnResize(float width, float height);
 
     void CalculateView();
 

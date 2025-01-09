@@ -64,7 +64,7 @@ includedirs({
     IncludeDir["glm"],
     IncludeDir["stb_image"],
 })
-links({ "spdLog", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
+links({ "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
 
@@ -115,10 +115,11 @@ objdir("bin-int/%{cfg.buildcfg}/sandbox")
 files({ "./sandbox/src/**.cpp", "./sandbox/src/**.h" })
 includedirs({
     "zirconium/",
+    "zirconium/vendor",
     IncludeDir["glm"],
     IncludeDir["ImGui"],
 })
-links({ "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+links({ "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 -- Linux-specific settings
 filter("system:linux")
@@ -170,9 +171,11 @@ files({ "./zirconium-Editor/src/**.cpp", "./zirconium-Editor/src/**.h" })
 
 includedirs({
     "zirconium/",
-    "zirconium/vendor"
+    "zirconium/vendor",
+    IncludeDir["glm"],
+    IncludeDir["spdlog"]
 })
-links({ "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 -- Linux-specific settings
 filter("system:linux")

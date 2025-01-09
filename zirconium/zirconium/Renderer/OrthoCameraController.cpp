@@ -60,6 +60,12 @@ bool OrthoCameraController::onMouseScrolled(MouseScrollEvent& e) {
     m_CameraSpeed = m_ZoomLevel;
     return false;
 }
+
+void OrthoCameraController::OnResize(float width, float height) {
+    m_AspectRatio = width / height;
+    CalculateView();
+}
+
 bool OrthoCameraController::onWindowResized(WindowResizeEvent& e) {
     m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
     CalculateView();
@@ -100,6 +106,7 @@ void OrthoCameraController::CameraDebugUI() {
 
 void OrthoCameraController::SetZoomLevel(const float& zoom) {
     m_ZoomLevel = zoom;
+    m_CameraSpeed = m_ZoomLevel;
     CalculateView();
 }
 

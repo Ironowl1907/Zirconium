@@ -31,6 +31,8 @@ private:
     ParticleSystem m_ParticleSystem;
     ParticleProps m_Particle;
 
+    glm::vec2 m_ViewportSize;
+
     u_int32_t m_MapWidth = 24, m_MapHeight = 13;
     std::unordered_map<char, Ref<SubTexture2D>> s_TextureMap;
 };

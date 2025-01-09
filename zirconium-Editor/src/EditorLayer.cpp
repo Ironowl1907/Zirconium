@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 #include "zirconium.h"
+#include <cstdint>
 
 namespace zirconium {
 EditorLayer::EditorLayer()
@@ -163,11 +164,19 @@ void EditorLayer::OnImGuiRender() {
         ImGui::End();
     }
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
     ImVec2 sizeViewport = ImGui::GetContentRegionAvail();
+    if (sizeViewport.x != m_ViewportSize.x || sizeViewport.y != m_ViewportSize.y) {
+        m_ViewportSize = {sizeViewport.x, sizeViewport.y};
+        m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+
+        m_CameraController.OnResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    }
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-    ImGui::Image(textureID, sizeViewport, ImVec2{0, 1}, ImVec2{1, 0});
+    ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
+    ImGui::PopStyleVar();
 
     ImGui::End();
 }
