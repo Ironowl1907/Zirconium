@@ -1,4 +1,5 @@
 #include "zirconium/ImGui/imguiLayer.h"
+#include "imguiLayer.h"
 #include "zirconium/Core/Application.h"
 
 #include "zirconium/Events/ApplicationEvent.h"
@@ -22,6 +23,14 @@ namespace zirconium {
 ImGuiLayer::ImGuiLayer()
     : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
+
+void ImGuiLayer::OnEvent(Event& e) {
+    if (m_BlockEvents) {
+        ImGuiIO& io = ImGui::GetIO();
+        e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+        e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+    }
+}
 
 void ImGuiLayer::OnAttach() {
 

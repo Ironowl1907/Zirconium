@@ -15,11 +15,18 @@ public:
     virtual void OnDetach() override;
     virtual void OnImGuiRender() override;
 
+    virtual void OnEvent(Event& e) override;
+
     static void Begin();
     static void End();
 
+    void BlockEvents(bool block) {
+        m_BlockEvents = block;
+    }
+
 private:
-    // float m_time = 0.0f;
+    bool m_BlockEvents = true;
+    // float m_Time = 0.0f;
 };
 
 } // namespace zirconium

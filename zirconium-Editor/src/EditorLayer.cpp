@@ -39,7 +39,9 @@ void EditorLayer::OnUpdate(zirconium::TimeStep delta) {
 
     // Reset Stats
     zirconium::Renderer2D::ResetStats();
-    m_CameraController.OnUpdate(delta);
+
+    if (m_ViewportFocused)
+        m_CameraController.OnUpdate(delta);
     {
         ZR_PROFILE_SCOPE("Render");
         m_Framebuffer->Bind();
@@ -166,6 +168,11 @@ void EditorLayer::OnImGuiRender() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
+
+    m_ViewportFocused = ImGui::IsWindowFocused();
+    m_ViewportHovered = ImGui::IsWindowHovered();
+    Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
     ImVec2 sizeViewport = ImGui::GetContentRegionAvail();
     if (sizeViewport.x != m_ViewportSize.x || sizeViewport.y != m_ViewportSize.y) {
         m_ViewportSize = {sizeViewport.x, sizeViewport.y};

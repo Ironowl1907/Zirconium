@@ -35,5 +35,8 @@ private:
 
     u_int32_t m_MapWidth = 24, m_MapHeight = 13;
     std::unordered_map<char, Ref<SubTexture2D>> s_TextureMap;
+
+    bool m_ViewportFocused = false;
+    bool m_ViewportHovered = false;
 };
 } // namespace zirconium

@@ -33,6 +33,10 @@ public:
 
     void Close();
 
+    ImGuiLayer* GetImGuiLayer() {
+        return m_ImGuiLayer;
+    }
+
 private:
     bool onWindowClose(WindowCloseEvent& event);
     bool onWindowResize(WindowResizeEvent& event);
