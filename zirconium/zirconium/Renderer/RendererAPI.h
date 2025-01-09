@@ -12,6 +12,7 @@ public:
     };
 
 public:
+    ~RendererAPI() = default;
     virtual void SetClearColor(glm::vec4& color) = 0;
     virtual void Init() = 0;
     virtual void Clear() = 0;

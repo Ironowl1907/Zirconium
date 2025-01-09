@@ -4,7 +4,6 @@
 #include "core.h"
 #include "zirconium/Core/log/log.h"
 #include "zirconium/Platform/linux/linux.h"
-#include "zirconium/Platform/linux/linuxInput.h"
 #include "zrpch.h"
 
 #include "zirconium/Events/ApplicationEvent.h"

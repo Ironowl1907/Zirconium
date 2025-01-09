@@ -6,15 +6,15 @@
 
 namespace zirconium {
 
-OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& specs)
-    : m_Specification(specs) {
-    Invalidate();
-}
 OpenGLFrameBuffer::~OpenGLFrameBuffer() {
     glDeleteFramebuffers(1, &m_RendererID);
     glDeleteTextures(1, &m_ColorAttachment);
     glDeleteTextures(1, &m_DepthAttachment);
 }
+
+OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& specs)
+    : m_Specification(specs) {
+    Invalidate(); }
 
 void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height) {
     m_Specification.Width = width;
