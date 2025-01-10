@@ -6,6 +6,8 @@
 
 namespace zirconium {
 
+static uint32_t s_MaxFramebufferSize = 10000;
+
 OpenGLFrameBuffer::~OpenGLFrameBuffer() {
     glDeleteFramebuffers(1, &m_RendererID);
     glDeleteTextures(1, &m_ColorAttachment);
@@ -14,9 +16,16 @@ OpenGLFrameBuffer::~OpenGLFrameBuffer() {
 
 OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& specs)
     : m_Specification(specs) {
-    Invalidate(); }
+    Invalidate();
+}
 
 void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height) {
+
+    if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
+        ZR_CORE_WARN("Attempted to resize frame buffer to {}x{}", width, height);
+        return;
+    }
+
     m_Specification.Width = width;
     m_Specification.Height = height;
 

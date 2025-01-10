@@ -36,6 +36,7 @@ IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 IncludeDir["glm"] = "./zirconium/vendor/glm/"
 IncludeDir["stb_image"] = "./zirconium/vendor/stb_image/"
+IncludeDir["entt"] = "./zirconium/vendor/entt/include"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
@@ -63,6 +64,7 @@ includedirs({
     IncludeDir["ImGui"],
     IncludeDir["glm"],
     IncludeDir["stb_image"],
+    IncludeDir["entt"],
 })
 links({ "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
@@ -118,6 +120,7 @@ includedirs({
     "zirconium/vendor",
     IncludeDir["glm"],
     IncludeDir["ImGui"],
+    IncludeDir["entt"],
 })
 links({ "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
@@ -173,7 +176,8 @@ includedirs({
     "zirconium/",
     "zirconium/vendor",
     IncludeDir["glm"],
-    IncludeDir["spdlog"]
+    IncludeDir["spdlog"],
+    IncludeDir["entt"],
 })
 links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
