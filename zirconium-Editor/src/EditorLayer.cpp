@@ -31,11 +31,11 @@ void EditorLayer::OnAttach() {
     fbSpec.Height = 720;
     m_Framebuffer = FrameBuffer::Create(fbSpec);
 
-    m_ActiveScene = std::make_shared<Scene>();
-    m_SquareEntity = m_ActiveScene->CreateEntity();
+    // Entity
+    auto square = m_ActiveScene->CreateEntity("Square");
+    square.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
 
-    m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity);
-    m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquareEntity, glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
+    m_SquareEntity = square;
 }
 void EditorLayer::OnDetach() {}
 
@@ -171,8 +171,10 @@ void EditorLayer::OnImGuiRender() {
         ImGui::End();
     }
     ImGui::Begin("Scuare Color");
-    auto& color = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
-    ImGui::ColorEdit4("Scuare color", glm::value_ptr(color));
+    if (m_SquareEntity) {
+        auto& color = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+        ImGui::ColorEdit4("Scuare color", glm::value_ptr(color));
+    }
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});

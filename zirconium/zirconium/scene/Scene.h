@@ -3,21 +3,20 @@
 #include "zirconium/Core/Timestep.h"
 
 namespace zirconium {
+class Entity;
+
 class Scene {
 public:
     Scene();
     ~Scene();
 
-    entt::entity CreateEntity();
-
-    // TEMP
-    entt::registry& Reg() {
-        return m_Registry;
-    }
+    Entity CreateEntity(const std::string& name = "");
 
     void OnUpdate(TimeStep delta);
 
 private:
     entt::registry m_Registry;
+
+    friend class Entity;
 };
 } // namespace zirconium

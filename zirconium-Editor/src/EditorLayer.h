@@ -42,6 +42,6 @@ private:
     bool m_ViewportHovered = false;
 
     // TEMP:
-    entt::entity m_SquareEntity;
+    Entity m_SquareEntity;
 };
 } // namespace zirconium
