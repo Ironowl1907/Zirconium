@@ -1,60 +1,27 @@
 #include "glm/glm.hpp"
 #include "zrpch.h"
 
+#include "zirconium/Renderer/Renderer2D.h"
+#include "zirconium/scene/Components.h"
+
 #include "Scene.h"
 
 namespace zirconium {
 
-Scence::Scence() {
-    struct MeshComponent {
-        int Mesh;
+Scene::Scene() {};
 
-        MeshComponent() = default;
+Scene::~Scene() {}
 
-        MeshComponent(const MeshComponent&) = default;
+void Scene::OnUpdate(TimeStep delta) {
+    auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+    for (auto entity : group) {
+        const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-        operator const int&() const {
-            return Mesh;
-        }
-        operator int&() {
-            return Mesh;
-        }
-
-        MeshComponent(const int mesh)
-            : Mesh(mesh) {}
-    };
-    struct TransformComponent {
-        glm::mat4 Transform;
-
-        TransformComponent() = default;
-
-        TransformComponent(const TransformComponent&) = default;
-
-        operator const glm::mat4&() const {
-            return Transform;
-        }
-        operator glm::mat4&() {
-            return Transform;
-        }
-
-        TransformComponent(const glm::mat4 transform)
-            : Transform(transform) {}
-    };
-
-    entt::entity entity = m_Registry.Create();
-    m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
-
-    if (m_Registry.has<TransformComponent>(entity))
-        TransformComponent& transform = m_Registry.get<TransformComponent>(entity);
-
-    auto view = m_Registry.view<TransformComponent>();
-
-    for (auto entity : view)
-        TransformComponent& transform = m_Registry.get<TransformComponent>(entity);
-
-    auto group = m_Registry.group<TransformComponent>(entt::get<MeshComponent>);
-    for (auto entity : group)
-        auto& [transform, mesh] = m_Registry.get<TransformComponent, MeshComponent>(entity);
+        Renderer2D::DrawTransformedQuad((glm::mat4)transform, (glm::vec4)sprite);
+    }
 }
-Scence::~Scence() {}
+
+entt::entity Scene::CreateEntity() {
+    return m_Registry.create();
+}
 } // namespace zirconium

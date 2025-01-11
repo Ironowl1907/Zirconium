@@ -1,7 +1,9 @@
+#include "zrpch.h"
+
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 #include "zirconium.h"
-#include <cstdint>
+#include "zirconium/scene/Components.h"
 
 namespace zirconium {
 EditorLayer::EditorLayer()
@@ -12,7 +14,7 @@ void EditorLayer::OnAttach() {
 
     ZR_PROFILE_FUNCTION();
 
-    m_Texture = zirconium::Texture2D::Create("../sandbox/res/textures/textureTest.png");
+    m_Texture = Texture2D::Create("../sandbox/res/textures/textureTest.png");
 
     m_Particle.ColorBegin = {254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f};
     m_Particle.ColorEnd = {254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f};
@@ -24,46 +26,49 @@ void EditorLayer::OnAttach() {
 
     m_CameraController.SetZoomLevel(5.0f);
 
-    zirconium::FrameBufferSpecification fbSpec;
+    FrameBufferSpecification fbSpec;
     fbSpec.Width = 1280;
     fbSpec.Height = 720;
-    m_Framebuffer = zirconium::FrameBuffer::Create(fbSpec);
+    m_Framebuffer = FrameBuffer::Create(fbSpec);
+
+    m_ActiveScene = std::make_shared<Scene>();
+    m_SquareEntity = m_ActiveScene->CreateEntity();
+
+    m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity);
+    m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquareEntity, glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
 }
 void EditorLayer::OnDetach() {}
 
-void EditorLayer::OnUpdate(zirconium::TimeStep delta) {
+void EditorLayer::OnUpdate(TimeStep delta) {
 
     ZR_PROFILE_FUNCTION();
 
-    // Update
-
     // Reset Stats
-    zirconium::Renderer2D::ResetStats();
+    Renderer2D::ResetStats();
 
     if (m_ViewportFocused)
         m_CameraController.OnUpdate(delta);
+
     {
         ZR_PROFILE_SCOPE("Render");
         m_Framebuffer->Bind();
-        zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
-        zirconium::RenderCommand::Clear();
+        RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
+        RenderCommand::Clear();
 
-        zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-        for (int y = 0; y < 100; y++) {
-            for (int x = 0; x < 100; x++) {
-                zirconium::Renderer2D::DrawQuad({x - m_CameraController.GetBounds().GetWidth() / 2, y}, {0.9f, 0.9f},
-                                                {x / 100.0f, y / 100.0f, 1.0f, 1.0f});
-            }
-        }
-        zirconium::Renderer2D::EndScene();
+        // Update Scene
+        m_ActiveScene->OnUpdate(delta);
+
+        Renderer2D::EndScene();
+
         m_Framebuffer->Unbind();
     }
 
-    if (zirconium::Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT)) {
-        auto [x, y] = zirconium::Input::GetMousePosition();
-        auto width = zirconium::Application::Get().GetWindow().GetWidth();
-        auto height = zirconium::Application::Get().GetWindow().GetHeight();
+    if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT)) {
+        auto [x, y] = Input::GetMousePosition();
+        auto width = Application::Get().GetWindow().GetWidth();
+        auto height = Application::Get().GetWindow().GetHeight();
 
         auto bounds = m_CameraController.GetBounds();
         auto pos = m_CameraController.GetCamera().GetPosition();
@@ -149,14 +154,14 @@ void EditorLayer::OnImGuiRender() {
             // which we can't undo at the moment without finer window depth/z control.
 
             if (ImGui::MenuItem("Exit", NULL, false))
-                zirconium::Application::Get().Close();
+                Application::Get().Close();
             ImGui::EndMenu();
         }
 
         ImGui::EndMenuBar();
         ImGui::Begin("Profiling");
 
-        auto stats = zirconium::Renderer2D::GetStats();
+        auto stats = Renderer2D::GetStats();
         ImGui::Text("Renderer 2D stats: ");
         ImGui::Text("Draw call %d", stats.DrawCalls);
         ImGui::Text("Quads %d", stats.QuadCount);
@@ -165,6 +170,10 @@ void EditorLayer::OnImGuiRender() {
 
         ImGui::End();
     }
+    ImGui::Begin("Scuare Color");
+    auto& color = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
+    ImGui::ColorEdit4("Scuare color", glm::value_ptr(color));
+    ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
@@ -188,7 +197,7 @@ void EditorLayer::OnImGuiRender() {
     ImGui::End();
 }
 
-void EditorLayer::OnEvent(zirconium::Event& event) {
+void EditorLayer::OnEvent(Event& event) {
     m_CameraController.OnEvent(event);
 }
 } // namespace zirconium

@@ -11,3 +11,6 @@
 [submodule "zirconium/vendor/glm"]
 	path = zirconium/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "zirconium/vendor/entt"]
+	path = zirconium/vendor/entt
+	url = https://github.com/skypjack/entt.git

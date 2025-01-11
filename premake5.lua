@@ -36,7 +36,7 @@ IncludeDir["Glad"] = "./zirconium/vendor/glad/include/"
 IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 IncludeDir["glm"] = "./zirconium/vendor/glm/"
 IncludeDir["stb_image"] = "./zirconium/vendor/stb_image/"
-IncludeDir["entt"] = "./zirconium/vendor/entt/include"
+IncludeDir["entt"] = "./zirconium/vendor/entt/src/entt"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "zirconium.h"
 #include "ParticleSystem.h"
+#include "zirconium.h"
 
 namespace zirconium {
 
@@ -25,6 +25,8 @@ private:
     Ref<Shader> m_FlatColorShader;
     Ref<FrameBuffer> m_Framebuffer;
 
+    Ref<Scene> m_ActiveScene;
+
     Ref<Texture2D> m_Texture;
     Ref<Texture2D> m_SpriteSheet;
 
@@ -38,5 +40,8 @@ private:
 
     bool m_ViewportFocused = false;
     bool m_ViewportHovered = false;
+
+    // TEMP:
+    entt::entity m_SquareEntity;
 };
 } // namespace zirconium

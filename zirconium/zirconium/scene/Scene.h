@@ -1,11 +1,21 @@
 #pragma once
 #include "entt.hpp"
+#include "zirconium/Core/Timestep.h"
 
 namespace zirconium {
-class Scence {
+class Scene {
 public:
-    Scence();
-    ~Scence();
+    Scene();
+    ~Scene();
+
+    entt::entity CreateEntity();
+
+    // TEMP
+    entt::registry& Reg() {
+        return m_Registry;
+    }
+
+    void OnUpdate(TimeStep delta);
 
 private:
     entt::registry m_Registry;
