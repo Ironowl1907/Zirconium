@@ -10,7 +10,9 @@
 
 namespace zirconium {
 
-Scene::Scene() {};
+Scene::Scene() {
+    m_Registry = entt::registry();
+};
 
 Scene::~Scene() {}
 
@@ -24,10 +26,11 @@ void Scene::OnUpdate(TimeStep delta) {
 }
 
 Entity Scene::CreateEntity(const std::string& name) {
-    Entity entity = {m_Registry.create(), this};
+    entt::entity ent = m_Registry.create();
+    Entity entity = Entity(ent, this);
     entity.AddComponent<TransformComponent>();
     auto& tag = entity.AddComponent<TagComponent>();
-    tag.Tag = (name.empty()) ? "Entiry" : name;
+    tag.Tag = (name.empty()) ? "Entity" : name;
 
     return entity;
 }

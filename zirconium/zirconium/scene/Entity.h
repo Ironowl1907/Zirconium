@@ -19,7 +19,7 @@ public:
     template <typename T>
     T& GetComponent() {
         ZR_CORE_ASSERT(HasComponent<T>(), "Entity already does not has component")
-        return m_Scene->m_Registry.get(m_EntityHandle);
+        return m_Scene->m_Registry.get<T>(m_EntityHandle);
     }
 
     template <typename T>

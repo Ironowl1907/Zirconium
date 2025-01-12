@@ -31,6 +31,9 @@ void EditorLayer::OnAttach() {
     fbSpec.Height = 720;
     m_Framebuffer = FrameBuffer::Create(fbSpec);
 
+    //Scene
+    m_ActiveScene = std::make_shared<Scene>();
+
     // Entity
     auto square = m_ActiveScene->CreateEntity("Square");
     square.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
