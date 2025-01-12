@@ -27,10 +27,11 @@ void EditorLayer::OnAttach() {
     m_ActiveScene = std::make_shared<Scene>();
 
     // Entity
-    auto square = m_ActiveScene->CreateEntity("Square");
-    square.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
+    m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+    m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
 
-    m_SquareEntity = square;
+    m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+    m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16, 16, -9, 9, -1, 1));
 }
 void EditorLayer::OnDetach() {}
 
@@ -38,24 +39,18 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 
     ZR_PROFILE_FUNCTION();
 
-    // Reset Stats
-    Renderer2D::ResetStats();
-
     if (m_ViewportFocused)
         m_CameraController.OnUpdate(delta);
 
     {
-        ZR_PROFILE_SCOPE("Render");
+      ZR_PROFILE_SCOPE("Render");
+        Renderer2D::ResetStats();
         m_Framebuffer->Bind();
         RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         RenderCommand::Clear();
 
-        Renderer2D::BeginScene(m_CameraController.GetCamera());
-
         // Update Scene
         m_ActiveScene->OnUpdate(delta);
-
-        Renderer2D::EndScene();
 
         m_Framebuffer->Unbind();
     }

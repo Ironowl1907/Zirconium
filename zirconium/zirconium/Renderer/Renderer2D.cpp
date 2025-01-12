@@ -14,6 +14,9 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp> // For glm::to_string
+
 namespace zirconium {
 
 struct QuadVertex {
@@ -127,6 +130,23 @@ void Renderer2D::FlushAndReset() {
     s_Data.TextureSlotIndex = 1;
 }
 
+void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
+
+    glm::mat4 projView = camera.GetProjection() * glm::inverse(transform);
+
+    std::cout << "Projection Matrix: " << glm::to_string(camera.GetProjection()) << std::endl;
+    std::cout << "View Matrix: " << glm::to_string(glm::inverse(transform)) << std::endl;
+    std::cout << "Projection-View Matrix: " << glm::to_string(projView) << std::endl;
+
+    s_Data.TextureShader->Bind();
+    s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);
+
+    s_Data.QuadIndexCount = 0;
+    s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+    s_Data.TextureSlotIndex = 1;
+}
+
 void Renderer2D::BeginScene(const OrthoCamera& camera) {
     s_Data.TextureShader->Bind();
     s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", camera.GetProjectionViewMatrix());
@@ -207,7 +227,8 @@ void Renderer2D::DrawTransformedQuad(const glm::mat4& transform, const glm::vec4
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2D>& texture, const float& tilingFactor) {
+void Renderer2D::DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2D>& texture,
+                                        const float& tilingFactor) {
 
     ZR_PROFILE_FUNCTION();
 

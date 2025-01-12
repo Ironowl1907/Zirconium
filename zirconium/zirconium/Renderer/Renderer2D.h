@@ -1,6 +1,7 @@
 #pragma once
+#include "Camera.h"
 #include "SubTexture2D.h"
-#include "zirconium/Renderer/Camera.h"
+#include "OrthographicCamera.h"
 #include "zirconium/Renderer/SubTexture2D.h"
 #include "zirconium/Renderer/Texture.h"
 
@@ -10,7 +11,8 @@ public:
     static void Init();
     static void Shutdown();
 
-    static void BeginScene(const OrthoCamera& camera);
+    static void BeginScene(const OrthoCamera& camera); //TODO: REMOVE
+    static void BeginScene(const Camera& camera, const glm::mat4& transform);
     static void EndScene();
 
     static void Flush();

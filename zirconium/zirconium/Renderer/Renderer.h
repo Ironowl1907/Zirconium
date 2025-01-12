@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Camera.h"
+#include "OrthographicCamera.h"
 #include "Shader.h"
 
 namespace zirconium {

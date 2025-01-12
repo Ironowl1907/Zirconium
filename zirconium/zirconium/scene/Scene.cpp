@@ -17,11 +17,30 @@ Scene::Scene() {
 Scene::~Scene() {}
 
 void Scene::OnUpdate(TimeStep delta) {
-    auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-    for (auto entity : group) {
-        const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+    // Render Sprites
+    Camera* mainCamera = nullptr;
+    glm::mat4* mainTransform = nullptr;
+    {
+        auto group = m_Registry.view<TransformComponent, CameraComponent>();
+        for (auto entity : group) {
+            const auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
-        Renderer2D::DrawTransformedQuad((glm::mat4)transform, (glm::vec4)sprite);
+            if (camera.Primary) {
+                mainCamera = &camera.Camera;
+                mainTransform = &transform.Transform;
+                break;
+            }
+        }
+    }
+
+    if (mainCamera) {
+        Renderer2D::BeginScene(*mainCamera, *mainTransform);
+        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+        for (auto entity : group) {
+            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::DrawTransformedQuad((glm::mat4)transform, (glm::vec4)sprite);
+        }
+        Renderer2D::EndScene();
     }
 }
 

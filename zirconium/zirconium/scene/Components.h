@@ -1,6 +1,8 @@
 #pragma once
 #include "glm/glm.hpp"
 
+#include "zirconium/Renderer/Camera.h"
+
 namespace zirconium {
 
 struct TagComponent {
@@ -38,6 +40,14 @@ struct SpriteRendererComponent {
     operator const glm::vec4&() const {
         return Color;
     }
+};
+
+struct CameraComponent {
+    Camera Camera;
+    bool Primary = true; // TODO: Think about moving to scene
+
+    CameraComponent(const glm::mat4& proj)
+        : Camera(proj) {}
 };
 
 } // namespace zirconium

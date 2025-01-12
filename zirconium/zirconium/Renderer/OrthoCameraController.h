@@ -1,7 +1,7 @@
 #pragma once
 
 #include "zirconium/Core/Timestep.h"
-#include "zirconium/Renderer/Camera.h"
+#include "OrthographicCamera.h"
 
 #include "zirconium/Events/ApplicationEvent.h"
 #include "zirconium/Events/KeyEvent.h"
