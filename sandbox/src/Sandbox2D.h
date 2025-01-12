@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ParticleSystem.h"
 #include "zirconium.h"
 
 class Sandbox2D : public zirconium::Layer {
@@ -18,14 +17,10 @@ private:
     zirconium::OrthoCameraController m_CameraController;
 
     // This shouldn't be here TEMP
-    zirconium::Ref<zirconium::VertexArray> m_VertexArray;
     zirconium::Ref<zirconium::Shader> m_FlatColorShader;
 
     zirconium::Ref<zirconium::Texture2D> m_Texture;
     zirconium::Ref<zirconium::Texture2D> m_SpriteSheet;
-
-    ParticleSystem m_ParticleSystem;
-    ParticleProps m_Particle;
 
     u_int32_t m_MapWidth = 24, m_MapHeight = 13;
     std::unordered_map<char, zirconium::Ref<zirconium::SubTexture2D>> s_TextureMap;

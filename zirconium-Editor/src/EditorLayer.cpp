@@ -16,14 +16,6 @@ void EditorLayer::OnAttach() {
 
     m_Texture = Texture2D::Create("../sandbox/res/textures/textureTest.png");
 
-    m_Particle.ColorBegin = {254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f};
-    m_Particle.ColorEnd = {254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f};
-    m_Particle.SizeBegin = 0.3f, m_Particle.SizeVariation = 0.1f, m_Particle.SizeEnd = 0.0f;
-    m_Particle.LifeTime = 10.0f;
-    m_Particle.Velocity = {0.0f, 0.0f};
-    m_Particle.Aceleration = {3.0f, 1.0f};
-    m_Particle.Position = {0.0f, 0.0f};
-
     m_CameraController.SetZoomLevel(5.0f);
 
     FrameBufferSpecification fbSpec;
@@ -31,7 +23,7 @@ void EditorLayer::OnAttach() {
     fbSpec.Height = 720;
     m_Framebuffer = FrameBuffer::Create(fbSpec);
 
-    //Scene
+    // Scene
     m_ActiveScene = std::make_shared<Scene>();
 
     // Entity
@@ -66,21 +58,6 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         Renderer2D::EndScene();
 
         m_Framebuffer->Unbind();
-    }
-
-    if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT)) {
-        auto [x, y] = Input::GetMousePosition();
-        auto width = Application::Get().GetWindow().GetWidth();
-        auto height = Application::Get().GetWindow().GetHeight();
-
-        auto bounds = m_CameraController.GetBounds();
-        auto pos = m_CameraController.GetCamera().GetPosition();
-        x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-        y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
-        m_Particle.Position = {x + pos.x, y + pos.y};
-        for (int i = 0; i < 50; i++) {
-            m_ParticleSystem.Emit(m_Particle);
-        }
     }
 }
 

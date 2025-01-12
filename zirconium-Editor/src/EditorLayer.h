@@ -20,18 +20,12 @@ public:
 private:
     OrthoCameraController m_CameraController;
 
-    // This shouldn't be here TEMP
-    Ref<VertexArray> m_VertexArray;
-    Ref<Shader> m_FlatColorShader;
     Ref<FrameBuffer> m_Framebuffer;
 
     Ref<Scene> m_ActiveScene;
 
     Ref<Texture2D> m_Texture;
     Ref<Texture2D> m_SpriteSheet;
-
-    ParticleSystem m_ParticleSystem;
-    ParticleProps m_Particle;
 
     glm::vec2 m_ViewportSize;
 
