@@ -134,10 +134,6 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
     glm::mat4 projView = camera.GetProjection() * glm::inverse(transform);
 
-    std::cout << "Projection Matrix: " << glm::to_string(camera.GetProjection()) << std::endl;
-    std::cout << "View Matrix: " << glm::to_string(glm::inverse(transform)) << std::endl;
-    std::cout << "Projection-View Matrix: " << glm::to_string(projView) << std::endl;
-
     s_Data.TextureShader->Bind();
     s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);
 
