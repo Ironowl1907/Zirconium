@@ -1,7 +1,8 @@
 #pragma once
+#include "SceneCamera.h"
 #include "glm/glm.hpp"
 
-#include "zirconium/Renderer/Camera.h"
+#include "SceneCamera.h"
 
 namespace zirconium {
 
@@ -43,11 +44,11 @@ struct SpriteRendererComponent {
 };
 
 struct CameraComponent {
-    Camera Camera;
+    SceneCamrera Camera;
     bool Primary = true; // TODO: Think about moving to scene
+    bool FixedAspectRatio = false;
 
-    CameraComponent(const glm::mat4& proj)
-        : Camera(proj) {}
+    CameraComponent() = default;
 };
 
 } // namespace zirconium

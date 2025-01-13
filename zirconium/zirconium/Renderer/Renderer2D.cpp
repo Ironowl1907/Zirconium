@@ -134,6 +134,10 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
     glm::mat4 projView = camera.GetProjection() * glm::inverse(transform);
 
+    auto vec = camera.GetProjection() * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
+
+    ZR_CORE_TRACE(" {} {} {} ", vec.x, vec.y, vec.z);
+
     s_Data.TextureShader->Bind();
     s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);
 
@@ -165,7 +169,7 @@ void Renderer2D::EndScene() {
 void Renderer2D::Flush() {
     ZR_PROFILE_FUNCTION();
 
-    // // Log all QuadVertices
+    // Log all QuadVertices
     // ZR_CORE_TRACE("------------------------------");
     // for (QuadVertex* vertex = s_Data.QuadVertexBufferBase; vertex < s_Data.QuadVertexBufferPtr; ++vertex) {
     //     ZR_CORE_TRACE(vertex->ToString());

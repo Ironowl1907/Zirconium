@@ -3,7 +3,9 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 #include "zirconium.h"
+#include "zirconium/Renderer/FrameBuffer.h"
 #include "zirconium/scene/Components.h"
+#include <cstdint>
 
 namespace zirconium {
 EditorLayer::EditorLayer()
@@ -31,10 +33,10 @@ void EditorLayer::OnAttach() {
     m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
 
     m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+    m_CameraEntity.AddComponent<CameraComponent>();
 
     m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera2");
-    auto& cc = m_SecondCameraEntity.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+    auto& cc = m_SecondCameraEntity.AddComponent<CameraComponent>();
     cc.Primary = false;
 }
 void EditorLayer::OnDetach() {}
@@ -42,6 +44,15 @@ void EditorLayer::OnDetach() {}
 void EditorLayer::OnUpdate(TimeStep delta) {
 
     ZR_PROFILE_FUNCTION();
+
+    if (FrameBufferSpecification spec = m_Framebuffer->GetSpecification();
+        m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+        (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y)) {
+        m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+        m_ActiveScene->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
+    }
 
     if (m_ViewportFocused)
         m_CameraController.OnUpdate(delta);
@@ -158,8 +169,8 @@ void EditorLayer::OnImGuiRender() {
     ImGui::DragFloat3("Camera Transformation",
                       glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
     if (ImGui::Checkbox("Camera A", &m_PrimaryCamera)) {
-      m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-      m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+        m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+        m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
     }
     ImGui::End();
 
