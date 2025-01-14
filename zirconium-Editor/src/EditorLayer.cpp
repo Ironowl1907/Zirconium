@@ -45,8 +45,9 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 
     ZR_PROFILE_FUNCTION();
 
-    if (FrameBufferSpecification spec = m_Framebuffer->GetSpecification();
-        m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+    FrameBufferSpecification spec = m_Framebuffer->GetSpecification();
+
+    if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
         (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y)) {
         m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
@@ -172,6 +173,14 @@ void EditorLayer::OnImGuiRender() {
         m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
         m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
     }
+
+    {
+        auto& camera = m_SecondCameraEntity.GetComponent<CameraComponent>().Camera;
+        float orthosize = camera.GetOrthographicSize();
+        if (ImGui::DragFloat("Second camera ortho size", &orthosize)) {
+            camera.SetOrthographicSize(orthosize);
+        }
+    }
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
@@ -182,11 +191,13 @@ void EditorLayer::OnImGuiRender() {
     Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
     ImVec2 sizeViewport = ImGui::GetContentRegionAvail();
-    if (sizeViewport.x != m_ViewportSize.x || sizeViewport.y != m_ViewportSize.y) {
-        m_ViewportSize = {sizeViewport.x, sizeViewport.y};
-        m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-
-        m_CameraController.OnResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    if (sizeViewport.x > 0 && sizeViewport.y > 0) {
+        if (sizeViewport.x != m_ViewportSize.x || sizeViewport.y != m_ViewportSize.y) {
+            m_ViewportSize = {sizeViewport.x, sizeViewport.y};
+            m_CameraController.OnResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        }
+    } else {
+        ZR_CORE_WARN("Invalid Viewport Size: ({}, {})", sizeViewport.x, sizeViewport.y);
     }
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});

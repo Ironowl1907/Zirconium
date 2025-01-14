@@ -134,9 +134,10 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
     glm::mat4 projView = camera.GetProjection() * glm::inverse(transform);
 
-    auto vec = camera.GetProjection() * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
+    // auto vec = camera.GetProjection() * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
 
-    ZR_CORE_TRACE(" {} {} {} ", vec.x, vec.y, vec.z);
+    // ZR_CORE_TRACE(" {} {} {} ", vec.x, vec.y, vec.z);
+    // ZR_CORE_TRACE("{}", glm::to_string(camera.GetProjection()));
 
     s_Data.TextureShader->Bind();
     s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);

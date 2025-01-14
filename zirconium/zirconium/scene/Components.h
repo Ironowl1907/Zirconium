@@ -48,7 +48,8 @@ struct CameraComponent {
     bool Primary = true; // TODO: Think about moving to scene
     bool FixedAspectRatio = false;
 
-    CameraComponent() = default;
+    CameraComponent()
+        : Camera() {}
 };
 
 } // namespace zirconium

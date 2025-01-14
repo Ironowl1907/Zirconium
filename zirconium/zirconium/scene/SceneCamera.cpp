@@ -6,7 +6,7 @@
 namespace zirconium {
 
 SceneCamrera::SceneCamrera() {
-    RecalculateProjection();
+    // RecalculateProjection();
 }
 
 void SceneCamrera::SetOrthographic(float size, float nearClip, float farClip) {
