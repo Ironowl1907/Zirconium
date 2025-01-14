@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 
 #include "SceneCamera.h"
+#include "ScriptableEntity.h"
 
 namespace zirconium {
 
@@ -50,6 +51,37 @@ struct CameraComponent {
 
     CameraComponent()
         : Camera() {}
+};
+struct NativeScriptComponent {
+    ScriptableEntity* Instance = nullptr;
+
+    std::function<void()> InstanciateFunction;
+    std::function<void()> DestroyInstanceFunction;
+
+    std::function<void(SriptableEntity*)> OnCreateFunction;
+    std::function<void(SriptableEntity*)> OnDestroyFunction;
+    std::function<void(SriptableEntity*, TimeStep)> OnUpdateFunction;
+
+    template <typename T>
+    void Bind() {
+
+        InstanciateFunction = [&]() {
+            Instance = new T();
+        };
+
+        DestroyInstanceFunction = [&]() {
+            delete (T*)Instance;
+            Instance = nullptr;
+        };
+
+        OnCreateFunction = [](ScriptableEntity* instance) {
+            (T*)instance->OnCreate();
+        } OnDestroyFunction = [](SriptableEntity* instance) {
+            (T*)instance->OnDestroy();
+        } OnUpdateFunction = [](SriptableEntity* instance, TimeStep delta) {
+            (T*)instance->OnUpdate(delta);
+        }
+    }
 };
 
 } // namespace zirconium

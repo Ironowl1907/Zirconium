@@ -8,6 +8,20 @@
 #include <cstdint>
 
 namespace zirconium {
+
+class CameraController : public ScriptableEntity {
+public:
+    void OnCreate() {
+        GetComponent<TransformComponent>()
+    }
+    void OnDestroy() {}
+
+    void OnUpdate(TimeStep delta) {}
+
+private:
+    m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>()
+};
+
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
     , m_CameraController(1.6f / 0.9f, true) {}
