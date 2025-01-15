@@ -15,21 +15,25 @@ void SceneHirearchyPanel::SetContext(const Ref<Scene>& context) {
 void SceneHirearchyPanel::OnImGuiRender() {
     ImGui::Begin("Scene Hiererchy");
 
-    // m_Context->m_Registry.each([&](auto entityID) {
-    //     Entity entity{entity, m_Context.get()};
-
-    //     auto& tag = entity.GetComponent<TagComponent>().Tag;
-    //     ImGui::Text("%s", tag);
-    // });
-    //
     auto view = m_Context->m_Registry.view<TagComponent>();
-
     for (auto ent : view) {
         Entity entity{ent, m_Context.get()};
-
-        auto& tag = entity.GetComponent<TagComponent>().Tag;
-        ImGui::BulletText("%s", tag.c_str());
+        DrawEntityNode(entity);
     }
     ImGui::End();
-};
+}
+
+void SceneHirearchyPanel::DrawEntityNode(Entity entity) {
+    auto& tag = entity.GetComponent<TagComponent>().Tag;
+
+    ImGuiTreeNodeFlags flags =
+        ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, tag.c_str());
+    if (ImGui::IsItemClicked()) {
+        m_SelectionContext = entity;
+    }
+    if (opened) {
+        ImGui::TreePop();
+    }
+}
 } // namespace zirconium

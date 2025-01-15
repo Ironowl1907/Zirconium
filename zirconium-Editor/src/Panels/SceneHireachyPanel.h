@@ -1,9 +1,8 @@
 #pragma once
 
 #include "core.h"
-#include "zirconium/scene/Scene.h"
 #include "zirconium/scene/Entity.h"
-
+#include "zirconium/scene/Scene.h"
 
 namespace zirconium {
 class SceneHirearchyPanel {
@@ -15,7 +14,11 @@ public:
     void OnImGuiRender();
 
 private:
+    void DrawEntityNode(Entity entity);
+
+private:
     Ref<Scene> m_Context;
+    Entity m_SelectionContext;
 
     friend class Scene;
 };

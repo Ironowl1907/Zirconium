@@ -5,6 +5,7 @@
 #include "zrpch.h"
 
 #include "core.h"
+#include <cstdint>
 
 namespace zirconium {
 class Entity {
@@ -39,8 +40,19 @@ public:
         return m_EntityHandle != entt::null;
     }
 
-    operator entt::entity() {
+    operator entt::entity() const {
         return m_EntityHandle;
+    }
+
+    operator uint64_t() const {
+        return (uint64_t)m_EntityHandle;
+    }
+
+    bool operator==(const Entity& other) const {
+        return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
+    }
+    bool operator!=(const Entity& other) const {
+        return !operator==(other);
     }
 
 private:
