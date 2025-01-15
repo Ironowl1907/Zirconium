@@ -1,4 +1,5 @@
 #include "Components.h"
+#include "Entity.h"
 #include "glm/glm.hpp"
 #include "zrpch.h"
 
@@ -17,6 +18,20 @@ Scene::Scene() {
 Scene::~Scene() {}
 
 void Scene::OnUpdate(TimeStep delta) {
+    // Update scripts
+    {
+        m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {
+            if (!nsc.Instance) {
+                nsc.InstanciateFunction();
+                nsc.Instance->m_Entity = Entity{entity, this};
+                if (nsc.OnCreateFunction)
+                    nsc.OnCreateFunction(nsc.Instance);
+            }
+            if (nsc.OnUpdateFunction)
+                nsc.OnUpdateFunction(nsc.Instance, delta);
+        });
+    }
+
     // Render Sprites
     Camera* mainCamera = nullptr;
     glm::mat4* mainTransform = nullptr;

@@ -3,23 +3,28 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 #include "zirconium.h"
-#include "zirconium/Renderer/FrameBuffer.h"
-#include "zirconium/scene/Components.h"
 #include <cstdint>
 
 namespace zirconium {
 
 class CameraController : public ScriptableEntity {
 public:
-    void OnCreate() {
-        GetComponent<TransformComponent>()
-    }
+    void OnCreate() {}
     void OnDestroy() {}
 
-    void OnUpdate(TimeStep delta) {}
+    void OnUpdate(TimeStep delta) {
+        auto& transform = GetComponent<TransformComponent>();
+        float speed = 5.0f;
 
-private:
-    m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>()
+        if (Input::IsKeyPressed(ZR_KEY_A))
+            transform.Transform[3][0] -= speed * delta;
+        if (Input::IsKeyPressed(ZR_KEY_W))
+            transform.Transform[3][1] -= speed * delta;
+        if (Input::IsKeyPressed(ZR_KEY_D))
+            transform.Transform[3][0] += speed * delta;
+        if (Input::IsKeyPressed(ZR_KEY_S))
+            transform.Transform[3][1] += speed * delta;
+    }
 };
 
 EditorLayer::EditorLayer()
@@ -52,6 +57,8 @@ void EditorLayer::OnAttach() {
     m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera2");
     auto& cc = m_SecondCameraEntity.AddComponent<CameraComponent>();
     cc.Primary = false;
+
+    m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 }
 void EditorLayer::OnDetach() {}
 

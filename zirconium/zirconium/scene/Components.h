@@ -52,15 +52,16 @@ struct CameraComponent {
     CameraComponent()
         : Camera() {}
 };
+
 struct NativeScriptComponent {
     ScriptableEntity* Instance = nullptr;
 
     std::function<void()> InstanciateFunction;
     std::function<void()> DestroyInstanceFunction;
 
-    std::function<void(SriptableEntity*)> OnCreateFunction;
-    std::function<void(SriptableEntity*)> OnDestroyFunction;
-    std::function<void(SriptableEntity*, TimeStep)> OnUpdateFunction;
+    std::function<void(ScriptableEntity*)> OnCreateFunction;
+    std::function<void(ScriptableEntity*)> OnDestroyFunction;
+    std::function<void(ScriptableEntity*, TimeStep)> OnUpdateFunction;
 
     template <typename T>
     void Bind() {
@@ -70,17 +71,19 @@ struct NativeScriptComponent {
         };
 
         DestroyInstanceFunction = [&]() {
-            delete (T*)Instance;
+            delete static_cast<T*>(Instance);
             Instance = nullptr;
         };
 
         OnCreateFunction = [](ScriptableEntity* instance) {
-            (T*)instance->OnCreate();
-        } OnDestroyFunction = [](SriptableEntity* instance) {
-            (T*)instance->OnDestroy();
-        } OnUpdateFunction = [](SriptableEntity* instance, TimeStep delta) {
-            (T*)instance->OnUpdate(delta);
-        }
+            static_cast<T*>(instance)->OnCreate();
+        };
+        OnDestroyFunction = [](ScriptableEntity* instance) {
+            static_cast<T*>(instance)->OnDestroy();
+        };
+        OnUpdateFunction = [](ScriptableEntity* instance, TimeStep delta) {
+            static_cast<T*>(instance)->OnUpdate(delta);
+        };
     }
 };
 
