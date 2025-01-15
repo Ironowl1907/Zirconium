@@ -3,6 +3,8 @@
 #include "ParticleSystem.h"
 #include "zirconium.h"
 
+#include "Panels/SceneHireachyPanel.h"
+
 namespace zirconium {
 
 class EditorLayer : public Layer {
@@ -25,7 +27,7 @@ private:
     Ref<Texture2D> m_Texture;
     Ref<Texture2D> m_SpriteSheet;
 
-    glm::vec2 m_ViewportSize = {0,0};
+    glm::vec2 m_ViewportSize = {0, 0};
 
     u_int32_t m_MapWidth = 24, m_MapHeight = 13;
     std::unordered_map<char, Ref<SubTexture2D>> s_TextureMap;
@@ -39,5 +41,8 @@ private:
     Entity m_SecondCameraEntity;
 
     bool m_PrimaryCamera = false;
+
+    // Panels
+    SceneHirearchyPanel m_SceneHierarchyPanel;
 };
 } // namespace zirconium

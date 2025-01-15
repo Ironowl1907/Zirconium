@@ -1,7 +1,10 @@
 #pragma once
 #include "Scene.h"
 #include "entt.hpp"
-#include <memory>
+
+#include "zrpch.h"
+
+#include "core.h"
 
 namespace zirconium {
 class Entity {
@@ -34,6 +37,10 @@ public:
 
     operator bool() const {
         return m_EntityHandle != entt::null;
+    }
+
+    operator entt::entity() {
+        return m_EntityHandle;
     }
 
 private:

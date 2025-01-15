@@ -22,5 +22,6 @@ private:
     uint32_t m_ViewportHeight = 0;
 
     friend class Entity;
+    friend class SceneHirearchyPanel;
 };
 } // namespace zirconium

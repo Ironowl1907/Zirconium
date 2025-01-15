@@ -1,3 +1,4 @@
+#include "Panels/SceneHireachyPanel.h"
 #include "zrpch.h"
 
 #include "EditorLayer.h"
@@ -62,6 +63,8 @@ void EditorLayer::OnAttach() {
 
     m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OnDetach() {}
 
@@ -174,6 +177,9 @@ void EditorLayer::OnImGuiRender() {
         }
 
         ImGui::EndMenuBar();
+        m_SceneHierarchyPanel.OnImGuiRender();
+
+
         ImGui::Begin("Profiling");
 
         auto stats = Renderer2D::GetStats();
