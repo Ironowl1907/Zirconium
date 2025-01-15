@@ -9,13 +9,15 @@ namespace zirconium {
 
 class CameraController : public ScriptableEntity {
 public:
-    void OnCreate() {}
+    void OnCreate() {
+        auto& transform = GetComponent<TransformComponent>().Transform;
+        transform[3][0] = rand() % 10 - 5.0f;
+    }
     void OnDestroy() {}
 
     void OnUpdate(TimeStep delta) {
-        auto& transform = GetComponent<TransformComponent>();
         float speed = 5.0f;
-
+        auto& transform = GetComponent<TransformComponent>();
         if (Input::IsKeyPressed(ZR_KEY_A))
             transform.Transform[3][0] -= speed * delta;
         if (Input::IsKeyPressed(ZR_KEY_W))
@@ -59,6 +61,7 @@ void EditorLayer::OnAttach() {
     cc.Primary = false;
 
     m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+    m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 }
 void EditorLayer::OnDetach() {}
 

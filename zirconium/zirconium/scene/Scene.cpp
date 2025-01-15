@@ -21,14 +21,13 @@ void Scene::OnUpdate(TimeStep delta) {
     // Update scripts
     {
         m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {
+            // Move to the game runtime `Scene::OnScenePlay`
             if (!nsc.Instance) {
-                nsc.InstanciateFunction();
+                nsc.Instance = nsc.InstanciateScript();
                 nsc.Instance->m_Entity = Entity{entity, this};
-                if (nsc.OnCreateFunction)
-                    nsc.OnCreateFunction(nsc.Instance);
+                nsc.Instance->OnCreate();
             }
-            if (nsc.OnUpdateFunction)
-                nsc.OnUpdateFunction(nsc.Instance, delta);
+            nsc.Instance->OnUpdate(delta);
         });
     }
 
@@ -38,7 +37,7 @@ void Scene::OnUpdate(TimeStep delta) {
     {
         auto group = m_Registry.view<TransformComponent, CameraComponent>();
         for (auto entity : group) {
-            const auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+            const auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
             if (camera.Primary) {
                 mainCamera = &camera.Camera;
