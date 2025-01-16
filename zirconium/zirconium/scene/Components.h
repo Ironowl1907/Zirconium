@@ -45,7 +45,7 @@ struct SpriteRendererComponent {
 };
 
 struct CameraComponent {
-    SceneCamrera Camera;
+    SceneCamera Camera;
     bool Primary = true; // TODO: Think about moving to scene
     bool FixedAspectRatio = false;
 

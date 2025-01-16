@@ -71,5 +71,47 @@ void SceneHirearchyPanel::DrawComponents(Entity ent) {
             ImGui::TreePop();
         }
     }
+
+    if (ent.HasComponent<CameraComponent>()) {
+        if (ImGui::TreeNodeEx((const void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
+                              "Camera")) {
+
+            auto& cameraComponent = ent.GetComponent<CameraComponent>();
+            auto& camera = cameraComponent.Camera;
+
+            const char* projectionTypeStrings[] = {"Perspective", "OrthoGraphic"};
+            const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
+
+            if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
+                for (int i = 0; i < 2; i++) {
+                    bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+                    if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
+                        currentProjectionTypeString = projectionTypeStrings[i];
+                        camera.SetProjectionType((SceneCamera::ProjectionType)i);
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+
+                ImGui::EndCombo();
+            }
+
+            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective) {
+            }
+            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic) {
+                float orthoSize = camera.GetOrthographicSize();
+                if (ImGui::DragFloat("Size", &orthoSize))
+                    camera.SetOrthographicSize(orthoSize);
+                float orthoNear = camera.GetOrthographicNearClip();
+                if (ImGui::DragFloat("Near Clip", &orthoNear))
+                    camera.SetOrthographicNearClip(orthoNear);
+                float orthoFar = camera.GetOrthographicFarClip();
+                if (ImGui::DragFloat("Far Clip", &orthoFar))
+                    camera.SetOrthographicFarClip(orthoFar);
+            }
+
+            ImGui::TreePop();
+        }
+    }
 }
 } // namespace zirconium
