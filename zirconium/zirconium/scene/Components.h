@@ -24,7 +24,7 @@ struct TransformComponent {
     operator glm::mat4&() {
         return Transform;
     }
-    operator const glm::mat4&() const {
+    operator const glm::mat4&() const {;
         return Transform;
     }
 };

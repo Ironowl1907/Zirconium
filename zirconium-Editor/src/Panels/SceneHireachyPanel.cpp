@@ -61,6 +61,17 @@ void SceneHirearchyPanel::DrawComponents(Entity ent) {
         }
     }
 
+    if (ent.HasComponent<SpriteRendererComponent>()) {
+        if (ImGui::TreeNodeEx((const void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
+                              "Sprite")) {
+
+            auto& sprite = ent.GetComponent<SpriteRendererComponent>();
+            ImGui::ColorEdit4("Color", glm::value_ptr (sprite.Color));
+
+            ImGui::TreePop();
+        }
+    }
+
     if (ent.HasComponent<TransformComponent>()) {
         if (ImGui::TreeNodeEx((const void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
                               "Transform")) {

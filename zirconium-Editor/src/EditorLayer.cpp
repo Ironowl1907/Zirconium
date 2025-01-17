@@ -183,7 +183,7 @@ void EditorLayer::OnImGuiRender() {
         m_SceneHierarchyPanel.OnImGuiRender();
 
 
-        ImGui::Begin("Profiling");
+        ImGui::Begin("Stats");
 
         auto stats = Renderer2D::GetStats();
         ImGui::Text("Renderer 2D stats: ");
@@ -194,27 +194,6 @@ void EditorLayer::OnImGuiRender() {
 
         ImGui::End();
     }
-    ImGui::Begin("Scuare Color");
-    if (m_SquareEntity) {
-        auto& color = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-        ImGui::ColorEdit4("Scuare color", glm::value_ptr(color));
-    }
-
-    ImGui::DragFloat3("Camera Transformation",
-                      glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
-    if (ImGui::Checkbox("Camera A", &m_PrimaryCamera)) {
-        m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-        m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-    }
-
-    {
-        auto& camera = m_SecondCameraEntity.GetComponent<CameraComponent>().Camera;
-        float orthosize = camera.GetOrthographicSize();
-        if (ImGui::DragFloat("Second camera ortho size", &orthosize)) {
-            camera.SetOrthographicSize(orthosize);
-        }
-    }
-    ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
