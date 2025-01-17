@@ -54,6 +54,9 @@ void EditorLayer::OnAttach() {
     m_SquareEntity = m_ActiveScene->CreateEntity("Square");
     m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
 
+    m_SquareEntity = m_ActiveScene->CreateEntity("Square2");
+    m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.9, 0.3f, 0.3f, 1.0f});
+
     m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
     m_CameraEntity.AddComponent<CameraComponent>();
 

@@ -73,11 +73,13 @@ void SceneHirearchyPanel::DrawComponents(Entity ent) {
     }
 
     if (ent.HasComponent<CameraComponent>()) {
-        if (ImGui::TreeNodeEx((const void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
+        if (ImGui::TreeNodeEx((const void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
                               "Camera")) {
 
             auto& cameraComponent = ent.GetComponent<CameraComponent>();
             auto& camera = cameraComponent.Camera;
+
+            ImGui::Checkbox("Primary", &cameraComponent.Primary);
 
             const char* projectionTypeStrings[] = {"Perspective", "OrthoGraphic"};
             const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
@@ -97,7 +99,17 @@ void SceneHirearchyPanel::DrawComponents(Entity ent) {
             }
 
             if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective) {
+                float perspectiveFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
+                if (ImGui::DragFloat("Vertical FOV", &perspectiveFOV))
+                    camera.SetPerspectiveFOV(glm::radians(perspectiveFOV));
+                float orthoNear = camera.GetPerspectiveNearClip();
+                if (ImGui::DragFloat("Near Clip", &orthoNear))
+                    camera.SetPerspectiveNearClip(orthoNear);
+                float orthoFar = camera.GetPerspectiveFarClip();
+                if (ImGui::DragFloat("Far Clip", &orthoFar))
+                    camera.SetPerspectiveFarClip(orthoFar);
             }
+
             if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic) {
                 float orthoSize = camera.GetOrthographicSize();
                 if (ImGui::DragFloat("Size", &orthoSize))
@@ -108,6 +120,8 @@ void SceneHirearchyPanel::DrawComponents(Entity ent) {
                 float orthoFar = camera.GetOrthographicFarClip();
                 if (ImGui::DragFloat("Far Clip", &orthoFar))
                     camera.SetOrthographicFarClip(orthoFar);
+
+                ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
             }
 
             ImGui::TreePop();

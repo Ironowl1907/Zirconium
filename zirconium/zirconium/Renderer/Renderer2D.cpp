@@ -14,8 +14,6 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp> // For glm::to_string
 
 namespace zirconium {
 
