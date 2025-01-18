@@ -14,6 +14,7 @@ public:
 
     void OnUpdate(TimeStep delta);
     void OnViewportResize(const uint32_t& width, const uint32_t& height);
+    void DeleteEntity(Entity entity);
 
 private:
     entt::registry m_Registry;
@@ -22,6 +23,6 @@ private:
     uint32_t m_ViewportHeight = 0;
 
     friend class Entity;
-    friend class SceneHirearchyPanel;
+    friend class SceneHierarchyPanel;
 };
 } // namespace zirconium

@@ -43,6 +43,6 @@ private:
     bool m_PrimaryCamera = false;
 
     // Panels
-    SceneHirearchyPanel m_SceneHierarchyPanel;
+    SceneHierarchyPanel m_SceneHierarchyPanel;
 };
 } // namespace zirconium

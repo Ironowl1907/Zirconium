@@ -5,10 +5,10 @@
 #include "zirconium/scene/Scene.h"
 
 namespace zirconium {
-class SceneHirearchyPanel {
+class SceneHierarchyPanel {
 public:
-    SceneHirearchyPanel() = default;
-    SceneHirearchyPanel(const Ref<Scene>& context);
+    SceneHierarchyPanel() = default;
+    SceneHierarchyPanel(const Ref<Scene>& context);
 
     void SetContext(const Ref<Scene>& context);
     void OnImGuiRender();

@@ -71,7 +71,6 @@ Entity Scene::CreateEntity(const std::string& name) {
 void Scene::OnViewportResize(const uint32_t& width, const uint32_t& height) {
     m_ViewportWidth = width;
     m_ViewportHeight = height;
-
     // Resize our non-fixed aspect ratio camera
     auto view = m_Registry.view<CameraComponent>();
     for (auto entity : view) {
@@ -80,5 +79,9 @@ void Scene::OnViewportResize(const uint32_t& width, const uint32_t& height) {
             cameraComponent.Camera.SetViewportSize(width, height);
         }
     }
+}
+
+void Scene::DeleteEntity(Entity entity) {
+    m_Registry.destroy((entt::entity)entity);
 }
 } // namespace zirconium

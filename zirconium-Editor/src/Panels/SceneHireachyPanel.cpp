@@ -7,43 +7,69 @@
 
 namespace zirconium {
 
-SceneHirearchyPanel::SceneHirearchyPanel(const Ref<Scene>& context) {
+SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
     SetContext(context);
 }
 
-void SceneHirearchyPanel::SetContext(const Ref<Scene>& context) {
+void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
     m_Context = context;
 }
-void SceneHirearchyPanel::OnImGuiRender() {
-    ImGui::Begin("Scene Hiererchy");
+void SceneHierarchyPanel::OnImGuiRender() {
+    // bool t = true;
+    // ImGui::ShowDemoWindow(&t);
+    ImGui::Begin("Scene Hierarchy");
 
-    auto view = m_Context->m_Registry.view<TagComponent>();
-    for (auto ent : view) {
-        Entity entity{ent, m_Context.get()};
-        DrawEntityNode(entity);
+    if (m_Context) {
+        auto view = m_Context->m_Registry.view<TagComponent>();
+        for (auto ent : view) {
+            Entity entity{ent, m_Context.get()};
+            DrawEntityNode(entity);
+        }
     }
+
     if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered()) {
         m_SelectionContext = {};
+    }
+
+    ImGuiPopupFlags flags = ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight;
+    if (ImGui::BeginPopupContextWindow(0, flags)) {
+        // ZR_CORE_TRACE("Hey3");
+        if (ImGui::MenuItem("Create Empty Entity")) {
+            m_Context->CreateEntity("Empty Entity");
+        }
+        ImGui::EndPopup();
     }
 
     ImGui::End();
 
     ImGui::Begin("Properties");
+
     if (m_SelectionContext) {
         DrawComponents(m_SelectionContext);
     }
+
     ImGui::End();
 }
 
-void SceneHirearchyPanel::DrawEntityNode(Entity entity) {
+void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     auto& tag = entity.GetComponent<TagComponent>().Tag;
 
     ImGuiTreeNodeFlags flags =
         ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+
     bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, "%s", tag.c_str());
+
+    if (ImGui::BeginPopupContextItem()) {
+        if (ImGui::MenuItem("Delete Entity")) {
+            m_Context->DeleteEntity(entity);
+        }
+        ImGui::EndPopup();
+    }
+
     if (ImGui::IsItemClicked()) {
         m_SelectionContext = entity;
     }
+
     if (opened) {
         ImGui::TreePop();
     }
@@ -107,7 +133,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopID();
 }
 
-void SceneHirearchyPanel::DrawComponents(Entity ent) {
+void SceneHierarchyPanel::DrawComponents(Entity ent) {
     if (ent.HasComponent<TagComponent>()) {
         auto& tag = ent.GetComponent<TagComponent>().Tag;
 
