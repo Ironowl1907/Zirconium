@@ -33,7 +33,7 @@ void Scene::OnUpdate(TimeStep delta) {
 
     // Render Sprites
     Camera* mainCamera = nullptr;
-    glm::mat4* mainTransform = nullptr;
+    glm::mat4 mainTransform;
     {
         auto group = m_Registry.view<TransformComponent, CameraComponent>();
         for (auto entity : group) {
@@ -41,18 +41,18 @@ void Scene::OnUpdate(TimeStep delta) {
 
             if (camera.Primary) {
                 mainCamera = &camera.Camera;
-                mainTransform = &transform.Transform;
+                mainTransform = transform.GetTransform();
                 break;
             }
         }
     }
 
     if (mainCamera) {
-        Renderer2D::BeginScene(*mainCamera, *mainTransform);
+        Renderer2D::BeginScene(*mainCamera, mainTransform);
         auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (auto entity : group) {
             const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawTransformedQuad((glm::mat4)transform, (glm::vec4)sprite);
+            Renderer2D::DrawTransformedQuad(transform.GetTransform(), (glm::vec4)sprite);
         }
         Renderer2D::EndScene();
     }

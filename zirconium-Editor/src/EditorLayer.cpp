@@ -11,22 +11,22 @@ namespace zirconium {
 class CameraController : public ScriptableEntity {
 public:
     void OnCreate() {
-        auto& transform = GetComponent<TransformComponent>().Transform;
-        transform[3][0] = rand() % 10 - 5.0f;
+        auto& transform = GetComponent<TransformComponent>();
+        transform.Translation.x = rand() % 10 - 5.0f;
     }
     void OnDestroy() {}
 
     void OnUpdate(TimeStep delta) {
         float speed = 5.0f;
-        auto& transform = GetComponent<TransformComponent>();
+        auto& tc = GetComponent<TransformComponent>();
         if (Input::IsKeyPressed(ZR_KEY_A))
-            transform.Transform[3][0] -= speed * delta;
+            tc.Translation.x -= speed * delta;
         if (Input::IsKeyPressed(ZR_KEY_W))
-            transform.Transform[3][1] -= speed * delta;
+            tc.Translation.y += speed * delta;
         if (Input::IsKeyPressed(ZR_KEY_D))
-            transform.Transform[3][0] += speed * delta;
+            tc.Translation.x += speed * delta;
         if (Input::IsKeyPressed(ZR_KEY_S))
-            transform.Transform[3][1] += speed * delta;
+            tc.Translation.y -= speed * delta;
     }
 };
 
@@ -181,7 +181,6 @@ void EditorLayer::OnImGuiRender() {
 
         ImGui::EndMenuBar();
         m_SceneHierarchyPanel.OnImGuiRender();
-
 
         ImGui::Begin("Stats");
 
