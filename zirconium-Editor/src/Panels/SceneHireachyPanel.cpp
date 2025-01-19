@@ -46,8 +46,25 @@ void SceneHierarchyPanel::OnImGuiRender() {
 
     if (m_SelectionContext) {
         DrawComponents(m_SelectionContext);
-    }
 
+        if (ImGui::Button("Add Component"))
+            ImGui::OpenPopup("AddComponent");
+
+        if (ImGui::BeginPopup("AddComponent")) {
+
+            if (ImGui::MenuItem("Camera")) {
+                m_SelectionContext.AddComponent<CameraComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+            if (ImGui::MenuItem("Sprite Renderer")) {
+                m_SelectionContext.AddComponent<SpriteRendererComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
     ImGui::End();
 }
 
@@ -60,9 +77,11 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, "%s", tag.c_str());
 
     if (ImGui::BeginPopupContextItem()) {
+
         if (ImGui::MenuItem("Delete Entity")) {
             m_Context->DeleteEntity(entity);
         }
+
         ImGui::EndPopup();
     }
 
@@ -133,9 +152,9 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopID();
 }
 
-void SceneHierarchyPanel::DrawComponents(Entity ent) {
-    if (ent.HasComponent<TagComponent>()) {
-        auto& tag = ent.GetComponent<TagComponent>().Tag;
+void SceneHierarchyPanel::DrawComponents(Entity entity) {
+    if (entity.HasComponent<TagComponent>()) {
+        auto& tag = entity.GetComponent<TagComponent>().Tag;
 
         static char buffer[256];
         memset(buffer, 0, sizeof(buffer));
@@ -146,22 +165,40 @@ void SceneHierarchyPanel::DrawComponents(Entity ent) {
         }
     }
 
-    if (ent.HasComponent<SpriteRendererComponent>()) {
-        if (ImGui::TreeNodeEx((const void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
-                              "Sprite")) {
+    if (entity.HasComponent<SpriteRendererComponent>()) {
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{4, 4});
 
-            auto& sprite = ent.GetComponent<SpriteRendererComponent>();
+        bool open = ImGui::TreeNodeEx((const void*)typeid(SpriteRendererComponent).hash_code(),
+                                      ImGuiTreeNodeFlags_DefaultOpen, "Sprite");
+        ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+        if (ImGui::Button("+", ImVec2{20, 20})) {
+            ImGui::OpenPopup("ComponentSettings");
+        }
+        ImGui::PopStyleVar();
+        bool removeComponent = false;
+        if (ImGui::BeginPopup("ComponentSettings")) {
+            if (ImGui::MenuItem("Remove Component")) {
+                removeComponent = true;
+            }
+
+            ImGui::EndPopup();
+        }
+
+        if (open) {
+            auto& sprite = entity.GetComponent<SpriteRendererComponent>();
             ImGui::ColorEdit4("Color", glm::value_ptr(sprite.Color));
 
             ImGui::TreePop();
         }
+        if (removeComponent)
+            entity.RemoveComponent<SpriteRendererComponent>();
     }
 
-    if (ent.HasComponent<TransformComponent>()) {
+    if (entity.HasComponent<TransformComponent>()) {
         if (ImGui::TreeNodeEx((const void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
                               "Transform")) {
 
-            auto& tc = ent.GetComponent<TransformComponent>();
+            auto& tc = entity.GetComponent<TransformComponent>();
             DrawVec3Control("Translation", tc.Translation);
             glm::vec3 rotation = glm::degrees(tc.Rotation);
             DrawVec3Control("Rotation", rotation);
@@ -172,11 +209,24 @@ void SceneHierarchyPanel::DrawComponents(Entity ent) {
         }
     }
 
-    if (ent.HasComponent<CameraComponent>()) {
-        if (ImGui::TreeNodeEx((const void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen,
-                              "Camera")) {
+    const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
 
-            auto& cameraComponent = ent.GetComponent<CameraComponent>();
+    if (entity.HasComponent<CameraComponent>()) {
+        bool open = ImGui::TreeNodeEx((const void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera");
+        ImGui::SameLine();
+        if (ImGui::Button("+")) {
+            ImGui::OpenPopup("ComponentSettings");
+        }
+        bool removeComponent = false;
+        if (ImGui::BeginPopup("ComponentSettings")) {
+            if (ImGui::MenuItem("Remove Component")) {
+                removeComponent = true;
+            }
+
+            ImGui::EndPopup();
+        }
+        if (open) {
+            auto& cameraComponent = entity.GetComponent<CameraComponent>();
             auto& camera = cameraComponent.Camera;
 
             ImGui::Checkbox("Primary", &cameraComponent.Primary);
@@ -226,6 +276,8 @@ void SceneHierarchyPanel::DrawComponents(Entity ent) {
 
             ImGui::TreePop();
         }
+        if (removeComponent)
+            entity.RemoveComponent<CameraComponent>();
     }
 }
 } // namespace zirconium
