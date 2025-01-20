@@ -5,7 +5,7 @@
 namespace zirconium {
 
 struct WindowProps {
-    WindowProps(const std::string& title = "Zirconium Engine", uint32_t width = 1280, uint32_t height = 720)
+    WindowProps(const std::string& title = "Zirconium Engine", uint32_t width = 1600, uint32_t height = 900)
         : Title(title)
         , Width(width)
         , Height(height) {}
