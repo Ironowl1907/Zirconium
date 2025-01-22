@@ -64,9 +64,10 @@ public:
     ProjectionType GetProjectionType() const {
         return m_ProjectionType;
     }
-    void SetProjectionType(ProjectionType type) {
+    void SetProjectionType(ProjectionType type, bool recalculate = true) {
         m_ProjectionType = type;
-        RecalculateProjection();
+        if (recalculate)
+            RecalculateProjection();
     }
 
 private:
@@ -82,7 +83,7 @@ private:
     float m_OrthographicSize = 10.0f;
     float m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f;
 
-    float m_AspectRatio = 0.0f;
+    float m_AspectRatio = 1.0f;
 };
 
 } // namespace zirconium

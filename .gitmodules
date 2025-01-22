@@ -14,3 +14,6 @@
 [submodule "zirconium/vendor/entt"]
 	path = zirconium/vendor/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "zirconium/vendor/yaml-cpp"]
+	path = zirconium/vendor/yaml-cpp
+	url = https://github.com/Ironowl1907/yaml-cpp.git

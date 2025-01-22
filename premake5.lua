@@ -5,6 +5,9 @@ architecture("x64")
 configurations({ "Debug", "Release", "Profile-Debug", "Profile-Release", "Dist" })
 location("build")
 
+defines {
+    "YAML_CPP_STATIC_DEFINE" }
+
 newaction({
     trigger = "clean",
     description = "Clean the build and bin directories recursively",
@@ -37,11 +40,13 @@ IncludeDir["ImGui"] = "./zirconium/vendor/imgui/"
 IncludeDir["glm"] = "./zirconium/vendor/glm/"
 IncludeDir["stb_image"] = "./zirconium/vendor/stb_image/"
 IncludeDir["entt"] = "./zirconium/vendor/entt/src/entt"
+IncludeDir["yaml-cpp"] = "./zirconium/vendor/yaml-cpp/include"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
 include("./zirconium/vendor/imgui/")
 include("./zirconium/vendor/spdlog/")
+include("./zirconium/vendor/yaml-cpp/")
 
 -- Project for zirconium static library
 project("zirconium")
@@ -65,8 +70,9 @@ includedirs({
     IncludeDir["glm"],
     IncludeDir["stb_image"],
     IncludeDir["entt"],
+    IncludeDir["yaml-cpp"],
 })
-links({ "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
+links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
 
@@ -122,7 +128,7 @@ includedirs({
     IncludeDir["ImGui"],
     IncludeDir["entt"],
 })
-links({ "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+links({ "yaml-cpp", "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
 
 -- Linux-specific settings
 filter("system:linux")
@@ -178,8 +184,11 @@ includedirs({
     IncludeDir["glm"],
     IncludeDir["spdlog"],
     IncludeDir["entt"],
+    IncludeDir["yaml-cpp"],
 })
-links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+
+libdirs { "./zirconium/vendor/yaml-cpp/bin/Release" }
+links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread", "yaml-cpp" })
 
 -- Linux-specific settings
 filter("system:linux")

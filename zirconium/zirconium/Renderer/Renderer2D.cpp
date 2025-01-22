@@ -14,7 +14,6 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 
-
 namespace zirconium {
 
 struct QuadVertex {
@@ -655,7 +654,10 @@ Renderer2D::Statistics Renderer2D::GetStats() {
     return s_Data.Stats;
 }
 void Renderer2D::ResetStats() {
-    memset(&s_Data.Stats, 0, sizeof(Statistics));
+    // memset(&s_Data.Stats, 0, sizeof(Statistics));
+
+    s_Data.Stats.DrawCalls = 0;
+    s_Data.Stats.QuadCount = 0;
 }
 
 } // namespace zirconium

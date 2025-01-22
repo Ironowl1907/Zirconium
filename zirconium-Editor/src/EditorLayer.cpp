@@ -4,7 +4,8 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 #include "zirconium.h"
-#include <cstdint>
+
+#include "zirconium/scene/SceneSerializer.h"
 
 namespace zirconium {
 
@@ -50,6 +51,7 @@ void EditorLayer::OnAttach() {
     // Scene
     m_ActiveScene = std::make_shared<Scene>();
 
+#if 0
     // Entity
     m_SquareEntity = m_ActiveScene->CreateEntity("Square");
     m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
@@ -66,7 +68,7 @@ void EditorLayer::OnAttach() {
 
     m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
+#endif
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OnDetach() {}
@@ -183,7 +185,16 @@ void EditorLayer::OnImGuiRender() {
             // Disabling fullscreen would allow the window to be moved to the front of other windows,
             // which we can't undo at the moment without finer window depth/z control.
 
-            if (ImGui::MenuItem("Exit", NULL, false))
+            if (ImGui::MenuItem("Serialize")) {
+                SceneSerializer serializer(m_ActiveScene);
+                serializer.Serialize("Example.zr");
+            }
+            if (ImGui::MenuItem("Deserialize")) {
+                SceneSerializer serializer(m_ActiveScene);
+                serializer.Deserialize("Example.zr");
+            }
+
+            if (ImGui::MenuItem("Exit"))
                 Application::Get().Close();
             ImGui::EndMenu();
         }

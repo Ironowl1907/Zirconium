@@ -1,4 +1,5 @@
 #pragma once
+#include "SceneSerializer.h"
 #include "entt.hpp"
 #include "zirconium/Core/Timestep.h"
 
@@ -27,6 +28,7 @@ private:
     uint32_t m_ViewportHeight = 0;
 
     friend class Entity;
+    friend class SceneSerializer;
     friend class SceneHierarchyPanel;
 };
 } // namespace zirconium
