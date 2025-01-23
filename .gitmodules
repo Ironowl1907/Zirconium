@@ -17,3 +17,6 @@
 [submodule "zirconium/vendor/yaml-cpp"]
 	path = zirconium/vendor/yaml-cpp
 	url = https://github.com/Ironowl1907/yaml-cpp.git
+[submodule "zirconium/vendor/ImGuiFlieDialog"]
+	path = zirconium/vendor/ImGuiFileDialog
+	url = https://github.com/Ironowl1907/ImGuiFileDialog.git

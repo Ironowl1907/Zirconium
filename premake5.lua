@@ -5,8 +5,6 @@ architecture("x64")
 configurations({ "Debug", "Release", "Profile-Debug", "Profile-Release", "Dist" })
 location("build")
 
-defines {
-    "YAML_CPP_STATIC_DEFINE" }
 
 newaction({
     trigger = "clean",
@@ -41,12 +39,14 @@ IncludeDir["glm"] = "./zirconium/vendor/glm/"
 IncludeDir["stb_image"] = "./zirconium/vendor/stb_image/"
 IncludeDir["entt"] = "./zirconium/vendor/entt/src/entt"
 IncludeDir["yaml-cpp"] = "./zirconium/vendor/yaml-cpp/include"
+IncludeDir["ImGuiFileDialog"] = "./zirconium/vendor/ImGuiFileDialog"
 
 include("./zirconium/vendor/glad/")
 include("./zirconium/vendor/glfw/")
 include("./zirconium/vendor/imgui/")
 include("./zirconium/vendor/spdlog/")
 include("./zirconium/vendor/yaml-cpp/")
+include("./zirconium/vendor/ImGuiFileDialog/")
 
 -- Project for zirconium static library
 project("zirconium")
@@ -71,11 +71,15 @@ includedirs({
     IncludeDir["stb_image"],
     IncludeDir["entt"],
     IncludeDir["yaml-cpp"],
+    IncludeDir["ImGuiFileDialog"],
 })
-links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread" })
+links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
 
+defines {
+    "YAML_CPP_STATIC_DEFINE"
+}
 -- Linux-specific settings
 filter("system:linux")
 buildoptions({ "-pthread" })
@@ -127,8 +131,10 @@ includedirs({
     IncludeDir["glm"],
     IncludeDir["ImGui"],
     IncludeDir["entt"],
+    IncludeDir["ImGuiFileDialog"],
 })
-links({ "yaml-cpp", "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread" })
+links({ "yaml-cpp", "zirconium", "fmt", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread",
+    "ImGuiFileDialog" })
 
 -- Linux-specific settings
 filter("system:linux")
@@ -185,10 +191,12 @@ includedirs({
     IncludeDir["spdlog"],
     IncludeDir["entt"],
     IncludeDir["yaml-cpp"],
+    IncludeDir["ImGuiFileDialog"],
 })
 
 libdirs { "./zirconium/vendor/yaml-cpp/bin/Release" }
-links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread", "yaml-cpp" })
+links({ "fmt", "zirconium", "spdLog", "Glad", "ImGui", "GLFW", "GL", "m", "dl", "X11", "pthread", "yaml-cpp",
+    "ImGuiFileDialog" })
 
 -- Linux-specific settings
 filter("system:linux")

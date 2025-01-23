@@ -5,7 +5,9 @@
 #include "imgui/imgui.h"
 #include "zirconium.h"
 
+#include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/scene/SceneSerializer.h"
+#include <cstdint>
 
 namespace zirconium {
 
@@ -104,6 +106,10 @@ void EditorLayer::OnUpdate(TimeStep delta) {
     }
 }
 
+static bool s_Opening = false;
+static bool s_SavingTo = false;
+static std::string s_FilePath = "";
+
 void EditorLayer::OnImGuiRender() {
 
     ZR_PROFILE_FUNCTION();
@@ -185,13 +191,17 @@ void EditorLayer::OnImGuiRender() {
             // Disabling fullscreen would allow the window to be moved to the front of other windows,
             // which we can't undo at the moment without finer window depth/z control.
 
-            if (ImGui::MenuItem("Serialize")) {
-                SceneSerializer serializer(m_ActiveScene);
-                serializer.Serialize("Example.zr");
+            if (ImGui::MenuItem("New", "Ctrl+N")) {
+                NewFile();
             }
-            if (ImGui::MenuItem("Deserialize")) {
-                SceneSerializer serializer(m_ActiveScene);
-                serializer.Deserialize("Example.zr");
+            if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+                s_Opening = true;
+            }
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {
+                Save();
+            }
+            if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
+                s_SavingTo = true;
             }
 
             if (ImGui::MenuItem("Exit"))
@@ -200,6 +210,7 @@ void EditorLayer::OnImGuiRender() {
         }
 
         ImGui::EndMenuBar();
+
         m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
@@ -236,9 +247,89 @@ void EditorLayer::OnImGuiRender() {
     ImGui::PopStyleVar();
 
     ImGui::End();
+
+    if (s_Opening) {
+        if (FileDialogs::OpenFile(s_FilePath)) {
+            OpenFile(s_FilePath);
+            s_Opening = false;
+        }
+    }
+    if (s_SavingTo) {
+        if (FileDialogs::SaveFile(s_FilePath)) {
+            SaveToFile(s_FilePath);
+            s_SavingTo = false;
+        }
+    }
+}
+
+void EditorLayer::NewFile() {
+    ZR_CORE_WARN("NewFile");
+    m_ActiveScene = std::make_shared<Scene>();
+    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+void EditorLayer::OpenFile(const std::string path) {
+    ZR_CORE_WARN("OpenFile: {}", path);
+    if (!path.empty()) {
+        m_ActiveScene = std::make_shared<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+        SceneSerializer serializer(m_ActiveScene);
+        serializer.Deserialize(path);
+    }
+}
+void EditorLayer::Save() {
+    ZR_CORE_WARN("Save");
+}
+void EditorLayer::SaveToFile(const std::string path) {
+    ZR_CORE_WARN("SaveToFile: {}", path);
+    if (!path.empty()) {
+        SceneSerializer serializer(m_ActiveScene);
+        serializer.Serialize(path);
+    }
 }
 
 void EditorLayer::OnEvent(Event& event) {
     m_CameraController.OnEvent(event);
+
+    EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<KeyPressedEvent>(ZR_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+}
+
+bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
+    // Shortcuts
+    if (e.GetRepeatedCount() > 0)
+        return false;
+
+    bool control = Input::IsKeyPressed(ZR_KEY_LEFT_CONTROL) || Input::IsKeyPressed(ZR_KEY_RIGHT_CONTROL);
+    bool shift = Input::IsKeyPressed(ZR_KEY_LEFT_SHIFT) || Input::IsKeyPressed(ZR_KEY_RIGHT_SHIFT);
+
+    switch (e.GetKeyCode()) {
+    case ZR_KEY_S: {
+        if (control && shift) {
+            s_SavingTo = true;
+        }
+        break;
+    }
+
+    case ZR_KEY_O: {
+        if (control) {
+            s_Opening = true;
+        }
+        break;
+    }
+
+    case ZR_KEY_N: {
+        if (control) {
+            NewFile();
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    return true;
 }
 } // namespace zirconium

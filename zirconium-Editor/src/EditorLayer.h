@@ -19,6 +19,14 @@ public:
     virtual void OnImGuiRender() override;
     virtual void OnEvent(Event& event) override;
 
+    void NewFile();
+    void OpenFile(const std::string);
+    void Save();
+    void SaveToFile(const std::string);
+
+private:
+    bool OnKeyPressed(KeyPressedEvent& e);
+
 private:
     OrthoCameraController m_CameraController;
 
