@@ -147,7 +147,7 @@ systemversion "latest"
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
 symbols("On")     -- Enable debug symbols
 optimize("Debug") -- Optimize for debugging
 
@@ -209,7 +209,7 @@ systemversion "latest"
 
 -- Debug Configuration
 filter("configurations:Debug")
-defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE", "ZR_PROFILE" })
+defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
 symbols("On")     -- Enable debug symbols
 optimize("Debug") -- Optimize for debugging
 
