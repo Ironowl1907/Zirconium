@@ -4,6 +4,7 @@
 #include "zirconium.h"
 
 #include "Panels/SceneHireachyPanel.h"
+#include "zirconium/Renderer/EditorCamera.h"
 
 namespace zirconium {
 
@@ -49,6 +50,8 @@ private:
     Entity m_SecondCameraEntity;
 
     bool m_PrimaryCamera = false;
+
+    EditorCamera m_EditorCamera;
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;

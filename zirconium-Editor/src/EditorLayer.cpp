@@ -53,6 +53,8 @@ void EditorLayer::OnAttach() {
     // Scene
     m_ActiveScene = std::make_shared<Scene>();
 
+    m_EditorCamera = EditorCamera(30.0f, 16.0f / 9.0f, 0.1, 1000.0f);
+
 #if 0
     // Entity
     m_SquareEntity = m_ActiveScene->CreateEntity("Square");
@@ -86,11 +88,15 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
+        m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
         m_ActiveScene->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
     }
 
-    if (m_ViewportFocused)
-        m_CameraController.OnUpdate(delta);
+    if (m_ViewportFocused) {
+        m_CameraController.OnUpdate(delta); // Deprecated
+    }
+    // Update Editor Camera
+    m_EditorCamera.OnUpdate(delta);
 
     {
         ZR_PROFILE_SCOPE("Render");
@@ -100,7 +106,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         RenderCommand::Clear();
 
         // Update Scene
-        m_ActiveScene->OnUpdate(delta);
+        m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
 
         m_Framebuffer->Unbind();
     }
@@ -291,6 +297,7 @@ void EditorLayer::SaveToFile(const std::string path) {
 }
 
 void EditorLayer::OnEvent(Event& event) {
+    m_EditorCamera.OnEvent(event);
     m_CameraController.OnEvent(event);
 
     EventDispatcher dispatcher(event);

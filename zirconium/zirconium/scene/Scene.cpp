@@ -17,7 +17,18 @@ Scene::Scene() {
 
 Scene::~Scene() {}
 
-void Scene::OnUpdate(TimeStep delta) {
+void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
+    Renderer2D::BeginScene(camera);
+
+    auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+    for (auto entity : group) {
+        const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+        Renderer2D::DrawTransformedQuad(transform.GetTransform(), (glm::vec4)sprite);
+    }
+    Renderer2D::EndScene();
+}
+
+void Scene::OnUpdateRuntime(TimeStep delta) {
     // Update scripts
     {
         m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {

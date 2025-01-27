@@ -3,6 +3,8 @@
 #include "entt.hpp"
 #include "zirconium/Core/Timestep.h"
 
+#include "zirconium/Renderer/EditorCamera.h"
+
 namespace zirconium {
 class Entity;
 
@@ -13,7 +15,8 @@ public:
 
     Entity CreateEntity(const std::string& name = "");
 
-    void OnUpdate(TimeStep delta);
+    void OnUpdateEditor(TimeStep delta, EditorCamera& camera);
+    void OnUpdateRuntime(TimeStep delta);
     void OnViewportResize(const uint32_t& width, const uint32_t& height);
     void DeleteEntity(Entity entity);
 

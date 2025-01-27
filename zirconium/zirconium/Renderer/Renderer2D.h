@@ -4,6 +4,7 @@
 #include "OrthographicCamera.h"
 #include "zirconium/Renderer/SubTexture2D.h"
 #include "zirconium/Renderer/Texture.h"
+#include "zirconium/Renderer/EditorCamera.h"
 
 namespace zirconium {
 class Renderer2D {
@@ -12,6 +13,7 @@ public:
     static void Shutdown();
 
     static void BeginScene(const OrthoCamera& camera); //TODO: REMOVE
+    static void BeginScene(const EditorCamera& camera);
     static void BeginScene(const Camera& camera, const glm::mat4& transform);
     static void EndScene();
 
