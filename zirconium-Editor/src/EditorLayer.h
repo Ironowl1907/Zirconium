@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ParticleSystem.h"
 #include "zirconium.h"
 
 #include "Panels/SceneHireachyPanel.h"

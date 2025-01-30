@@ -1,10 +1,10 @@
 #pragma once
 #include "Camera.h"
-#include "SubTexture2D.h"
 #include "OrthographicCamera.h"
+#include "SubTexture2D.h"
+#include "zirconium/Renderer/EditorCamera.h"
 #include "zirconium/Renderer/SubTexture2D.h"
 #include "zirconium/Renderer/Texture.h"
-#include "zirconium/Renderer/EditorCamera.h"
 
 namespace zirconium {
 class Renderer2D {
@@ -12,7 +12,8 @@ public:
     static void Init();
     static void Shutdown();
 
-    static void BeginScene(const OrthoCamera& camera); //TODO: REMOVE
+    [[deprecated]]
+    static void BeginScene(const OrthoCamera& camera); // TODO: REMOVE
     static void BeginScene(const EditorCamera& camera);
     static void BeginScene(const Camera& camera, const glm::mat4& transform);
     static void EndScene();
@@ -23,31 +24,43 @@ public:
     static void DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2D>& texture,
                                        const float& tilingFactor = 1);
 
+    [[deprecated]]
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
                          const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
                          const float& tilingFactor = 1);
 
+    [[deprecated]]
     static void DrawTexQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                             const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                             const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawTexQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture,
                             const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawTexQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture,
                             const float& tilingFactor = 1);
 
+    [[deprecated]]
     static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
                                 const glm::vec4& color, const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                 glm::vec4 color, const float& tilingFactor = 1);
 
+    [[deprecated]]
     static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                    const Ref<Texture2D>& texture, const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawRotatedTexQuad(const glm::vec2& position, const glm::vec2& size, const float& rotation,
                                    const Ref<SubTexture2D>& subTexture, const float& tilingFactor = 1);
+    [[deprecated]]
     static void DrawRotatedTexQuad(const glm::vec3& position, const glm::vec2& size, const float& rotation,
                                    const Ref<SubTexture2D>& subTexture, const float& tilingFactor = 1);
 
