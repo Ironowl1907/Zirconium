@@ -87,7 +87,11 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         Renderer2D::ResetStats();
         m_Framebuffer->Bind();
         RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
+
         RenderCommand::Clear();
+
+        // Set out entity ID attachment to 0
+        m_Framebuffer->ClearAttachment(1,0);
 
         // Update Scene
         m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);

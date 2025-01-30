@@ -2,6 +2,7 @@
 #include "zrpch.h"
 
 #include "glad/glad.h"
+#include <cstdint>
 
 namespace zirconium {
 
@@ -11,6 +12,22 @@ static GLenum TextureTarget(bool multisampled) {
 static uint32_t s_MaxFramebufferSize = 10000;
 
 namespace Utils {
+
+static GLenum ZirFBTextureFormat2GL(FramebufferTextureFormat format) {
+    switch (format) {
+
+    case FramebufferTextureFormat::None:
+    case FramebufferTextureFormat::RGBA8:
+        return GL_RGBA8;
+    case FramebufferTextureFormat::RED_INTEGER:
+        return GL_RED_INTEGER;
+    case FramebufferTextureFormat::DEPTH24STENCIL8:
+        break;
+    }
+    ZR_CORE_ASSERT(false, "Invalid format");
+    return 0;
+}
+
 
 static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) {
     glCreateTextures(TextureTarget(multisampled), count, outID);
@@ -177,4 +194,13 @@ uint32_t OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
     glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
     return pixelData;
 }
+
+void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, const uint32_t value) {
+    ZR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
+
+    auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
+    glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::ZirFBTextureFormat2GL(spec.TextureFormat),
+                    GL_UNSIGNED_INT, &value);
+}
+
 } // namespace zirconium
