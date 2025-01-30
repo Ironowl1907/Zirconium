@@ -231,7 +231,7 @@ void EditorLayer::OnImGuiRender() {
     } else {
         ZR_CORE_WARN("Invalid Viewport Size: ({}, {})", sizeViewport.x, sizeViewport.y);
     }
-    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(1);
+    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();
