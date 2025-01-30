@@ -46,6 +46,8 @@ void EditorLayer::OnAttach() {
     m_CameraController.SetZoomLevel(5.0f);
 
     FrameBufferSpecification fbSpec;
+    fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8,
+                          FramebufferTextureFormat::Depth};
     fbSpec.Width = 1280;
     fbSpec.Height = 720;
     m_Framebuffer = FrameBuffer::Create(fbSpec);
@@ -55,24 +57,6 @@ void EditorLayer::OnAttach() {
 
     m_EditorCamera = EditorCamera(30.0f, 16.0f / 9.0f, 0.1, 1000.0f);
 
-#if 0
-    // Entity
-    m_SquareEntity = m_ActiveScene->CreateEntity("Square");
-    m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.2, 0.8f, 0.3f, 1.0f});
-
-    m_SquareEntity = m_ActiveScene->CreateEntity("Square2");
-    m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.9, 0.3f, 0.3f, 1.0f});
-
-    m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    m_CameraEntity.AddComponent<CameraComponent>();
-
-    m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera2");
-    auto& cc = m_SecondCameraEntity.AddComponent<CameraComponent>();
-    cc.Primary = false;
-
-    m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-    m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OnDetach() {}
@@ -247,7 +231,7 @@ void EditorLayer::OnImGuiRender() {
     } else {
         ZR_CORE_WARN("Invalid Viewport Size: ({}, {})", sizeViewport.x, sizeViewport.y);
     }
-    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(1);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();

@@ -24,6 +24,7 @@ void main() {
 #type fragment
 #version 460 core
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 color2;
 
 in vec2 v_TexCoords;
 in vec4 v_Color;
@@ -35,4 +36,5 @@ uniform float u_TilingFactor;
 
 void main() {
     color = texture(u_Textures[int(v_TexIndex)], v_TexCoords * v_TilingFactor) * v_Color;
+    color2 = vec4(0.8f, 0.3f, 0.2f, 1.0f);
 }
