@@ -46,7 +46,7 @@ void EditorLayer::OnAttach() {
     m_CameraController.SetZoomLevel(5.0f);
 
     FrameBufferSpecification fbSpec;
-    fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8,
+    fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER,
                           FramebufferTextureFormat::Depth};
     fbSpec.Width = 1280;
     fbSpec.Height = 720;
@@ -91,6 +91,19 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 
         // Update Scene
         m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
+
+        auto [mx, my] = ImGui::GetMousePos();
+        mx -= m_ViewportBounds[0].x;
+        my -= m_ViewportBounds[0].y;
+        glm::vec2 viewportSize = m_ViewportSize[1] - m_ViewportBounds[0];
+        my = m_ViewportSize.y - my;
+
+        int mouseX = (int)mx;
+        int mouseY = (int)my;
+
+        uint32_t pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+        ZR_CORE_WARN("Mouse Pos = {}, {}", mouseX, mouseY);
+        ZR_CORE_WARN("Pixel data: {}", pixelData);
 
         m_Framebuffer->Unbind();
     }
@@ -217,6 +230,7 @@ void EditorLayer::OnImGuiRender() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
+    auto viewportOffset = ImGui::GetCursorPos(); // Includes tab bar
 
     m_ViewportFocused = ImGui::IsWindowFocused();
     m_ViewportHovered = ImGui::IsWindowHovered();
@@ -231,8 +245,18 @@ void EditorLayer::OnImGuiRender() {
     } else {
         ZR_CORE_WARN("Invalid Viewport Size: ({}, {})", sizeViewport.x, sizeViewport.y);
     }
-    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(1);
+    uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+    auto windowSize = ImGui::GetWindowSize();
+    auto minBound = ImGui::GetWindowPos();
+    minBound.x += viewportOffset.x;
+    minBound.y += viewportOffset.y;
+
+    ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
+    m_ViewportBounds[0] = {minBound.x, minBound.y};
+    m_ViewportBounds[1] = {maxBound.x, maxBound.y};
+
     ImGui::End();
     ImGui::PopStyleVar();
 

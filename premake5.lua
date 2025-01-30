@@ -88,6 +88,7 @@ linkoptions({ "-pthread" })
 -- Debug Configuration
 filter("configurations:Debug")
 defines({ "ZIR_DEBUG", "ZR_ENABLE_ASSERTS", "GLFW_INCLUDE_NONE" })
+buildoptions { "-ggdb" }
 optimize("Debug")
 
 -- Release Configuration
