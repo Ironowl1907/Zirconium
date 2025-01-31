@@ -105,7 +105,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         int mouseX = (int)mx;
         int mouseY = (int)my;
 
-        uint32_t pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+        int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
         ZR_CORE_WARN("Mouse Pos = {}, {}", mouseX, mouseY);
         ZR_CORE_WARN("Pixel data: {}", pixelData);
 

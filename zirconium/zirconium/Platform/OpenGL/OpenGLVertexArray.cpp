@@ -1,6 +1,7 @@
 #include "OpenGLVertexArray.h"
 #include "glad/glad.h"
 #include "zrpch.h"
+#include <GL/gl.h>
 #include <cstdint>
 
 namespace zirconium {
@@ -25,6 +26,9 @@ static GLenum ShaderDataTypeToOpenGlBaseType(ShaderDataType type) {
 
     case ShaderDataType::Bool:
         return GL_BOOL;
+
+    case ShaderDataType::UInt:
+        return GL_UNSIGNED_INT;
     }
     ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
     return 0;
@@ -58,10 +62,36 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
     const auto& layout = vertexBuffer->GetLayout();
 
     for (const auto& element : layout) {
-        glEnableVertexAttribArray(index);
-        glVertexAttribPointer(index++, GetComponentCount(element.Type), ShaderDataTypeToOpenGlBaseType(element.Type),
-                              element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                              (const void*)(uintptr_t)element.Offset);
+        switch (element.Type) {
+        case ShaderDataType::None:
+            ZR_CORE_ASSERT(false, "");
+
+        case ShaderDataType::Float:
+        case ShaderDataType::Float2:
+        case ShaderDataType::Float3:
+        case ShaderDataType::Float4:
+        case ShaderDataType::Mat3:
+        case ShaderDataType::Mat4: {
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index++, GetComponentCount(element.Type),
+                                  ShaderDataTypeToOpenGlBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE,
+                                  layout.GetStride(), (const void*)(uintptr_t)element.Offset);
+            break;
+        }
+
+        case ShaderDataType::Int:
+        case ShaderDataType::Int2:
+        case ShaderDataType::Int3:
+        case ShaderDataType::Int4:
+        case ShaderDataType::Bool:
+        case ShaderDataType::UInt: {
+            glEnableVertexAttribArray(index);
+            glVertexAttribIPointer(index++, GetComponentCount(element.Type),
+                                   ShaderDataTypeToOpenGlBaseType(element.Type), layout.GetStride(),
+                                   (const void*)(uintptr_t)element.Offset);
+            break;
+        }
+        }
     }
     m_VetexBuffers.push_back(vertexBuffer);
 }

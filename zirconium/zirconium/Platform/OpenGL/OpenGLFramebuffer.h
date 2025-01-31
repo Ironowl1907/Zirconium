@@ -17,7 +17,7 @@ public:
         return m_Specification;
     }
 
-    virtual uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) override;
+    virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
     virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override {
         ZR_CORE_ASSERT(index < m_ColorAttachments.size(), "");

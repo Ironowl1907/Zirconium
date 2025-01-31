@@ -187,11 +187,11 @@ void OpenGLFrameBuffer::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-uint32_t OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
+int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
     ZR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
     glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-    uint32_t pixelData;
-    glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
+    int pixelData;
+    glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
     return pixelData;
 }
 

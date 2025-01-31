@@ -29,14 +29,14 @@ void Sandbox2D::OnUpdate(zirconium::TimeStep delta) {
         zirconium::RenderCommand::SetClearColor({0.1804, 0.1804, 0.1804, 1}); // Set clear color (dark gray)
         zirconium::RenderCommand::Clear();
 
-        zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        for (int y = 0; y < 100; y++) {
-            for (int x = 0; x < 100; x++) {
-                zirconium::Renderer2D::DrawQuad({x - m_CameraController.GetBounds().GetWidth() / 2, y}, {0.9f, 0.9f},
-                                                {x / 100.0f, y / 100.0f, 1.0f, 1.0f});
-            }
-        }
-        zirconium::Renderer2D::EndScene();
+        // zirconium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        // for (int y = 0; y < 100; y++) {
+        //     for (int x = 0; x < 100; x++) {
+        //         zirconium::Renderer2D::DrawQuad({x - m_CameraController.GetBounds().GetWidth() / 2, y}, {0.9f, 0.9f},
+        //                                         {x / 100.0f, y / 100.0f, 1.0f, 1.0f});
+        //     }
+        // }
+        // zirconium::Renderer2D::EndScene();
     }
 }
 

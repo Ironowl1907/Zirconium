@@ -16,7 +16,8 @@ enum class ShaderDataType : uint8_t {
     Int2,
     Int3,
     Int4,
-    Bool
+    Bool,
+    UInt
 };
 
 // clang-format off
@@ -30,6 +31,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
         case ShaderDataType::Mat3:   return 4 * 3 * 3; // 3x3 matrix of floats
         case ShaderDataType::Mat4:   return 4 * 4 * 4; // 4x4 matrix of floats
         case ShaderDataType::Int:    return 4;
+        case ShaderDataType::UInt:   return 4;
         case ShaderDataType::Int2:   return 4 * 2; // 2 integers
         case ShaderDataType::Int3:   return 4 * 3; // 3 integers
         case ShaderDataType::Int4:   return 4 * 4; // 4 integers
@@ -69,6 +71,7 @@ inline uint32_t GetComponentCount(ShaderDataType type) {
         case ShaderDataType::Int3:   return 3;
         case ShaderDataType::Int4:   return 4;
         case ShaderDataType::Bool:   return 1;
+        case ShaderDataType::UInt:   return 1;
     ZR_CORE_ASSERT(false, "Unknown Shader Type!");
     }
 return 0;

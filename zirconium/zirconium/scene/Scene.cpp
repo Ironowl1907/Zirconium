@@ -23,7 +23,7 @@ void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
     auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
     for (auto entity : group) {
         const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-        Renderer2D::DrawTransformedQuad(transform.GetTransform(), (glm::vec4)sprite);
+        Renderer2D::DrawSprite(transform.GetTransform(), sprite, 30);
     }
     Renderer2D::EndScene();
 }
