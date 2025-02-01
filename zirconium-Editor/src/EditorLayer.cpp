@@ -243,7 +243,12 @@ void EditorLayer::OnImGuiRender() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
-    auto viewportOffset = ImGui::GetCursorPos(); // Includes tab bar
+    auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+    auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+
+    auto viewportOffset = ImGui::GetWindowPos();
+    m_ViewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
+    m_ViewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
 
     m_ViewportFocused = ImGui::IsWindowFocused();
     m_ViewportHovered = ImGui::IsWindowHovered();
@@ -260,15 +265,6 @@ void EditorLayer::OnImGuiRender() {
     }
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
-
-    auto windowSize = ImGui::GetWindowSize();
-    auto minBound = ImGui::GetWindowPos();
-    minBound.x += viewportOffset.x;
-    minBound.y += viewportOffset.y;
-
-    ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
-    m_ViewportBounds[0] = {minBound.x, minBound.y};
-    m_ViewportBounds[1] = {maxBound.x, maxBound.y};
 
     ImGui::End();
     ImGui::PopStyleVar();
