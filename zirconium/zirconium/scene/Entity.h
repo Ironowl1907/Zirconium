@@ -8,7 +8,7 @@
 namespace zirconium {
 class Entity {
 public:
-    Entity() = default;
+    Entity();
     Entity(entt::entity handle, Scene* scene);
 
     template <typename T, typename... Args>

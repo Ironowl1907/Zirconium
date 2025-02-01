@@ -90,8 +90,8 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 
         RenderCommand::Clear();
 
-        // Set out entity ID attachment to 0
-        m_Framebuffer->ClearAttachment(1,0);
+        // Set out entity ID attachment to -1
+        m_Framebuffer->ClearAttachment(1, 0);
 
         // Update Scene
         m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
@@ -105,9 +105,12 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         int mouseX = (int)mx;
         int mouseY = (int)my;
 
-        int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-        ZR_CORE_WARN("Mouse Pos = {}, {}", mouseX, mouseY);
-        ZR_CORE_WARN("Pixel data: {}", pixelData);
+        int pixelData;
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
+            int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY) - 1;
+            m_HoveredEntity =
+                (pixelData == -1) ? Entity(entt::null, nullptr) : Entity((entt::entity)pixelData, m_ActiveScene.get());
+        }
 
         m_Framebuffer->Unbind();
     }
@@ -221,6 +224,12 @@ void EditorLayer::OnImGuiRender() {
         m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
+
+        std::string name = "None";
+        if (m_HoveredEntity)
+            name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+
+        ImGui::Text("Hovered Entity: %s", name.c_str());
 
         auto stats = Renderer2D::GetStats();
         ImGui::Text("Renderer 2D stats: ");

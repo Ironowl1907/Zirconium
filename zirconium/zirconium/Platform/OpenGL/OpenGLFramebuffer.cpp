@@ -195,12 +195,12 @@ int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
     return pixelData;
 }
 
-void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, const uint32_t value) {
+void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, const int value) {
     ZR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
 
     auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
     glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::ZirFBTextureFormat2GL(spec.TextureFormat),
-                    GL_UNSIGNED_INT, &value);
+                    GL_INT, &value);
 }
 
 } // namespace zirconium

@@ -24,7 +24,7 @@ public:
         return m_ColorAttachments[index];
     }
 
-    virtual void ClearAttachment(uint32_t attachmentIndex, const uint32_t value) override;
+    virtual void ClearAttachment(uint32_t attachmentIndex, const int value) override;
 
     virtual void Resize(uint32_t width, uint32_t height) override;
 

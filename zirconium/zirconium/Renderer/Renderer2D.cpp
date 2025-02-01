@@ -22,7 +22,7 @@ struct QuadVertex {
     glm::vec2 TexCoord;
     float TexIndex;
     float TilingFactor;
-    int EntityID = 0;
+    int EntityID = -1;
 
     std::string ToString() const {
         std::ostringstream oss;
@@ -187,8 +187,8 @@ void Renderer2D::EndScene() {
     uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
     s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
 
-    for (QuadVertex* i = s_Data.QuadVertexBufferBase; i < s_Data.QuadVertexBufferPtr; i++)
-    ZR_CORE_WARN(i->ToString());
+    // for (QuadVertex* i = s_Data.QuadVertexBufferBase; i < s_Data.QuadVertexBufferPtr; i++)
+    // ZR_CORE_WARN(i->ToString());
 
     Flush();
 }
@@ -250,7 +250,8 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
         FlushAndReset();
 
     uint32_t tilingFactor = 1;
-    SetVertexData(transform, 0, src, entityID, tilingFactor);
+    // Adding the +1 for now to allow zeroed ID entities
+    SetVertexData(transform, 0, src, entityID+1, tilingFactor);
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {
