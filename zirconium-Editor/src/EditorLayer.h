@@ -26,6 +26,7 @@ public:
 
 private:
     bool OnKeyPressed(KeyPressedEvent& e);
+    bool OnMousePressed(MousePressedButtonEvent& e);
 
 private:
     OrthoCameraController m_CameraController;

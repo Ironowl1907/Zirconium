@@ -319,6 +319,15 @@ void EditorLayer::OnEvent(Event& event) {
 
     EventDispatcher dispatcher(event);
     dispatcher.Dispatch<KeyPressedEvent>(ZR_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+    dispatcher.Dispatch<MousePressedButtonEvent>(ZR_BIND_EVENT_FN(EditorLayer::OnMousePressed));
+}
+
+bool EditorLayer::OnMousePressed(MousePressedButtonEvent& e) {
+    if (e.GetMouseButton() == ZR_MOUSE_BUTTON_LEFT) {
+        if (m_ViewportHovered && !Input::IsKeyPressed(ZR_KEY_LEFT_ALT))
+            m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+    }
+    return false;
 }
 
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {

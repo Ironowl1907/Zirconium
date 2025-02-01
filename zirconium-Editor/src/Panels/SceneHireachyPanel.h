@@ -10,6 +10,13 @@ public:
     SceneHierarchyPanel() = default;
     SceneHierarchyPanel(const Ref<Scene>& context);
 
+    Entity GetSelectedEntity() const {
+        return m_SelectionContext;
+    }
+    void SetSelectedEntity(const Entity& entity) {
+        m_SelectionContext = entity;
+    }
+
     void SetContext(const Ref<Scene>& context);
     void OnImGuiRender();
 
