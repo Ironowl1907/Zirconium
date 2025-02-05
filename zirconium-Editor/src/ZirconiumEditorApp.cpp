@@ -2,7 +2,7 @@
 #include "zirconium.h"
 #include "zirconium/Core/entryPoint.h"
 
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 namespace zirconium {
 class ZirconiumEditor : public Application {

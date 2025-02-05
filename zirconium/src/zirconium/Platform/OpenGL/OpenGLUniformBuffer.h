@@ -13,6 +13,7 @@ public:
 
 private:
 private:
-    uint32_t m_RendererID;};
+    uint32_t m_RendererID;
+};
 
 } // namespace zirconium

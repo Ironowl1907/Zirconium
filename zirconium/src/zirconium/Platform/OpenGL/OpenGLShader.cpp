@@ -6,6 +6,7 @@
 #include "core.h"
 #include "glm/gtc/type_ptr.hpp"
 
+
 namespace zirconium {
 
 OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)

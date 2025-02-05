@@ -14,6 +14,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 
+#include <filesystem>
+
 namespace zirconium {
 
 struct QuadVertex {
@@ -132,7 +134,9 @@ void Renderer2D::Init() {
         samplers[i] = i;
     }
 
-    s_Data.TextureShader = zirconium::Shader::Create("../sandbox/res/shaders/TextureShader.glsl");
+    std::filesystem::path path = "zirconium-Editor/res/shaders/TextureShader.glsl";
+    std::filesystem::path fullPath = std::filesystem::absolute(path);
+    s_Data.TextureShader = zirconium::Shader::Create(fullPath.c_str());
     s_Data.TextureShader->Bind();
     s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 
@@ -251,7 +255,7 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
 
     uint32_t tilingFactor = 1;
     // Adding the +1 for now to allow zeroed ID entities
-    SetVertexData(transform, 0, src, entityID+1, tilingFactor);
+    SetVertexData(transform, 0, src, entityID + 1, tilingFactor);
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {

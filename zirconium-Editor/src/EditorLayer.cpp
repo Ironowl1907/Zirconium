@@ -2,7 +2,7 @@
 #include "zrpch.h"
 
 #include "EditorLayer.h"
-#include "imgui/imgui.h"
+#include "imgui.h"
 #include "zirconium.h"
 
 #include "zirconium/Utils/PlatformUtils.h"
@@ -41,7 +41,7 @@ void EditorLayer::OnAttach() {
 
     ZR_PROFILE_FUNCTION();
 
-    m_Texture = Texture2D::Create("../sandbox/res/textures/textureTest.png");
+    // m_Texture = Texture2D::Create("../res/textures/textureTest.png");
 
     m_CameraController.SetZoomLevel(5.0f);
 

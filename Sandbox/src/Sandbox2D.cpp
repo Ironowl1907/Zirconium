@@ -1,7 +1,6 @@
 #include "Sandbox2D.h"
 #include "imgui.h"
 #include "zirconium.h"
-#include <cstdint>
 
 Sandbox2D::Sandbox2D()
     : Layer("SandBox2D")
