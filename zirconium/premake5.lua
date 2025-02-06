@@ -28,8 +28,11 @@ includedirs({
     IncludeDir["entt"],
     IncludeDir["ImGuiFD"],
     IncludeDir["yaml-cpp"],
+    IncludeDir["shaderc"],
 })
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
+
+libdirs { "vendor/shaderc/build/libshaderc/" }
 
 links({
     "GLFW",
@@ -37,6 +40,7 @@ links({
     "SpdLog",
     "ImGui",
     "yaml-cpp",
+    "libshaderc",
     "opengl32.lib"
 })
 
