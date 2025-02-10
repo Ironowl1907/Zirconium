@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstdint>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/matrix.hpp>
 #include <glm/trigonometric.hpp>
 
 #include <filesystem>
@@ -61,6 +62,12 @@ struct Renderer2DStorage {
     glm::vec4 QuadVertexPositions[4];
 
     Renderer2D::Statistics Stats;
+
+    struct CameraData {
+        glm::mat4 ViewProjection;
+    };
+    CameraData CameraBuffer;
+    Ref<UniformBuffer> CameraUniformBuffer;
 };
 static Renderer2DStorage s_Data;
 
@@ -95,7 +102,6 @@ void Renderer2D::Init() {
     s_Data.QuadVertexArray = zirconium::VertexArray::Create();
 
     s_Data.QuadVertexBuffer = zirconium::VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
-    s_Data.QuadVertexBuffer->Bind();
 
     zirconium::BufferLayout layout = {
         {ShaderDataType::Float3, "a_Position"},      {ShaderDataType::Float4, "a_Color"},
@@ -104,6 +110,7 @@ void Renderer2D::Init() {
     };
 
     s_Data.QuadVertexBuffer->SetLayout(layout);
+    s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DStorage::CameraData), 0);
 
     s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
     s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
@@ -161,10 +168,10 @@ void Renderer2D::FlushAndReset() {
 
 void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
-    glm::mat4 projView = camera.GetProjection() * glm::inverse(transform);
+    ZR_PROFILE_FUNCTION();
 
-    s_Data.TextureShader->Bind();
-    s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);
+    s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
+    s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
     s_Data.QuadIndexCount = 0;
     s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
@@ -174,10 +181,10 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
 void Renderer2D::BeginScene(const EditorCamera& camera) {
 
-    glm::mat4 projView = camera.GetViewProjection();
+    ZR_PROFILE_FUNCTION();
 
-    s_Data.TextureShader->Bind();
-    s_Data.TextureShader->SetMatrix4f("u_ProjectionViewMatrix", projView);
+    s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
+    s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
     s_Data.QuadIndexCount = 0;
     s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
@@ -202,6 +209,7 @@ void Renderer2D::Flush() {
     ZR_PROFILE_FUNCTION();
 
     // Bind all the textures
+    s_Data.TextureShader->Bind();
     for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++) {
         s_Data.TextureSlots[i]->Bind(i);
     }
