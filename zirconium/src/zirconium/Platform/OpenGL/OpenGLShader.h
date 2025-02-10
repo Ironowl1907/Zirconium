@@ -37,12 +37,22 @@ public:
     void SetUniformIntArray(const std::string& name, const int* arr, size_t count);
 
 private:
-    void Compile(const std::unordered_map<GLenum, std::string>& shaderSrcs);
-    std::string ReadFile(const std::string& filePath);
-    std::unordered_map<GLenum, std::string> PreProcess(const std::string& shaderSrc);
+    std::string ReadFile(const std::string& filepath);
+    std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+
+    void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+    void CompileOrGetOpenGLBinaries();
+    void CreateProgram();
+    void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
     uint32_t m_RendererID;
     std::string m_Name;
+
+    std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
+    std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
+    std::unordered_map<GLenum, std::string> m_OpenGLSourceCode;
+
+    std::string m_FilePath;
 };
 } // namespace zirconium

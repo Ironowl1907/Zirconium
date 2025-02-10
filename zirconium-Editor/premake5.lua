@@ -20,10 +20,17 @@ includedirs({
     -- IncludeDir["yaml-cpp"],
 })
 
-libdirs { "./zirconium/vendor/yaml-cpp/bin/Release" }
+libdirs {
+    "zirconium/vendor/shaderc/libshaderc",
+    "zirconium/vendor/spirv-cross/",
+    "./zirconium/vendor/yaml-cpp/bin/Release"
+}
+
 
 links({ "zirconium",
     "ImGuiFileDialog",
+    "shaderc_combined",
+    "spirv-cross",
     "yaml-cpp",
     "Glad",
     "GLFW",

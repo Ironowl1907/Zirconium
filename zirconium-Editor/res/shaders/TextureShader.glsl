@@ -14,13 +14,13 @@ layout(std140, binding = 0) uniform Camera {
 
 struct VertexOutput {
     vec4 Color;
-    vec2 TexCoords; // Corrected variable name
+    vec2 TexCoords;
     float TexIndex;
     float TilingFactor;
 };
 
 layout(location = 0) out VertexOutput Output; // Output structure
-layout(location = 1) out flat int v_EntityID; // Changed location to avoid conflict
+layout(location = 4) out flat int v_EntityID; // Changed location to avoid conflict
 
 void main() {
     Output.Color = a_Color;
@@ -36,17 +36,18 @@ void main() {
 #version 460 core
 
 layout(location = 0) out vec4 color;
-layout(location = 1) out int enttID;
+layout(location = 1) out int color2;
 
-struct VertexOutput {
+struct VertexOutput
+{
     vec4 Color;
-    vec2 TexCoords; // Ensure this matches the vertex shader output
+    vec2 TexCoord;
     float TexIndex;
     float TilingFactor;
 };
 
-layout(location = 0) in VertexOutput Input; // Ensure input matches output from vertex shader
-layout(location = 1) in flat int v_EntityID; // Changed location to match output from vertex shader
+layout(location = 0) in VertexOutput Input;
+layout(location = 4) in flat int v_EntityID;
 
 layout(binding = 0) uniform sampler2D u_Textures[32];
 

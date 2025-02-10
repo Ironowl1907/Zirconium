@@ -8,6 +8,7 @@
 #include "zirconium/Renderer/Renderer2D.h"
 #include "zirconium/Renderer/Shader.h"
 #include "zirconium/Renderer/Texture.h"
+#include "zirconium/Renderer/UniformBuffer.h"
 
 #include <cmath>
 #include <cstdint>

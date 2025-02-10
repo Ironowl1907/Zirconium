@@ -20,6 +20,7 @@ files({
 
 includedirs({
     "./src",
+    "./src/zirconium",
     IncludeDir["GLFW"],
     IncludeDir["Glad"],
     IncludeDir["ImGui"],
@@ -29,18 +30,19 @@ includedirs({
     IncludeDir["ImGuiFD"],
     IncludeDir["yaml-cpp"],
     IncludeDir["shaderc"],
+    IncludeDir["spirv-cross"],
 })
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
-libdirs { "vendor/shaderc/build/libshaderc/" }
 
 links({
+    "shaderc-combined",
     "GLFW",
     "Glad",
     "SpdLog",
     "ImGui",
     "yaml-cpp",
-    "libshaderc",
+    "spirv-cross",
     "opengl32.lib"
 })
 

@@ -31,9 +31,9 @@ ifeq ($(config),debug)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -g -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -g -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lfmt
+  LIBS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lshaderc -lspirv-cross -lfmt
   LDDEPS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/build/libshaderc -L../zirconium/vendor/spirv-cross -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -67,9 +67,9 @@ ifeq ($(config),release)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lfmt
+  LIBS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lshaderc -lspirv-cross -lfmt
   LDDEPS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/build/libshaderc -L../zirconium/vendor/spirv-cross -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -103,9 +103,9 @@ ifeq ($(config),dist)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lfmt
+  LIBS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a -lshaderc -lspirv-cross -lfmt
   LDDEPS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/spdlog/bin/SpdLog/libSpdLog.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a ../zirconium/vendor/glad/bin/Glad/libGlad.a
-  ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/build/libshaderc -L../zirconium/vendor/spirv-cross -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef

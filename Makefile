@@ -18,7 +18,6 @@ ifeq ($(config),debug)
   SpdLog_config = debug
   yaml_cpp_config = debug
   zirconium_config = debug
-  sandbox_config = debug
   zirconium_Editor_config = debug
 endif
 ifeq ($(config),release)
@@ -29,7 +28,6 @@ ifeq ($(config),release)
   SpdLog_config = release
   yaml_cpp_config = release
   zirconium_config = release
-  sandbox_config = release
   zirconium_Editor_config = release
 endif
 ifeq ($(config),dist)
@@ -40,11 +38,10 @@ ifeq ($(config),dist)
   SpdLog_config = dist
   yaml_cpp_config = dist
   zirconium_config = dist
-  sandbox_config = dist
   zirconium_Editor_config = dist
 endif
 
-PROJECTS := GLFW ImGui Glad ImGuiFileDialog SpdLog yaml-cpp zirconium sandbox zirconium-Editor
+PROJECTS := GLFW ImGui Glad ImGuiFileDialog SpdLog yaml-cpp zirconium zirconium-Editor
 
 .PHONY: all clean help $(PROJECTS) Dependencies
 
@@ -94,12 +91,6 @@ ifneq (,$(zirconium_config))
 	@${MAKE} --no-print-directory -C zirconium -f Makefile config=$(zirconium_config)
 endif
 
-sandbox: zirconium SpdLog GLFW ImGui Glad
-ifneq (,$(sandbox_config))
-	@echo "==== Building sandbox ($(sandbox_config)) ===="
-	@${MAKE} --no-print-directory -C Sandbox -f Makefile config=$(sandbox_config)
-endif
-
 zirconium-Editor: zirconium ImGuiFileDialog yaml-cpp Glad GLFW ImGui
 ifneq (,$(zirconium_Editor_config))
 	@echo "==== Building zirconium-Editor ($(zirconium_Editor_config)) ===="
@@ -114,7 +105,6 @@ clean:
 	@${MAKE} --no-print-directory -C zirconium/vendor/spdlog -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium/vendor/yaml-cpp -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium -f Makefile clean
-	@${MAKE} --no-print-directory -C Sandbox -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium-Editor -f Makefile clean
 
 help:
@@ -135,7 +125,6 @@ help:
 	@echo "   SpdLog"
 	@echo "   yaml-cpp"
 	@echo "   zirconium"
-	@echo "   sandbox"
 	@echo "   zirconium-Editor"
 	@echo ""
 	@echo "For more information, see https://github.com/premake/premake-core/wiki"

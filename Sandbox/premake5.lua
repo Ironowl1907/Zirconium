@@ -13,7 +13,11 @@ includedirs({
     IncludeDir["entt"],
     IncludeDir["ImGuiFileDialog"],
 })
+
+
 links({
+    "shaderc",
+    "spirv-cross",
     "zirconium",
     "SpdLog",
     "GLFW",

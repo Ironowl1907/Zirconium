@@ -11,6 +11,14 @@ configurations
     "Dist"
 }
 
+
+libdirs {
+    "zirconium/vendor/shaderc/libshaderc",
+    "zirconium/vendor/spirv-cross/",
+
+    "./zirconium/vendor/yaml-cpp/bin/Release"
+}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependencies"
@@ -24,5 +32,5 @@ include "zirconium/vendor/yaml-cpp"
 group ""
 
 include "zirconium"
-include "Sandbox"
+-- include "Sandbox"
 include "zirconium-Editor"
