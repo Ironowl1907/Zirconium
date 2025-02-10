@@ -12,12 +12,24 @@
 #include "zirconium/Renderer/VertexArray.h"
 
 #include "zirconium/Platform/OpenGL/OpenGLBuffer.h"
+#include <cwchar>
 
 namespace zirconium {
 
+struct ApplicationCommandLineArgs {
+    int Count = 0;
+    char** Args = nullptr;
+
+    const char* operator[](int index) const {
+        ZR_CORE_ASSERT(index < Count, "");
+        return Args[index];
+    }
+};
+
 class Application {
 public:
-    Application(const std::string& name = "Zirconium App");
+    Application(const std::string& name = "Zircomium App",
+                ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
     virtual ~Application();
     void Run();
     void onEvent(Event& event);
@@ -26,6 +38,10 @@ public:
 
     static inline Application& Get() {
         return *s_Instance;
+    }
+
+    ApplicationCommandLineArgs GetCommandLineArgs() const {
+        return m_CommandLineArgs;
     }
     inline Window& GetWindow() {
         return *m_Window;
@@ -52,8 +68,10 @@ private:
     uint32_t m_UniformProjViewLocation;
 
     static Application* s_Instance;
+    ApplicationCommandLineArgs m_CommandLineArgs;
 };
 // To be defined in a client
 Application* CreateApplication();
+Application* CreateApplication(ApplicationCommandLineArgs args);
 
 } // namespace zirconium

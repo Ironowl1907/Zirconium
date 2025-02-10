@@ -15,7 +15,7 @@ public:
     ~ZirconiumEditor() {}
 };
 
-Application* CreateApplication() {
+Application* CreateApplication(zirconium::ApplicationCommandLineArgs args) {
     return new ZirconiumEditor();
 }
 } // namespace zirconium
