@@ -16,8 +16,8 @@ void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
     m_SelectionContext = {};
 }
 void SceneHierarchyPanel::OnImGuiRender() {
-    bool t = true;
-    ImGui::ShowDemoWindow(&t);
+    // bool t = true;
+    // ImGui::ShowDemoWindow(&t);
     ImGui::Begin("Scene Hierarchy");
 
     if (m_Context) {

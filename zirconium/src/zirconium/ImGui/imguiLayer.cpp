@@ -52,9 +52,9 @@ void ImGuiLayer::OnAttach() {
     // io.ConfigViewportsNoAutoMerge = true;
     // io.ConfigViewportsNoTaskBarIcon = true;
 
-    // std::filesystem::path p = "relative/path/to/file.txt";
-    //     std::filesystem::path fullPath = std::filesystem::absolute(p);
-    //     std::cout << "Full path: " << fullPath << std::endl;
+    std::filesystem::path p = "relative/path/to/file.txt";
+        std::filesystem::path fullPath = std::filesystem::absolute(p);
+        std::cout << "Full path: " << fullPath << std::endl;
 
     io.Fonts->AddFontFromFileTTF(
         std::filesystem::absolute(std::filesystem::path("zirconium-Editor/res/fonts/NotoSans/static/NotoSans-Bold.ttf"))
@@ -65,6 +65,7 @@ void ImGuiLayer::OnAttach() {
             std::filesystem::path("zirconium-Editor/res/fonts/NotoSans/static/NotoSans-Regular.ttf"))
             .c_str(),
         18.0f);
+
 
     // zirconium-Editor/res/shaders/TextureShader.glsl
 
