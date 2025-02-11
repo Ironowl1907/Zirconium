@@ -10,6 +10,6 @@ public:
 
     void OnImGuiRender();
 private:
-std::filesystem::path m_CurrentDirecory;
+std::filesystem::path m_CurrentDirectory;
 };
 } // namespace zirconium
