@@ -3,6 +3,7 @@
 #include "zirconium.h"
 
 #include "Panels/SceneHireachyPanel.h"
+#include "Panels/ContentBrowser.h"
 #include "zirconium/Renderer/EditorCamera.h"
 
 namespace zirconium {
@@ -57,5 +58,6 @@ private:
 
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
+    ContentBrowserPannel m_ContentBrowserPanel;
 };
 } // namespace zirconium

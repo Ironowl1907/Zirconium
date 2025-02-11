@@ -120,6 +120,7 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/EditorLayer.o \
+	$(OBJDIR)/ContentBrowser.o \
 	$(OBJDIR)/SceneHireachyPanel.o \
 	$(OBJDIR)/ZirconiumEditorApp.o \
 
@@ -181,6 +182,9 @@ $(OBJECTS): | $(OBJDIR)
 endif
 
 $(OBJDIR)/EditorLayer.o: src/EditorLayer.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ContentBrowser.o: src/Panels/ContentBrowser.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/SceneHireachyPanel.o: src/Panels/SceneHireachyPanel.cpp
