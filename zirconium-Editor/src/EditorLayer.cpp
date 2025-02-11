@@ -99,7 +99,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
         my -= m_ViewportBounds[0].y;
-        glm::vec2 viewportSize = m_ViewportSize[1] - m_ViewportBounds[0];
+        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
         my = m_ViewportSize.y - my;
 
         int mouseX = (int)mx;
@@ -108,6 +108,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         int pixelData;
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
             int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY) - 1;
+            ZR_CORE_WARN(pixelData);
             m_HoveredEntity =
                 (pixelData == -1) ? Entity(entt::null, nullptr) : Entity((entt::entity)pixelData, m_ActiveScene.get());
         }
@@ -223,23 +224,6 @@ void EditorLayer::OnImGuiRender() {
 
         m_SceneHierarchyPanel.OnImGuiRender();
         m_ContentBrowserPanel.OnImGuiRender();
-
-        // ImGui::Begin("Stats");
-
-        // std::string name = "None";
-        // if (m_HoveredEntity)
-        //     name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
-
-        // ImGui::Text("Hovered Entity: %s", name.c_str());
-
-        // auto stats = Renderer2D::GetStats();
-        // ImGui::Text("Renderer 2D stats: ");
-        // ImGui::Text("Draw call %d", stats.DrawCalls);
-        // ImGui::Text("Quads %d", stats.QuadCount);
-        // ImGui::Text("Vertices %d", stats.GetTotalVertexCount());
-        // ImGui::Text("Indices %d", stats.GetTotalIndexCount());
-
-        // ImGui::End();
 
         if (m_ShowRenderStats) {
             static int location = -1;
