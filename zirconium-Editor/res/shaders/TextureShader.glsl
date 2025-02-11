@@ -1,30 +1,35 @@
+// Basic Texture Shader
+
 #type vertex
-#version 460 core
+#version 450 core
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
-layout(location = 2) in vec2 a_TexCoords;
+layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_TexIndex;
 layout(location = 4) in float a_TilingFactor;
 layout(location = 5) in int a_EntityID;
 
-layout(std140, binding = 0) uniform Camera {
+layout(std140, binding = 0) uniform Camera
+{
     mat4 u_ViewProjection;
 };
 
-struct VertexOutput {
+struct VertexOutput
+{
     vec4 Color;
-    vec2 TexCoords;
+    vec2 TexCoord;
     float TexIndex;
     float TilingFactor;
 };
 
-layout(location = 0) out VertexOutput Output; // Output structure
-layout(location = 4) out flat int v_EntityID; // Changed location to avoid conflict
+layout(location = 0) out VertexOutput Output;
+layout(location = 4) out flat int v_EntityID;
 
-void main() {
+void main()
+{
     Output.Color = a_Color;
-    Output.TexCoords = a_TexCoords; // Corrected variable name
+    Output.TexCoord = a_TexCoord;
     Output.TexIndex = a_TexIndex;
     Output.TilingFactor = a_TilingFactor;
     v_EntityID = a_EntityID;
@@ -33,7 +38,7 @@ void main() {
 }
 
 #type fragment
-#version 460 core
+#version 450 core
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out int color2;
@@ -51,7 +56,10 @@ layout(location = 4) in flat int v_EntityID;
 
 layout(binding = 0) uniform sampler2D u_Textures[32];
 
-void main() {
+void main()
+{
+    vec4 texColor = Input.Color;
     color = texture(u_Textures[int(Input.TexIndex)], Input.TexCoords * Input.TilingFactor) * Input.Color; // Corrected variable names
-    enttID = v_EntityID;
+
+    color2 = v_EntityID;
 }

@@ -2,6 +2,7 @@ bin/
 bin-int/
 build/
 .zed/
+cache/
 
 zirconium/vendor/shaderc
 zirconium/vendor/spirv-cross

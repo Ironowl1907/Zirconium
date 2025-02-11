@@ -54,7 +54,7 @@ static const char* GLShaderStageToString(GLenum stage) {
 
 static const char* GetCacheDirectory() {
     // TODO: make sure the assets directory is valid
-    return "assets/cache/shader/opengl";
+    return "cache/shader/opengl";
 }
 
 static void CreateCacheDirectoryIfNeeded() {
