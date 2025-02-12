@@ -8,6 +8,7 @@
 #include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/scene/SceneSerializer.h"
 #include <cstdint>
+#include <stdexcept>
 
 namespace zirconium {
 
@@ -108,7 +109,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         int pixelData;
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
             int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY) - 1;
-            ZR_CORE_WARN(pixelData);
+            // ZR_CORE_WARN(pixelData);
             m_HoveredEntity =
                 (pixelData == -1) ? Entity(entt::null, nullptr) : Entity((entt::entity)pixelData, m_ActiveScene.get());
         }
@@ -306,6 +307,21 @@ void EditorLayer::OnImGuiRender() {
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
+    if (ImGui::BeginDragDropTarget()) {
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+            const char* data = reinterpret_cast<const char*>(payload->Data);
+            const int dataSize = payload->DataSize;
+            try {
+                OpenFile(std::string(data));
+            } catch (const std::runtime_error& e) {
+            ZR_CORE_ERROR("Coundn't open file! {}", e.what());
+            }
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
     ImGui::End();
     ImGui::PopStyleVar();
 
@@ -342,6 +358,11 @@ void EditorLayer::OpenFile(const std::string path) {
         serializer.Deserialize(path);
     }
 }
+
+void EditorLayer::OpenFile(const std::filesystem::path path) {
+    OpenFile(path.string());
+}
+
 void EditorLayer::Save() {
     ZR_CORE_WARN("Save");
 }

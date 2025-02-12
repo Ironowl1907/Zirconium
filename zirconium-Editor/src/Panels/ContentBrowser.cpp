@@ -1,6 +1,8 @@
 #include "ContentBrowser.h"
 #include "zrpch.h"
 
+#include <cstring>
+#include <cwchar>
 #include <filesystem>
 #include <imgui.h>
 
@@ -13,23 +15,26 @@ ContentBrowserPannel::ContentBrowserPannel() {
     m_CurrentDirectory = s_AssetsDirectory;
 }
 
-static void FileTree(std::filesystem::path path) {
-
+static void FileTree(const std::filesystem::path& path) {
     for (auto& p : std::filesystem::directory_iterator(path)) {
         auto relativePath = std::filesystem::relative(p.path(), s_AssetsDirectory);
         std::string filename = relativePath.filename().string();
 
         if (p.is_directory()) {
             if (ImGui::TreeNode(filename.c_str())) {
-                FileTree(path / filename);
+                FileTree(p.path());
                 ImGui::TreePop();
             }
         } else {
-            ImGui::TreeNodeEx(filename.c_str(), ImGuiTreeNodeFlags_Leaf);
-            ImGui::TreePop();
+            ImGui::TreeNodeEx(filename.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+            if (ImGui::BeginDragDropSource()) {
+                const char* itemPath = relativePath.c_str();
+                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (strlen(itemPath) + 1) * sizeof(char),
+                                          ImGuiCond_Once);
+                ImGui::EndDragDropSource();
+            }
         }
     }
-    return;
 }
 
 void ContentBrowserPannel::OnImGuiRender() {

@@ -22,6 +22,7 @@ public:
 
     void NewFile();
     void OpenFile(const std::string);
+    void OpenFile(const std::filesystem::path path);
     void Save();
     void SaveToFile(const std::string);
 
