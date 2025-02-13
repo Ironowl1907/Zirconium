@@ -20,8 +20,8 @@ public:
     static void Flush();
 
     static void DrawTransformedQuad(const glm::mat4& transform, const glm::vec4& color);
-    static void DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2D>& texture,
-                                       const float& tilingFactor = 1);
+    static void DrawTransformedTexQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, glm::vec4& tint,
+                                       int entityID = -1, const float& tilingFactor = 1);
 
     static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 

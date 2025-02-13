@@ -62,4 +62,5 @@ void main()
     color = texture(u_Textures[int(Input.TexIndex)], Input.TexCoords * Input.TilingFactor) * Input.Color; // Corrected variable names
 
     color2 = v_EntityID;
+    // if (v_EntityID != -1) color = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 }

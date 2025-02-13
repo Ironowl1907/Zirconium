@@ -75,10 +75,10 @@ static void SetVertexData(glm::mat4 transform, uint32_t textureIndex, glm::vec4 
                           float tilingFactor) {
 
     static glm::vec2 s_TextureCoords[4] = {
-        {0.5f, 0.5f},
-        {-0.5f, 0.5f},
-        {0.5f, -0.5f},
-        {-0.5f, -0.5f},
+        {0.0f, 0.0f}, // Bottom-left corner
+        {1.0f, 0.0f}, // Bottom-right corner
+        {1.0f, 1.0f}, // Top-right corner
+        {0.0f, 1.0f}, // Top-left corner
     };
 
     for (uint32_t i = 0; i < 4; i++) {
@@ -233,15 +233,13 @@ void Renderer2D::DrawTransformedQuad(const glm::mat4& transform, const glm::vec4
     SetVertexData(transform, 0, color, -1, tilingFactor);
 }
 
-void Renderer2D::DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2D>& texture,
-                                        const float& tilingFactor) {
+void Renderer2D::DrawTransformedTexQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, glm::vec4& tint,
+                                        int entityID, const float& tilingFactor) {
 
     ZR_PROFILE_FUNCTION();
 
     if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices)
         FlushAndReset();
-
-    constexpr glm::vec4 color(1.0f);
 
     float textureIndex = 0.0f;
     for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++) {
@@ -256,7 +254,7 @@ void Renderer2D::DrawTransformedTexQuad(glm::mat4& transform, const Ref<Texture2
         s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
         s_Data.TextureSlotIndex++;
     }
-    SetVertexData(transform, textureIndex, color, -1, tilingFactor);
+    SetVertexData(transform, textureIndex, tint, entityID, tilingFactor);
 }
 
 void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID) {
@@ -266,9 +264,9 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
     if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices)
         FlushAndReset();
 
-    uint32_t tilingFactor = 1;
     // Adding the +1 for now to allow zeroed ID entities
-    SetVertexData(transform, 0, src, entityID + 1, tilingFactor);
+    // SetVertexData(transform, 0, src, entityID + 1, tilingFactor);
+    DrawTransformedTexQuad(transform, src.Texture, src.Color, entityID, src.TilingFactor);
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {

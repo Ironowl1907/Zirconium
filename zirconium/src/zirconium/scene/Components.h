@@ -5,6 +5,7 @@
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include "zirconium/Renderer/Texture.h"
 
 namespace zirconium {
 
@@ -35,10 +36,21 @@ struct TransformComponent {
 
 struct SpriteRendererComponent {
     glm::vec4 Color{1.0f};
+    Ref<Texture2D> Texture;
+    float TilingFactor = 1;
 
-    SpriteRendererComponent() = default;
+    SpriteRendererComponent() {
+        Texture = Texture2D::Create(1, 1);
+        uint32_t whiteTextureData = 0xffffffff;
+        Texture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
+    }
     SpriteRendererComponent(const glm::vec4& color)
-        : Color(color) {}
+        : Color(color) {
+
+        Texture = Texture2D::Create(1, 1);
+        uint32_t whiteTextureData = 0xffffffff;
+        Texture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
+    }
 
     operator glm::vec4&() {
         return Color;

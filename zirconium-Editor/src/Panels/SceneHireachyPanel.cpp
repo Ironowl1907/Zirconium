@@ -4,6 +4,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <memory>
 
 namespace zirconium {
 
@@ -229,6 +230,22 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
     DrawComponent<SpriteRendererComponent>("Sprite", entity, [](auto& component) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+        ImGui::SliderFloat("Tiling Factor", &component.TilingFactor, 0.0f, 100.f);
+        ImGui::Button("Texture", ImVec2(200.0f, 0.0f));
+        if (ImGui::BeginDragDropTarget()) {
+
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                const char* data = reinterpret_cast<const char*>(payload->Data);
+                const int dataSize = payload->DataSize;
+                try {
+                    component.Texture = Texture2D::Create(std::string(data));
+                } catch (const std::runtime_error& e) {
+                    ZR_CORE_ERROR("Coundn't open file! {}", e.what());
+                }
+            }
+
+            ImGui::EndDragDropTarget();
+        }
     });
 
     DrawComponent<CameraComponent>("Camera", entity, [](auto& component) {
