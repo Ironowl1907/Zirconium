@@ -48,7 +48,7 @@ struct Renderer2DStorage {
     static const uint32_t MaxTextureSlots = 32;      // TODO: RenderCAPS
 
     Ref<VertexArray> QuadVertexArray;
-    Ref<VertexBuffer> QuadVertexBuffer;
+    Ref<VertexBuffer> QuadVertexBuffer = nullptr;
     Ref<Shader> TextureShader;
     Ref<Texture2D> WhiteTexture;
 
@@ -93,6 +93,10 @@ static void SetVertexData(glm::mat4 transform, uint32_t textureIndex, glm::vec4 
 
     s_Data.QuadIndexCount += 6;
     s_Data.Stats.QuadCount++;
+}
+
+void Renderer2D::ClearVB() {
+    s_Data.QuadVertexBuffer->Clear(s_Data.MaxVertices * sizeof(QuadVertex));
 }
 
 void Renderer2D::Init() {

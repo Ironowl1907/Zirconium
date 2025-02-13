@@ -28,7 +28,6 @@ static GLenum ZirFBTextureFormat2GL(FramebufferTextureFormat format) {
     return 0;
 }
 
-
 static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) {
     glCreateTextures(TextureTarget(multisampled), count, outID);
 }
@@ -199,8 +198,8 @@ void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, const int valu
     ZR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
 
     auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
-    glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::ZirFBTextureFormat2GL(spec.TextureFormat),
-                    GL_INT, &value);
+    glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::ZirFBTextureFormat2GL(spec.TextureFormat), GL_INT,
+                    &value);
 }
 
 } // namespace zirconium

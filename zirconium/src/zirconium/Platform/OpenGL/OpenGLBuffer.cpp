@@ -1,6 +1,7 @@
 #include "OpenGLBuffer.h"
 
 #include "glad/glad.h"
+#include <cstring>
 
 namespace zirconium {
 
@@ -28,6 +29,15 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer() {
     ZR_PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
+}
+
+void OpenGLVertexBuffer::Clear(uint32_t size) {
+    ZR_CORE_WARN("Clear called on buffer: {}", m_RendererID);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+    glClearBufferData(GL_ARRAY_BUFFER, GL_R32F, GL_RED, GL_FLOAT, nullptr);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void OpenGLVertexBuffer::Bind() const {

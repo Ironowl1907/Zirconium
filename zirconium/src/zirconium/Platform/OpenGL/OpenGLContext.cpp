@@ -14,7 +14,7 @@ OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 
 void OpenGLContext::Init() {
 
-  ZR_PROFILE_FUNCTION();
+    ZR_PROFILE_FUNCTION();
 
     glfwMakeContextCurrent(m_WindowHandle);
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -39,7 +39,7 @@ void OpenGLContext::Init() {
 
 void OpenGLContext::SwapBuffers() {
 
-  ZR_PROFILE_FUNCTION();
+    ZR_PROFILE_FUNCTION();
 
     glfwSwapBuffers(m_WindowHandle);
 }

@@ -136,6 +136,8 @@ public:
     virtual BufferLayout& GetLayout() = 0;
 
     virtual void SetData(const void* data, const uint32_t& size) = 0;
+
+    virtual void Clear(uint32_t size) = 0;
 };
 
 class IndexBuffer {

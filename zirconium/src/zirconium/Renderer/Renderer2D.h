@@ -25,6 +25,8 @@ public:
 
     static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
+    static void ClearVB();
+
 private:
     static void FlushAndReset();
 

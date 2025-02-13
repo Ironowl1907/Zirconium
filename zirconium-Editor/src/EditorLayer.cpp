@@ -42,8 +42,6 @@ void EditorLayer::OnAttach() {
 
     ZR_PROFILE_FUNCTION();
 
-    // m_Texture = Texture2D::Create("../res/textures/textureTest.png");
-
     m_CameraController.SetZoomLevel(5.0f);
 
     FrameBufferSpecification fbSpec;
@@ -315,7 +313,7 @@ void EditorLayer::OnImGuiRender() {
             try {
                 OpenFile(std::string(data));
             } catch (const std::runtime_error& e) {
-            ZR_CORE_ERROR("Coundn't open file! {}", e.what());
+                ZR_CORE_ERROR("Coundn't open file! {}", e.what());
             }
         }
 
@@ -349,14 +347,16 @@ void EditorLayer::NewFile() {
 }
 void EditorLayer::OpenFile(const std::string path) {
     ZR_CORE_WARN("OpenFile: {}", path);
-    if (!path.empty()) {
-        m_ActiveScene = std::make_shared<Scene>();
-        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    if (path.empty())
+        return;
 
-        SceneSerializer serializer(m_ActiveScene);
-        serializer.Deserialize(path);
-    }
+    m_ActiveScene = std::make_shared<Scene>();
+    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+    SceneSerializer serializer(m_ActiveScene);
+    serializer.Deserialize(path);
+    Renderer2D::ClearVB();
 }
 
 void EditorLayer::OpenFile(const std::filesystem::path path) {

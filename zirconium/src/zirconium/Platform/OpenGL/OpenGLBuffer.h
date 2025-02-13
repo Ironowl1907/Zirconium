@@ -22,6 +22,7 @@ public:
 
     virtual void SetData(const void* data, const uint32_t& size) override;
 
+    virtual void Clear(uint32_t size) override;
 private:
     uint32_t m_RendererID;
     BufferLayout m_Layout = {};
