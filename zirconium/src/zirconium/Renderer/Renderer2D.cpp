@@ -87,7 +87,7 @@ static void SetVertexData(glm::mat4 transform, uint32_t textureIndex, glm::vec4 
         s_Data.QuadVertexBufferPtr->TexCoord = s_TextureCoords[i];
         s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
         s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr->EntityID = EntityID;
+        s_Data.QuadVertexBufferPtr->EntityID = EntityID + 1;
         s_Data.QuadVertexBufferPtr++;
     }
 
