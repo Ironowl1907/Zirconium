@@ -26,6 +26,12 @@ public:
     void Save();
     void SaveToFile(const std::string);
 
+    // UI Panels
+    void UI_ToolBar();
+
+    void OnScenePlay();
+    void OnSceneStop();
+
 private:
     bool OnKeyPressed(KeyPressedEvent& e);
     bool OnMousePressed(MousePressedButtonEvent& e);
@@ -61,5 +67,16 @@ private:
     // Panels
     SceneHierarchyPanel m_SceneHierarchyPanel;
     ContentBrowserPannel m_ContentBrowserPanel;
+
+    enum class SceneState {
+        Edit = 0,
+        Play = 1,
+    };
+
+    SceneState m_SceneState = SceneState::Edit;
+
+    // Editor Resourses
+    Ref<Texture2D> m_IconPlay, m_IconStop;
 };
+
 } // namespace zirconium

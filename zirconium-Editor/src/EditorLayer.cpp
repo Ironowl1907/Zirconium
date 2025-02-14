@@ -8,6 +8,7 @@
 #include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/scene/SceneSerializer.h"
 #include <cstdint>
+#include <filesystem>
 #include <stdexcept>
 
 namespace zirconium {
@@ -57,6 +58,11 @@ void EditorLayer::OnAttach() {
     m_EditorCamera = EditorCamera(30.0f, 16.0f / 9.0f, 0.1, 1000.0f);
 
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+    ZR_CORE_TRACE("Current working path: {}", std::filesystem::current_path().string());
+
+    m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/play-button-arrowhead.png");
+    m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/stop-button.png");
 }
 void EditorLayer::OnDetach() {}
 
@@ -107,13 +113,20 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         int pixelData;
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
             int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY) - 1;
-            ZR_CORE_WARN(pixelData);
+            // ZR_CORE_WARN(pixelData);
             m_HoveredEntity =
                 (pixelData == -1) ? Entity(entt::null, nullptr) : Entity((entt::entity)pixelData, m_ActiveScene.get());
         }
 
         m_Framebuffer->Unbind();
     }
+}
+
+void EditorLayer::OnScenePlay() {
+    m_SceneState = SceneState::Play;
+}
+void EditorLayer::OnSceneStop() {
+    m_SceneState = SceneState::Edit;
 }
 
 static bool s_Opening = false;
@@ -323,6 +336,8 @@ void EditorLayer::OnImGuiRender() {
     ImGui::End();
     ImGui::PopStyleVar();
 
+    UI_ToolBar();
+
     ImGui::End();
 
     if (s_Opening) {
@@ -337,6 +352,37 @@ void EditorLayer::OnImGuiRender() {
             s_SavingTo = false;
         }
     }
+}
+
+void EditorLayer::UI_ToolBar() {
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 2.0f});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2{0.0f, 0.0f});
+
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
+
+    auto& colors = ImGui::GetStyle().Colors;
+    const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f});
+    const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{buttonActive.x, buttonActive.y, buttonActive.z, 0.5f});
+
+    ImGui::Begin("##toolbar", nullptr,
+                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+    float size = ImGui::GetWindowHeight() - 4.0f;
+    Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
+    ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
+    if (ImGui::ImageButton("##playbutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
+                           ImVec2(1, 1))) {
+        if (m_SceneState == SceneState::Play)
+            OnSceneStop();
+        else if (m_SceneState == SceneState::Edit)
+            OnScenePlay();
+    }
+    ImGui::PopStyleVar(2);
+    ImGui::PopStyleColor(3);
+    ImGui::End();
 }
 
 void EditorLayer::NewFile() {
@@ -426,4 +472,5 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
     }
     return true;
 }
+
 } // namespace zirconium

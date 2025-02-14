@@ -5,6 +5,7 @@
 
 #include "OpenGLTexture.h"
 #include "stb_image.h"
+#include <GL/gl.h>
 
 namespace zirconium {
 
@@ -22,8 +23,8 @@ OpenGLTexture2D::OpenGLTexture2D(const uint32_t& width, const uint32_t& height)
 
     glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
@@ -60,8 +61,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 
     glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
@@ -91,6 +92,5 @@ void OpenGLTexture2D::SetData(const void* data, const uint32_t& size) const {
                    "Texture size dismatch with width and height! Data must be the entire texture");
     glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 }
-
 
 } // namespace zirconium
