@@ -27,3 +27,6 @@
 	path = zirconium/vendor/ImGuiFileDialog
 	url = https://github.com/Ironowl1907/ImGuiFileDialog.git
 	ignore=all
+[submodule "zirconium/vendor/Box2D"]
+	path = zirconium/vendor/Box2D
+	url = https://github.com/Ironowl1907/box2d.git
