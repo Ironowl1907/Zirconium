@@ -49,11 +49,11 @@ static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
 }
 
-static void AttachDepthTexture(uint32_t id, int sambples, GLenum format, GLenum attachmentType, uint32_t width,
+static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width,
                                uint32_t height) {
-    bool multisampled = sambples > 1;
+    bool multisampled = samples > 1;
     if (multisampled) {
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sambples, format, width, height, GL_FALSE);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
     } else {
         glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
 
@@ -62,7 +62,7 @@ static void AttachDepthTexture(uint32_t id, int sambples, GLenum format, GLenum 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     }
-    glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
 }
 
 static void BindTexture(bool multisampled, uint32_t id) {
