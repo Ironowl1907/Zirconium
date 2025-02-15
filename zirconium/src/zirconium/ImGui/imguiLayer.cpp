@@ -58,12 +58,12 @@ void ImGuiLayer::OnAttach() {
     io.Fonts->AddFontFromFileTTF(
         std::filesystem::absolute(std::filesystem::path("zirconium-Editor/res/fonts/NotoSans/static/NotoSans-Bold.ttf"))
             .c_str(),
-        18.0f);
+        20.0f);
     io.FontDefault = io.Fonts->AddFontFromFileTTF(
         std::filesystem::absolute(
             std::filesystem::path("zirconium-Editor/res/fonts/NotoSans/static/NotoSans-Regular.ttf"))
             .c_str(),
-        18.0f);
+        20.0f);
 
     // zirconium-Editor/res/shaders/TextureShader.glsl
 

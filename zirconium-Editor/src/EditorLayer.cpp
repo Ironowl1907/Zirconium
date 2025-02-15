@@ -247,7 +247,7 @@ void EditorLayer::OnImGuiRender() {
         m_ContentBrowserPanel.OnImGuiRender();
 
         if (m_ShowRenderStats) {
-            static int location = -1;
+            static int location = 3;
             ImGuiIO& io = ImGui::GetIO();
             ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking |
                                             ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
