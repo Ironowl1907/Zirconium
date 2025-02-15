@@ -99,7 +99,16 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         m_Framebuffer->ClearAttachment(1, 0);
 
         // Update Scene
-        m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
+        switch (m_SceneState) {
+        case SceneState::Play: {
+            m_ActiveScene->OnUpdateRuntime(delta);
+            break;
+        }
+        case SceneState::Edit: {
+            m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
+            break;
+        }
+        }
 
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
