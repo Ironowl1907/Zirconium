@@ -94,13 +94,13 @@ ifneq (,$(Box2D_config))
 	@${MAKE} --no-print-directory -C zirconium/vendor/Box2D -f Makefile config=$(Box2D_config)
 endif
 
-zirconium: GLFW Glad SpdLog ImGui Box2D yaml-cpp
+zirconium: GLFW Glad SpdLog ImGui yaml-cpp Box2D
 ifneq (,$(zirconium_config))
 	@echo "==== Building zirconium ($(zirconium_config)) ===="
 	@${MAKE} --no-print-directory -C zirconium -f Makefile config=$(zirconium_config)
 endif
 
-zirconium-Editor: zirconium ImGuiFileDialog yaml-cpp Glad GLFW ImGui
+zirconium-Editor: zirconium Box2D ImGuiFileDialog yaml-cpp Glad GLFW ImGui
 ifneq (,$(zirconium_Editor_config))
 	@echo "==== Building zirconium-Editor ($(zirconium_Editor_config)) ===="
 	@${MAKE} --no-print-directory -C zirconium-Editor -f Makefile config=$(zirconium_Editor_config)

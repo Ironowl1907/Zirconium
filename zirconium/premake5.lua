@@ -36,16 +36,17 @@ includedirs({
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
 
+
 links({
     "shaderc-combined",
     "GLFW",
     "Glad",
     "SpdLog",
     "ImGui",
-    "Box2D",
     "yaml-cpp",
     "spirv-cross",
-    "opengl32.lib"
+    "opengl32.lib",
+    "Box2D",
 })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)

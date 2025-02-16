@@ -6,7 +6,8 @@
 #include "zirconium/Renderer/EditorCamera.h"
 #include <cstddef>
 
-class b2World;
+
+struct b2WorldId;
 
 namespace zirconium {
 class Entity;
@@ -35,6 +36,8 @@ private:
 
     uint32_t m_ViewportWidth = 0;
     uint32_t m_ViewportHeight = 0;
+
+    b2WorldId* m_WorldID;
 
 
     friend class Entity;

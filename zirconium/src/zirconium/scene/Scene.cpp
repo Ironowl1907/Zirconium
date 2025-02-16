@@ -11,6 +11,8 @@
 #include "Scene.h"
 #include "box2d/box2d.h"
 
+#include "box2d/id.h"
+
 namespace zirconium {
 
 Scene::Scene() {
@@ -30,8 +32,17 @@ void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
     Renderer2D::EndScene();
 }
 
-void Scene::OnRuntimeStart() {}
-void Scene::OnRuntimeStop() {}
+void Scene::OnRuntimeStart() {
+    b2WorldDef worldDefinition = b2DefaultWorldDef();
+    worldDefinition.gravity = (b2Vec2){0.0f, -10.0f};
+
+    m_WorldID = new b2WorldId;
+    *m_WorldID = b2CreateWorld(&worldDefinition);
+}
+void Scene::OnRuntimeStop() {
+    b2DestroyWorld(*m_WorldID);
+    delete m_WorldID;
+}
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
     // Update scripts

@@ -28,6 +28,7 @@ libdirs {
 
 
 links({ "zirconium",
+    "Box2D",
     "ImGuiFileDialog",
     "shaderc_combined",
     "spirv-cross",
