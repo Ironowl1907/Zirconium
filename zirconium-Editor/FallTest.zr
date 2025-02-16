@@ -1,0 +1,38 @@
+Scene: Untitled
+Entities:
+  - Entity: 1233244324231233
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        PerspectiveFOV: 0.7853982
+        ProjectionType: 1
+        ProjectionNear: -0.01
+        ProjectionFar: 1000
+        OrthographicSize: 29
+        OrthographicNear: -1
+        OrthographicFar: 181
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 1233244324231233
+    TagComponent:
+      Tag: Floor
+    TransformComponent:
+      Translation: [0, -2.2, 0]
+      Rotation: [0, 0, 0]
+      Scale: [21.5, 0.1, 1]
+    SpriteRendererComponent:
+      Color: [0.7330961, 0.36263475, 0.36263475, 1]
+  - Entity: 1233244324231233
+    TagComponent:
+      Tag: Square
+    TransformComponent:
+      Translation: [0, 11.3, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]

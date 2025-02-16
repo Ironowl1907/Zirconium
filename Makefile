@@ -17,6 +17,7 @@ ifeq ($(config),debug)
   ImGuiFileDialog_config = debug
   SpdLog_config = debug
   yaml_cpp_config = debug
+  Box2D_config = debug
   zirconium_config = debug
   zirconium_Editor_config = debug
 endif
@@ -27,6 +28,7 @@ ifeq ($(config),release)
   ImGuiFileDialog_config = release
   SpdLog_config = release
   yaml_cpp_config = release
+  Box2D_config = release
   zirconium_config = release
   zirconium_Editor_config = release
 endif
@@ -37,17 +39,18 @@ ifeq ($(config),dist)
   ImGuiFileDialog_config = dist
   SpdLog_config = dist
   yaml_cpp_config = dist
+  Box2D_config = dist
   zirconium_config = dist
   zirconium_Editor_config = dist
 endif
 
-PROJECTS := GLFW ImGui Glad ImGuiFileDialog SpdLog yaml-cpp zirconium zirconium-Editor
+PROJECTS := GLFW ImGui Glad ImGuiFileDialog SpdLog yaml-cpp Box2D zirconium zirconium-Editor
 
 .PHONY: all clean help $(PROJECTS) Dependencies
 
 all: $(PROJECTS)
 
-Dependencies: GLFW Glad ImGui ImGuiFileDialog SpdLog yaml-cpp
+Dependencies: Box2D GLFW Glad ImGui ImGuiFileDialog SpdLog yaml-cpp
 
 GLFW:
 ifneq (,$(GLFW_config))
@@ -85,7 +88,13 @@ ifneq (,$(yaml_cpp_config))
 	@${MAKE} --no-print-directory -C zirconium/vendor/yaml-cpp -f Makefile config=$(yaml_cpp_config)
 endif
 
-zirconium: GLFW Glad SpdLog ImGui yaml-cpp
+Box2D:
+ifneq (,$(Box2D_config))
+	@echo "==== Building Box2D ($(Box2D_config)) ===="
+	@${MAKE} --no-print-directory -C zirconium/vendor/Box2D -f Makefile config=$(Box2D_config)
+endif
+
+zirconium: GLFW Glad SpdLog ImGui Box2D yaml-cpp
 ifneq (,$(zirconium_config))
 	@echo "==== Building zirconium ($(zirconium_config)) ===="
 	@${MAKE} --no-print-directory -C zirconium -f Makefile config=$(zirconium_config)
@@ -104,6 +113,7 @@ clean:
 	@${MAKE} --no-print-directory -C zirconium/vendor/ImGuiFileDialog -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium/vendor/spdlog -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium/vendor/yaml-cpp -f Makefile clean
+	@${MAKE} --no-print-directory -C zirconium/vendor/Box2D -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium -f Makefile clean
 	@${MAKE} --no-print-directory -C zirconium-Editor -f Makefile clean
 
@@ -124,6 +134,7 @@ help:
 	@echo "   ImGuiFileDialog"
 	@echo "   SpdLog"
 	@echo "   yaml-cpp"
+	@echo "   Box2D"
 	@echo "   zirconium"
 	@echo "   zirconium-Editor"
 	@echo ""

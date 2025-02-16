@@ -28,6 +28,7 @@ include "zirconium/vendor/glad"
 include "zirconium/vendor/ImGuiFileDialog"
 include "zirconium/vendor/spdlog"
 include "zirconium/vendor/yaml-cpp"
+include "zirconium/vendor/Box2D"
 
 group ""
 

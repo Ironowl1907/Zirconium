@@ -27,14 +27,14 @@ ifeq ($(config),debug)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_DEBUG -DZR_ENABLE_ASSERTS -DGLFW_INCLUDE_NONE
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -std=c++20 -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
-  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a
   ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
@@ -65,14 +65,14 @@ ifeq ($(config),release)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_RELEASE -DZR_ENABLE_ASSERTS
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
-  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a
   ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
@@ -103,14 +103,14 @@ ifeq ($(config),dist)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_DIST
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
-  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/Box2D/bin/Box2D/libBox2D.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a
   ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS

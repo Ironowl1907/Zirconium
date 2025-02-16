@@ -4,6 +4,9 @@
 #include "zirconium/Core/Timestep.h"
 
 #include "zirconium/Renderer/EditorCamera.h"
+#include <cstddef>
+
+class b2World;
 
 namespace zirconium {
 class Entity;
@@ -14,6 +17,9 @@ public:
     ~Scene();
 
     Entity CreateEntity(const std::string& name = "");
+
+    void OnRuntimeStart();
+    void OnRuntimeStop();
 
     void OnUpdateEditor(TimeStep delta, EditorCamera& camera);
     void OnUpdateRuntime(TimeStep delta);
@@ -29,6 +35,7 @@ private:
 
     uint32_t m_ViewportWidth = 0;
     uint32_t m_ViewportHeight = 0;
+
 
     friend class Entity;
     friend class SceneSerializer;

@@ -9,6 +9,7 @@
 #include <cstdint>
 
 #include "Scene.h"
+#include "box2d/box2d.h"
 
 namespace zirconium {
 
@@ -28,6 +29,9 @@ void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
     }
     Renderer2D::EndScene();
 }
+
+void Scene::OnRuntimeStart() {}
+void Scene::OnRuntimeStop() {}
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
     // Update scripts
