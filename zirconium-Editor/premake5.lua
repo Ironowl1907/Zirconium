@@ -27,7 +27,8 @@ libdirs {
 }
 
 
-links({ "zirconium",
+links({
+    "zirconium",
     "Box2D",
     "ImGuiFileDialog",
     "shaderc_combined",
@@ -37,7 +38,6 @@ links({ "zirconium",
     "GLFW",
     "ImGui",
     "fmt",
-
 })
 -- Linux-specific settings
 filter("system:linux")

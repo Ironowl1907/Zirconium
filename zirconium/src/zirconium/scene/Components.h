@@ -7,6 +7,8 @@
 #include "ScriptableEntity.h"
 #include "zirconium/Renderer/Texture.h"
 
+struct b2BodyId;
+
 namespace zirconium {
 
 struct TagComponent {
@@ -87,6 +89,26 @@ struct NativeScriptComponent {
             nsc->Instance = nullptr;
         };
     }
+};
+
+struct RigidBodyComponent {
+    enum class BodyType { Static = 0, Dynamic = 1, Kinematics = 2 };
+    BodyType Type = BodyType::Static;
+
+    bool FixedRotation = false;
+
+    b2BodyId* RuntimeBody = nullptr;
+};
+
+struct BoxColiderComponent {
+
+    glm::vec2 Offset = {0.0f, 0.0f};
+    glm::vec2 Size = {0.5f, 0.5f};
+
+    float Density = 1.0f;
+    float Friction = 0.5f;
+    float Restitution = 0.0f;
+
 };
 
 } // namespace zirconium

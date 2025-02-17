@@ -15,6 +15,19 @@
 
 namespace zirconium {
 
+static b2BodyType ZirconiumRigidBody2DToB2DRigidBodyType(RigidBodyComponent::BodyType bodyType) {
+    switch (bodyType) {
+    case RigidBodyComponent::BodyType::Static:
+        return b2_staticBody;
+    case RigidBodyComponent::BodyType::Dynamic:
+        return b2_dynamicBody;
+    case RigidBodyComponent::BodyType::Kinematics:
+        return b2_kinematicBody;
+    }
+    ZR_ASSERT(false, "Invalid body type!");
+    return b2_kinematicBody;
+}
+
 Scene::Scene() {
     m_Registry = entt::registry();
 };
@@ -38,6 +51,34 @@ void Scene::OnRuntimeStart() {
 
     m_WorldID = new b2WorldId;
     *m_WorldID = b2CreateWorld(&worldDefinition);
+
+    auto view = m_Registry.view<RigidBodyComponent>();
+    for (auto e : view) {
+        Entity entity = {e, this};
+        auto& transform = entity.GetComponent<TransformComponent>();
+        auto& rb2d = entity.GetComponent<RigidBodyComponent>();
+
+        b2BodyDef bodyDef = b2DefaultBodyDef();
+        bodyDef.type = ZirconiumRigidBody2DToB2DRigidBodyType(rb2d.Type);
+        bodyDef.position = {transform.Translation.x, transform.Translation.y};
+        bodyDef.rotation = b2MakeRot(glm::radians(transform.Rotation.z));
+
+        b2BodyId bodyId = b2CreateBody(*m_WorldID, &bodyDef);
+        b2Body_SetFixedRotation(bodyId, rb2d.FixedRotation);
+
+        if (entity.HasComponent<BoxColiderComponent>()) {
+            auto& b2cc = entity.GetComponent<BoxColiderComponent>();
+
+            b2Polygon colider = b2MakeBox(b2cc.Size.x * transform.Scale.x, b2cc.Size.y * transform.Scale.y);
+
+            b2ShapeDef shapeDef = b2DefaultShapeDef();
+            b2CreatePolygonShape(bodyId, &shapeDef, &colider);
+
+            shapeDef.density = b2cc.Density;
+            shapeDef.restitution = b2cc.Restitution;
+            shapeDef.density = b2cc.Density;
+        }
+    }
 }
 void Scene::OnRuntimeStop() {
     b2DestroyWorld(*m_WorldID);
@@ -56,6 +97,30 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
             }
             nsc.Instance->OnUpdate(delta);
         });
+    }
+
+    // Physics
+    {
+        constexpr float timestep = 1 / 60;
+        constexpr int subStepCount = 4;
+
+        b2World_Step(*m_WorldID, timestep, subStepCount);
+
+        auto view = m_Registry.view<RigidBodyComponent>();
+
+        for (auto& e : view) {
+            Entity entity = {e, this};
+            auto& transform = entity.GetComponent<TransformComponent>();
+            auto& rb2d = entity.GetComponent<RigidBodyComponent>();
+
+            b2Vec2 position = b2Body_GetPosition(*rb2d.RuntimeBody);
+            b2Rot rotation = b2Body_GetRotation(*rb2d.RuntimeBody);
+
+            transform.Translation.x = position.x;
+            transform.Translation.y = position.y;
+
+            transform.Rotation.z = b2Rot_GetAngle(rotation);
+        }
     }
 
     // Render Sprites
@@ -133,5 +198,11 @@ void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& componen
 
 template <>
 void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<RigidBodyComponent>(Entity entity, RigidBodyComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<BoxColiderComponent>(Entity entity, BoxColiderComponent& component) {}
 
 } // namespace zirconium
