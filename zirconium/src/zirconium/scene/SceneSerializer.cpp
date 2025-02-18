@@ -32,6 +32,24 @@ struct convert<glm::vec3> {
 };
 
 template <>
+struct convert<glm::vec2> {
+    static Node encode(const glm::vec2& rhs) {
+        Node node;
+        node.push_back(rhs.x);
+        node.push_back(rhs.y);
+        return node;
+    }
+    static bool decode(const Node node, glm::vec2& rhs) {
+        if (!node.IsSequence() || node.size() != 2)
+            return false;
+
+        rhs.x = node[0].as<float>();
+        rhs.y = node[1].as<float>();
+        return true;
+    }
+};
+
+template <>
 struct convert<glm::vec4> {
     static Node encode(const glm::vec4& rhs) {
         Node node;
@@ -57,6 +75,32 @@ struct convert<glm::vec4> {
 
 namespace zirconium {
 
+static std::string B2Type2String(RigidBodyComponent::BodyType type) {
+    switch (type) {
+    case RigidBodyComponent::BodyType::Static:
+        return "Static";
+    case RigidBodyComponent::BodyType::Dynamic:
+        return "Dynamic";
+    case RigidBodyComponent::BodyType::Kinematics:
+        return "Kinematics";
+    }
+
+    ZR_ASSERT(false, "No such type");
+    return "";
+}
+
+static RigidBodyComponent::BodyType B2TypeFromString(std::string& type) {
+    if (type == "Static")
+        return RigidBodyComponent::BodyType::Static;
+    if (type == "Dynamic")
+        return RigidBodyComponent::BodyType::Dynamic;
+    if (type == "Kinematic")
+        return RigidBodyComponent::BodyType::Kinematics;
+
+    ZR_ASSERT(false, "No such type {}", type);
+    return RigidBodyComponent::BodyType::Kinematics;
+}
+
 YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v) {
 
     out << YAML::Flow;
@@ -67,6 +111,13 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v) {
 
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
+    return out;
+}
+
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v) {
+
+    out << YAML::Flow;
+    out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
     return out;
 }
 
@@ -133,6 +184,31 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity) {
         out << YAML::EndMap;
     }
 
+    if (entity.HasComponent<RigidBodyComponent>()) {
+        out << YAML::Key << "RigidBodyComponent";
+        out << YAML::BeginMap;
+
+        auto& rigidBodyComponent = entity.GetComponent<RigidBodyComponent>();
+        out << YAML::Key << "FixedRotation" << YAML::Value << rigidBodyComponent.FixedRotation;
+        out << YAML::Key << "Type" << YAML::Value << B2Type2String(rigidBodyComponent.Type);
+
+        out << YAML::EndMap;
+    }
+
+    if (entity.HasComponent<BoxColiderComponent>()) {
+        out << YAML::Key << "BoxColiderComponent";
+        out << YAML::BeginMap;
+
+        auto& boxColiderComponent = entity.GetComponent<BoxColiderComponent>();
+        out << YAML::Key << "Offset" << YAML::Value << boxColiderComponent.Offset;
+        out << YAML::Key << "Size" << YAML::Value << boxColiderComponent.Size;
+
+        out << YAML::Key << "Density" << YAML::Value << boxColiderComponent.Density;
+        out << YAML::Key << "Friction" << YAML::Value << boxColiderComponent.Friction;
+        out << YAML::Key << "Restitution" << YAML::Value << boxColiderComponent.Restitution;
+
+        out << YAML::EndMap;
+    }
     out << YAML::EndMap;
 }
 
@@ -224,6 +300,27 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
             if (spriteRendererComponent) {
                 auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+                ZR_CORE_TRACE("Deserialized Sprite component with uuid {0}", uuid);
+            }
+
+            auto rigidBodyComponent = entity["RigidBodyComponent"];
+            if (rigidBodyComponent) {
+                auto& src = deserializedEntity.AddComponent<RigidBodyComponent>();
+                std::string type = rigidBodyComponent["Type"].as<std::string>();
+                src.Type = B2TypeFromString(type);
+                src.FixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
+                ZR_CORE_TRACE("Deserialized RigidBody component with uuid {0}", uuid);
+            }
+
+            auto boxColiderComponent = entity["BoxColiderComponent"];
+            if (rigidBodyComponent) {
+                auto& src = deserializedEntity.AddComponent<BoxColiderComponent>();
+                src.Offset = (glm::vec2)boxColiderComponent["Offset"].as<glm::vec2>();
+                src.Size = (glm::vec2)boxColiderComponent["Size"].as<glm::vec2>();
+
+                src.Density = boxColiderComponent["Density"].as<float>();
+                src.Friction = boxColiderComponent["Friction"].as<float>();
+                src.Restitution = boxColiderComponent["Restitution"].as<float>();
                 ZR_CORE_TRACE("Deserialized Sprite component with uuid {0}", uuid);
             }
         }
