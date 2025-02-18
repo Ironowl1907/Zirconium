@@ -25,7 +25,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Debug/zirconium-Editor
   DEFINES += -DZIR_DEBUG -DZR_ENABLE_ASSERTS -DGLFW_INCLUDE_NONE
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -g -pthread
@@ -61,7 +61,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Release/zirconium-Editor
   DEFINES += -DZIR_RELEASE -DZIR_DEBUG -DZR_ENABLE_ASSERTS
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread
@@ -97,7 +97,7 @@ ifeq ($(config),dist)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Dist/zirconium-Editor
   DEFINES += -DZIR_DIST
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread

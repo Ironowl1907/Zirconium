@@ -18,6 +18,7 @@ includedirs({
     IncludeDir["entt"],
     -- IncludeDir["ImGuiFD"],
     -- IncludeDir["yaml-cpp"],
+    IncludeDir["Box2D"],
 })
 
 libdirs {

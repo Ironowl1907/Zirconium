@@ -317,7 +317,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
 
         if (ImGui::BeginCombo("Body Type", currentBodyTypeString)) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
 
                 bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
 

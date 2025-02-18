@@ -51,6 +51,7 @@ void Scene::OnRuntimeStart() {
 
     m_WorldID = new b2WorldId;
     *m_WorldID = b2CreateWorld(&worldDefinition);
+    ZR_ASSERT(m_WorldID != nullptr, "World ID is null");
 
     auto view = m_Registry.view<RigidBodyComponent>();
     for (auto e : view) {
@@ -66,17 +67,21 @@ void Scene::OnRuntimeStart() {
         b2BodyId bodyId = b2CreateBody(*m_WorldID, &bodyDef);
         b2Body_SetFixedRotation(bodyId, rb2d.FixedRotation);
 
+        rb2d.RuntimeBody = bodyId;
+
         if (entity.HasComponent<BoxColiderComponent>()) {
             auto& b2cc = entity.GetComponent<BoxColiderComponent>();
 
             b2Polygon colider = b2MakeBox(b2cc.Size.x * transform.Scale.x, b2cc.Size.y * transform.Scale.y);
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
-            b2CreatePolygonShape(bodyId, &shapeDef, &colider);
 
+            ZR_ASSERT(b2cc.Density, "Density can't be 0");
             shapeDef.density = b2cc.Density;
+            shapeDef.friction = b2cc.Friction;
             shapeDef.restitution = b2cc.Restitution;
-            shapeDef.density = b2cc.Density;
+
+            b2CreatePolygonShape(bodyId, &shapeDef, &colider);
         }
     }
 }
@@ -101,8 +106,9 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
 
     // Physics
     {
-        constexpr float timestep = 1 / 60;
-        constexpr int subStepCount = 4;
+
+        constexpr float timestep = 1.0f / 60.0f;
+        constexpr int subStepCount = 8;
 
         b2World_Step(*m_WorldID, timestep, subStepCount);
 
@@ -113,8 +119,8 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
             auto& transform = entity.GetComponent<TransformComponent>();
             auto& rb2d = entity.GetComponent<RigidBodyComponent>();
 
-            b2Vec2 position = b2Body_GetPosition(*rb2d.RuntimeBody);
-            b2Rot rotation = b2Body_GetRotation(*rb2d.RuntimeBody);
+            b2Vec2 position = b2Body_GetPosition(rb2d.RuntimeBody);
+            b2Rot rotation = b2Body_GetRotation(rb2d.RuntimeBody);
 
             transform.Translation.x = position.x;
             transform.Translation.y = position.y;

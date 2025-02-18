@@ -7,7 +7,8 @@
 #include "ScriptableEntity.h"
 #include "zirconium/Renderer/Texture.h"
 
-struct b2BodyId;
+#include "box2d/id.h"
+
 
 namespace zirconium {
 
@@ -93,11 +94,11 @@ struct NativeScriptComponent {
 
 struct RigidBodyComponent {
     enum class BodyType { Static = 0, Dynamic = 1, Kinematics = 2 };
-    BodyType Type = BodyType::Static;
+    BodyType Type = BodyType::Dynamic;
 
     bool FixedRotation = false;
 
-    b2BodyId* RuntimeBody = nullptr;
+    b2BodyId RuntimeBody;
 };
 
 struct BoxColiderComponent {
@@ -108,7 +109,6 @@ struct BoxColiderComponent {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
-
 };
 
 } // namespace zirconium
