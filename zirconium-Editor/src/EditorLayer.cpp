@@ -403,6 +403,8 @@ void EditorLayer::NewFile() {
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OpenFile(const std::string path) {
+    if (m_SceneState != SceneState::Edit)
+        m_SceneState = SceneState::Edit;
     ZR_CORE_WARN("OpenFile: {}", path);
     if (path.empty())
         return;
