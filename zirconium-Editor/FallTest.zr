@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 1233244324231233
+  - Entity: 3670045221586129451
     TagComponent:
       Tag: Camera
     TransformComponent:
@@ -13,12 +13,12 @@ Entities:
         ProjectionType: 1
         ProjectionNear: -0.01
         ProjectionFar: 1000
-        OrthographicSize: 29
+        OrthographicSize: 71
         OrthographicNear: -1
         OrthographicFar: 181
       Primary: true
       FixedAspectRatio: false
-  - Entity: 1233244324231233
+  - Entity: 2668733932024345957
     TagComponent:
       Tag: Floor
     TransformComponent:
@@ -36,12 +36,12 @@ Entities:
       Density: 1
       Friction: 0.5
       Restitution: 0
-  - Entity: 1233244324231233
+  - Entity: 14086308144485058556
     TagComponent:
       Tag: Square
     TransformComponent:
-      Translation: [0, 21.069, 0]
-      Rotation: [0, 0, 2.2160125e-07]
+      Translation: [0, 21.053, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]

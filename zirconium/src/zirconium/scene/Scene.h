@@ -6,7 +6,6 @@
 #include "zirconium/Renderer/EditorCamera.h"
 #include <cstddef>
 
-
 struct b2WorldId;
 
 namespace zirconium {
@@ -18,6 +17,7 @@ public:
     ~Scene();
 
     Entity CreateEntity(const std::string& name = "");
+    Entity CreateEntityWithID(const uint64_t id, const std::string& name);
 
     void OnRuntimeStart();
     void OnRuntimeStop();
@@ -38,7 +38,6 @@ private:
     uint32_t m_ViewportHeight = 0;
 
     b2WorldId* m_WorldID;
-
 
     friend class Entity;
     friend class SceneSerializer;

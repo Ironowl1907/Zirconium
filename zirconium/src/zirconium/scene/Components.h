@@ -4,13 +4,21 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
+#include "zirconium/Core/UUID.h"
 #include "zirconium/Renderer/Texture.h"
 
 #include "box2d/id.h"
-
+#include <cstdint>
 
 namespace zirconium {
+
+struct IDComponent {
+    IDComponent()
+        : ID() {}
+    IDComponent(uint64_t id)
+        : ID(id) {}
+    UUID ID;
+};
 
 struct TagComponent {
     std::string Tag;
@@ -71,6 +79,9 @@ struct CameraComponent {
     CameraComponent()
         : Camera() {}
 };
+
+// Foward Declaration
+class ScriptableEntity;
 
 struct NativeScriptComponent {
     ScriptableEntity* Instance = nullptr;

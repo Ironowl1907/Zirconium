@@ -5,7 +5,6 @@
 
 #include "zirconium/Renderer/Buffer.h"
 #include "zirconium/Renderer/RenderCommand.h"
-#include "zirconium/Renderer/Renderer2D.h"
 #include "zirconium/Renderer/Shader.h"
 #include "zirconium/Renderer/Texture.h"
 #include "zirconium/Renderer/UniformBuffer.h"

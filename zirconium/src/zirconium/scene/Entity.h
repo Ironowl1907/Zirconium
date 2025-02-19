@@ -1,9 +1,12 @@
 #pragma once
+#include "Components.h"
 #include "zrpch.h"
 
+#include "zirconium/Core/UUID.h"
 #include "Scene.h"
 #include "core.h"
 #include "entt.hpp"
+#include <cstdint>
 
 namespace zirconium {
 class Entity {
@@ -53,6 +56,10 @@ public:
     }
     bool operator!=(const Entity& other) const {
         return !operator==(other);
+    }
+
+    uint64_t GetID() {
+        return GetComponent<IDComponent>().ID;
     }
 
 private:

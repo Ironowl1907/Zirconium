@@ -9,6 +9,7 @@
 #include <cstdint>
 
 #include "Scene.h"
+#include "ScriptableEntity.h"
 #include "box2d/box2d.h"
 
 #include "box2d/id.h"
@@ -157,8 +158,13 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
 }
 
 Entity Scene::CreateEntity(const std::string& name) {
+    return CreateEntityWithID(UUID(), name);
+}
+
+Entity Scene::CreateEntityWithID(const uint64_t id, const std::string& name) {
     entt::entity ent = m_Registry.create();
     Entity entity = Entity(ent, this);
+    entity.AddComponent<IDComponent>(id);
     entity.AddComponent<TransformComponent>();
     auto& tag = entity.AddComponent<TagComponent>();
     tag.Tag = (name.empty()) ? "Entity" : name;
@@ -185,7 +191,7 @@ void Scene::DeleteEntity(Entity entity) {
 
 template <typename T>
 void Scene::OnComponentAdded(Entity entity, T& component) {
-    static_assert(false);
+    // static_assert(false);
 }
 
 template <>
@@ -210,5 +216,8 @@ void Scene::OnComponentAdded<RigidBodyComponent>(Entity entity, RigidBodyCompone
 
 template <>
 void Scene::OnComponentAdded<BoxColiderComponent>(Entity entity, BoxColiderComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component) {}
 
 } // namespace zirconium

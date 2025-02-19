@@ -125,9 +125,11 @@ SceneSerializer::SceneSerializer(const Ref<Scene> scene)
     : m_Scene(scene) {}
 
 static void SerializeEntity(YAML::Emitter& out, Entity entity) {
+    ZR_ASSERT(entity.HasComponent<IDComponent>(), "Entity without UUID!");
+
     out << YAML::BeginMap;
     out << YAML::Key << "Entity";
-    out << YAML::Value << "1233244324231233"; // TODO entity ID goes here
+    out << YAML::Value << entity.GetID();
 
     if (entity.HasComponent<TagComponent>()) {
         out << YAML::Key << "TagComponent";
@@ -251,7 +253,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
     if (entities) {
         for (auto entity : entities) {
 
-            uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO: No uuid inplemented yet
+            uint64_t uuid = entity["Entity"].as<uint64_t>();
 
             std::string name;
             auto tagComponent = entity["TagComponent"];
@@ -260,7 +262,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
             }
             ZR_CORE_TRACE("Deserialized Tag component '{0}' with uuid {1}", name, uuid);
 
-            Entity deserializedEntity = m_Scene->CreateEntity(name);
+            Entity deserializedEntity = m_Scene->CreateEntityWithID(uuid, name);
 
             auto transformComponent = entity["TransformComponent"];
             if (transformComponent) {

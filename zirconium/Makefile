@@ -30,8 +30,8 @@ ifeq ($(config),debug)
   INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter
-  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -std=c++20 -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter
+  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
+  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -std=c++20 -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
@@ -68,8 +68,8 @@ ifeq ($(config),release)
   INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter
-  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter
+  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
+  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
@@ -106,8 +106,8 @@ ifeq ($(config),dist)
   INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter
-  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter
+  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
+  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
@@ -126,6 +126,7 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/Application.o \
+	$(OBJDIR)/UUID.o \
 	$(OBJDIR)/input.o \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/Instrumentor.o \
@@ -224,6 +225,9 @@ $(OBJECTS): | $(OBJDIR)
 endif
 
 $(OBJDIR)/Application.o: src/zirconium/Core/Application.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UUID.o: src/zirconium/Core/UUID.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/input.o: src/zirconium/Core/input.cpp
