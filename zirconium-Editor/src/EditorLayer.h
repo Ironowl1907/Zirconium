@@ -54,6 +54,8 @@ private:
     bool m_ViewportHovered = false;
 
     Ref<Scene> m_ActiveScene;
+    Ref<Scene> m_EditorScene;
+
     Entity m_SquareEntity;
     Entity m_CameraEntity;
     Entity m_SecondCameraEntity;

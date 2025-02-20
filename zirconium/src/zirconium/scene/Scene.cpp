@@ -7,6 +7,8 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include <cstdint>
+#include <memory>
+#include <unordered_map>
 
 #include "Scene.h"
 #include "ScriptableEntity.h"
@@ -27,6 +29,50 @@ static b2BodyType ZirconiumRigidBody2DToB2DRigidBodyType(RigidBodyComponent::Bod
     }
     ZR_ASSERT(false, "Invalid body type!");
     return b2_kinematicBody;
+}
+
+template <typename Component>
+static void CopyComponent(entt::registry& dst, entt::registry& src,
+                          const std::unordered_map<UUID, entt::entity>& enttMap) {
+
+    auto view = src.view<Component>();
+    for (auto e : view) {
+        UUID uuid = src.get<IDComponent>(e).ID;
+        ZR_ASSERT(enttMap.find(uuid) != enttMap.end(), "");
+        entt::entity dstEnttID = enttMap.at(uuid);
+
+        auto& component = src.get<Component>(e);
+        dst.emplace_or_replace<Component>(dstEnttID, component);
+    }
+}
+
+Ref<Scene> Scene::Copy(Ref<Scene> other) {
+    Ref<Scene> newScene = std::make_shared<Scene>();
+
+    auto& srcSceneRegistry = other->m_Registry;
+    auto& dstSceneRegistry = newScene->m_Registry;
+    newScene->m_ViewportWidth = other->m_ViewportWidth;
+    newScene->m_ViewportHeight = other->m_ViewportHeight;
+
+    std::unordered_map<UUID, entt::entity> enttMap;
+
+    // Create entities new scene
+    auto idView = srcSceneRegistry.view<IDComponent>();
+    for (auto e : idView) {
+        UUID uuid = srcSceneRegistry.get<IDComponent>(e).ID;
+        const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
+        Entity newEntity = newScene->CreateEntityWithID(uuid, name);
+        enttMap[uuid] = (entt::entity)newEntity;
+    }
+
+    CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<RigidBodyComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<BoxColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+
+    return newScene;
 }
 
 Scene::Scene() {
