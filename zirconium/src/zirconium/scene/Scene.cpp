@@ -7,6 +7,7 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include <cstdint>
+#include <glm/trigonometric.hpp>
 #include <memory>
 #include <unordered_map>
 
@@ -125,7 +126,7 @@ void Scene::OnRuntimeStart() {
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = ZirconiumRigidBody2DToB2DRigidBodyType(rb2d.Type);
         bodyDef.position = {transform.Translation.x, transform.Translation.y};
-        bodyDef.rotation = b2MakeRot(glm::radians(transform.Rotation.z));
+        bodyDef.rotation = b2MakeRot(transform.Rotation.z);
 
         b2BodyId bodyId = b2CreateBody(*m_WorldID, &bodyDef);
         b2Body_SetFixedRotation(bodyId, rb2d.FixedRotation);
@@ -192,13 +193,14 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
         }
     }
 
+
     // Render Sprites
     Camera* mainCamera = nullptr;
     glm::mat4 mainTransform;
     {
-        auto group = m_Registry.view<TransformComponent, CameraComponent>();
-        for (auto entity : group) {
-            const auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+        auto view = m_Registry.view<TransformComponent, CameraComponent>();
+        for (auto entity : view) {
+            const auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
             if (camera.Primary) {
                 mainCamera = &camera.Camera;

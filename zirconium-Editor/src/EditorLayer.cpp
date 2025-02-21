@@ -106,6 +106,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         }
         case SceneState::Edit: {
             m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
+            m_EditorScene = m_ActiveScene;
             break;
         }
         }
@@ -134,6 +135,7 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 void EditorLayer::OnScenePlay() {
     m_SceneState = SceneState::Play;
 
+    ZR_ASSERT(m_EditorScene, "");
     m_ActiveScene = Scene::Copy(m_EditorScene);
 
     m_ActiveScene->OnRuntimeStart();
