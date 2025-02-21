@@ -408,6 +408,8 @@ void EditorLayer::NewFile() {
     m_ActiveScene = std::make_shared<Scene>();
     m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+    m_CurrentScenePath = std::filesystem::path();
 }
 void EditorLayer::OpenFile(const std::string path) {
 
@@ -429,6 +431,7 @@ void EditorLayer::OpenFile(const std::string path) {
         m_ActiveScene = m_EditorScene;
     }
     Renderer2D::ClearVB();
+    m_CurrentScenePath = path;
 }
 
 void EditorLayer::OpenFile(const std::filesystem::path path) {
@@ -436,7 +439,8 @@ void EditorLayer::OpenFile(const std::filesystem::path path) {
 }
 
 void EditorLayer::Save() {
-    ZR_CORE_WARN("Save");
+    if (!m_CurrentScenePath.empty())
+        SaveToFile(m_CurrentScenePath);
 }
 void EditorLayer::SaveToFile(const std::string path) {
     ZR_CORE_WARN("SaveToFile: {}", path);
@@ -444,6 +448,8 @@ void EditorLayer::SaveToFile(const std::string path) {
         SceneSerializer serializer(m_ActiveScene);
         serializer.Serialize(path);
     }
+
+    m_CurrentScenePath = path;
 }
 
 void EditorLayer::OnEvent(Event& event) {
@@ -482,8 +488,11 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
 
     switch (e.GetKeyCode()) {
     case ZR_KEY_S: {
-        if (control && shift) {
-            s_SavingTo = true;
+        if (control) {
+            if (shift)
+                s_SavingTo = true;
+            else
+                Save();
         }
         break;
     }

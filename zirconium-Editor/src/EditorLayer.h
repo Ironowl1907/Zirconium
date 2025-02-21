@@ -5,6 +5,7 @@
 #include "Panels/ContentBrowser.h"
 #include "Panels/SceneHireachyPanel.h"
 #include "zirconium/Renderer/EditorCamera.h"
+#include <filesystem>
 
 namespace zirconium {
 
@@ -54,6 +55,8 @@ private:
 
     bool m_ViewportFocused = false;
     bool m_ViewportHovered = false;
+
+    std::filesystem::path m_CurrentScenePath;
 
     Ref<Scene> m_ActiveScene;
     Ref<Scene> m_EditorScene;
