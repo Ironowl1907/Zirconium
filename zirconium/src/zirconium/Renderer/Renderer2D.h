@@ -25,6 +25,9 @@ public:
 
     static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
+    static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity, const float& thickness = 1.0f,
+                                      const float& fade = 0.00025f);
+
     static void ClearVB();
 
 private:

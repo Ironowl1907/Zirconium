@@ -71,6 +71,19 @@ struct SpriteRendererComponent {
     }
 };
 
+struct CircleRendererComponent {
+    glm::vec4 Color{1.0f};
+    float Thickness = 1.0f;
+    float Fade = 0.0f;
+
+    operator glm::vec4&() {
+        return Color;
+    }
+    operator const glm::vec4&() const {
+        return Color;
+    }
+};
+
 struct CameraComponent {
     SceneCamera Camera;
     bool Primary = true; // TODO: Think about moving to scene

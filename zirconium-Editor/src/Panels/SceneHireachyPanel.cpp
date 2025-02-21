@@ -217,6 +217,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
+        if (!m_SelectionContext.HasComponent<CircleRendererComponent>())
+            if (ImGui::MenuItem("Circle Renderer")) {
+                m_SelectionContext.AddComponent<CircleRendererComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
         if (!m_SelectionContext.HasComponent<RigidBodyComponent>())
             if (ImGui::MenuItem("Rigidbody 2D")) {
                 m_SelectionContext.AddComponent<RigidBodyComponent>();
@@ -242,7 +248,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         DrawVec3Control("Scale", tc.Scale, 1.0f);
     });
 
-    DrawComponent<SpriteRendererComponent>("Sprite", entity, [](auto& component) {
+    DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         ImGui::SliderFloat("Tiling Factor", &component.TilingFactor, 0.0f, 100.f);
         ImGui::Button("Texture", ImVec2(200.0f, 0.0f));
@@ -260,6 +266,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
             ImGui::EndDragDropTarget();
         }
+    });
+
+    DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {
+        ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+        ImGui::SliderFloat("Thickness", &component.Thickness, 0.0f, 1.f);
+        ImGui::SliderFloat("Fade", &component.Fade, 0.0f, 1.f);
     });
 
     DrawComponent<CameraComponent>("Camera", entity, [](auto& component) {

@@ -26,19 +26,27 @@ struct QuadVertex {
     float TexIndex;
     float TilingFactor;
     int EntityID = -1;
-
-    std::string ToString() const {
-        std::ostringstream oss;
-        oss << "QuadVertex: "
-            << "  Position: (" << Position.x << ", " << Position.y << ", " << Position.z << ") "
-            << "  Color: (" << Color.r << ", " << Color.g << ", " << Color.b << ", " << Color.a << ") "
-            << "  TexCoord: (" << TexCoord.x << ", " << TexCoord.y << ") "
-            << "  TexIndex: " << TexIndex << " "
-            << "  TilingFactor: " << TilingFactor << " "
-            << "  EntityID: " << EntityID;
-        return oss.str();
-    }
 };
+
+struct CircleVertex {
+    glm::vec3 Position;
+    glm::vec4 Color;
+    float Thickness;
+    float Fade;
+    int EntityID = -1;
+};
+
+static std::string QuadVertexToString(const QuadVertex& vert) {
+    std::ostringstream oss;
+    oss << "QuadVertex: "
+        << "  Position: (" << vert.Position.x << ", " << vert.Position.y << ", " << vert.Position.z << ") "
+        << "  Color: (" << vert.Color.r << ", " << vert.Color.g << ", " << vert.Color.b << ", " << vert.Color.a << ") "
+        << "  TexCoord: (" << vert.TexCoord.x << ", " << vert.TexCoord.y << ") "
+        << "  TexIndex: " << vert.TexIndex << " "
+        << "  TilingFactor: " << vert.TilingFactor << " "
+        << "  EntityID: " << vert.EntityID;
+    return oss.str();
+}
 
 struct Renderer2DStorage {
     static const uint32_t MaxQuads = 10000;
@@ -51,9 +59,17 @@ struct Renderer2DStorage {
     Ref<Shader> TextureShader;
     Ref<Texture2D> WhiteTexture;
 
+    Ref<VertexArray> CircleVertexArray;
+    Ref<VertexBuffer> CircleVertexBuffer = nullptr;
+    Ref<Shader> CircleShader;
+
     uint32_t QuadIndexCount = 0;
     QuadVertex* QuadVertexBufferBase = nullptr;
     QuadVertex* QuadVertexBufferPtr = nullptr;
+
+    uint32_t CircleIndexCount = 0;
+    CircleVertex* CircleVertexBufferBase = nullptr;
+    CircleVertex* CircleVertexBufferPtr = nullptr;
 
     std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
     uint32_t TextureSlotIndex = 1; // Texture slot 0 is for white texture
@@ -135,6 +151,21 @@ void Renderer2D::Init() {
     Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
     s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
     delete[] quadIndices;
+
+    // Circles
+    s_Data.CircleVertexArray = zirconium::VertexArray::Create();
+
+    s_Data.CircleVertexBuffer = zirconium::VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex));
+    zirconium::BufferLayout circleLayout = {
+        {ShaderDataType::Float3, "a_Position"}, {ShaderDataType::Float4, "a_Color"},
+        {ShaderDataType::Float, "a_Thickness"}, {ShaderDataType::Float, "a_Fade"},
+        {ShaderDataType::Int, "a_EntityID"},
+    };
+    s_Data.CircleVertexBuffer->SetLayout(circleLayout);
+
+    s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxVertices];
+    s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
+    s_Data.CircleVertexArray->SetIndexBuffer(quadIB);
 
     s_Data.WhiteTexture = Texture2D::Create(1, 1);
     uint32_t whiteTextureData = 0xffffffff;
@@ -266,6 +297,29 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
     // Adding the +1 for now to allow zeroed ID entities
     // SetVertexData(transform, 0, src, entityID + 1, tilingFactor);
     DrawTransformedTexQuad(transform, src.Texture, src.Color, entityID, src.TilingFactor);
+}
+
+void DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity, const float& thickness,
+                const float& fade) {
+
+    ZR_PROFILE_FUNCTION();
+
+    if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices)
+        FlushAndReset();
+
+
+    for (uint32_t i = 0; i < 4; i++) {
+        s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+        s_Data.QuadVertexBufferPtr->Color = color;
+        s_Data.QuadVertexBufferPtr->TexCoord = s_TextureCoords[i];
+        s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+        s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+        s_Data.QuadVertexBufferPtr->EntityID = EntityID + 1;
+        s_Data.QuadVertexBufferPtr++;
+    }
+
+    s_Data.QuadIndexCount += 6;
+    s_Data.Stats.QuadCount++;
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {
