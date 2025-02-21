@@ -24,6 +24,8 @@ public:
     void OnRuntimeStart();
     void OnRuntimeStop();
 
+    void DuplicateEntity(Entity entity);
+
     void OnUpdateEditor(TimeStep delta, EditorCamera& camera);
     void OnUpdateRuntime(TimeStep delta);
     void OnViewportResize(const uint32_t& width, const uint32_t& height);

@@ -2,10 +2,10 @@
 #include "Components.h"
 #include "zrpch.h"
 
-#include "zirconium/Core/UUID.h"
 #include "Scene.h"
 #include "core.h"
 #include "entt.hpp"
+#include "zirconium/Core/UUID.h"
 #include <cstdint>
 
 namespace zirconium {
@@ -22,8 +22,15 @@ public:
         return component;
     }
 
+    template <typename T, typename... Args>
+    T& AddOrReplaceComponent(Args&&... args) {
+        auto& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        m_Scene->OnComponentAdded<T>(*this, component);
+        return component;
+    }
+
     template <typename T>
-    T& GetComponent() {
+    T& GetComponent() const{
         ZR_CORE_ASSERT(HasComponent<T>(), "Entity already does not has component")
         return m_Scene->m_Registry.get<T>(m_EntityHandle);
     }
@@ -58,8 +65,12 @@ public:
         return !operator==(other);
     }
 
-    uint64_t GetID() {
+    uint64_t GetID() const {
         return GetComponent<IDComponent>().ID;
+    }
+
+    const std::string& GetTag() const {
+        return GetComponent<TagComponent>().Tag;
     }
 
 private:

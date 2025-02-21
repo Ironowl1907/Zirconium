@@ -46,6 +46,22 @@ static void CopyComponent(entt::registry& dst, entt::registry& src,
     }
 }
 
+template <typename Component>
+static void CopyComponentIfExists(Entity dst, Entity src) {
+    if (src.HasComponent<Component>())
+        dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+}
+
+void Scene::DuplicateEntity(Entity entity) {
+    Entity newEntity = CreateEntity(entity.GetTag());
+
+    CopyComponentIfExists<TransformComponent>(newEntity, entity);
+    CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
+    CopyComponentIfExists<CameraComponent>(newEntity, entity);
+    CopyComponentIfExists<RigidBodyComponent>(newEntity, entity);
+    CopyComponentIfExists<BoxColiderComponent>(newEntity, entity);
+    CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
+}
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
 

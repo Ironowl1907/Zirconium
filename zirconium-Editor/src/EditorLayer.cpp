@@ -137,12 +137,14 @@ void EditorLayer::OnScenePlay() {
     m_ActiveScene = Scene::Copy(m_EditorScene);
 
     m_ActiveScene->OnRuntimeStart();
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OnSceneStop() {
     m_SceneState = SceneState::Edit;
     m_ActiveScene->OnRuntimeStop();
 
     m_ActiveScene = m_EditorScene;
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
 static bool s_Opening = false;
@@ -461,6 +463,15 @@ bool EditorLayer::OnMousePressed(MousePressedButtonEvent& e) {
     return false;
 }
 
+void EditorLayer::OnDuplicateEntity() {
+    if (m_SceneState != EditorLayer::SceneState::Edit)
+        return;
+    Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+    if (selectedEntity) {
+        m_EditorScene->DuplicateEntity(selectedEntity);
+    }
+}
+
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
     // Shortcuts
     if (e.GetRepeatedCount() > 0)
@@ -487,6 +498,13 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
     case ZR_KEY_N: {
         if (control) {
             NewFile();
+        }
+        break;
+    }
+
+    case ZR_KEY_D: {
+        if (control) {
+            OnDuplicateEntity();
         }
         break;
     }

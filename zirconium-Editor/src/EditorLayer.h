@@ -32,6 +32,8 @@ public:
     void OnScenePlay();
     void OnSceneStop();
 
+    void OnDuplicateEntity();
+
 private:
     bool OnKeyPressed(KeyPressedEvent& e);
     bool OnMousePressed(MousePressedButtonEvent& e);
