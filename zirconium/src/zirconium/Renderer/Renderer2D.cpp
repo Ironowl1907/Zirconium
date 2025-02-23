@@ -29,14 +29,15 @@ struct QuadVertex {
 };
 
 struct CircleVertex {
-    glm::vec3 Position;
+    glm::vec3 WorldPosition;
+    glm::vec3 LocalPosition;
     glm::vec4 Color;
     float Thickness;
     float Fade;
     int EntityID = -1;
 };
 
-static std::string QuadVertexToString(const QuadVertex& vert) {
+[[maybe_unused]] static std::string QuadVertexToString(const QuadVertex& vert) {
     std::ostringstream oss;
     oss << "QuadVertex: "
         << "  Position: (" << vert.Position.x << ", " << vert.Position.y << ", " << vert.Position.z << ") "
@@ -157,9 +158,9 @@ void Renderer2D::Init() {
 
     s_Data.CircleVertexBuffer = zirconium::VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex));
     zirconium::BufferLayout circleLayout = {
-        {ShaderDataType::Float3, "a_Position"}, {ShaderDataType::Float4, "a_Color"},
-        {ShaderDataType::Float, "a_Thickness"}, {ShaderDataType::Float, "a_Fade"},
-        {ShaderDataType::Int, "a_EntityID"},
+        {ShaderDataType::Float3, "a_WorldPosition"}, {ShaderDataType::Float3, "a_LocalPosition"},
+        {ShaderDataType::Float4, "a_Color"},         {ShaderDataType::Float, "a_Thickness"},
+        {ShaderDataType::Float, "a_Fade"},           {ShaderDataType::Int, "a_EntityID"},
     };
     s_Data.CircleVertexBuffer->SetLayout(circleLayout);
 
@@ -176,11 +177,20 @@ void Renderer2D::Init() {
         samplers[i] = i;
     }
 
-    std::filesystem::path path = "zirconium-Editor/res/shaders/TextureShader.glsl";
-    std::filesystem::path fullPath = std::filesystem::absolute(path);
-    s_Data.TextureShader = zirconium::Shader::Create(fullPath.c_str());
-    s_Data.TextureShader->Bind();
-    s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+    // Quad Shader
+    {
+        std::filesystem::path path = "zirconium-Editor/res/shaders/TextureShader.glsl";
+        std::filesystem::path fullPath = std::filesystem::absolute(path);
+        s_Data.TextureShader = zirconium::Shader::Create(fullPath.c_str());
+        s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+    }
+
+    // Circle Shader
+    {
+        std::filesystem::path path = "zirconium-Editor/res/shaders/CircleShader.glsl";
+        std::filesystem::path fullPath = std::filesystem::absolute(path);
+        s_Data.CircleShader = zirconium::Shader::Create(fullPath.c_str());
+    }
 
     s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
@@ -200,6 +210,17 @@ void Renderer2D::FlushAndReset() {
     s_Data.TextureSlotIndex = 1;
 }
 
+void Renderer2D::BeginBatch() {
+
+    s_Data.QuadIndexCount = 0;
+    s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+    s_Data.CircleIndexCount = 0;
+    s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
+
+    s_Data.TextureSlotIndex = 1;
+}
+
 void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
     ZR_PROFILE_FUNCTION();
@@ -207,10 +228,7 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
     s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
     s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
-    s_Data.QuadIndexCount = 0;
-    s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
-    s_Data.TextureSlotIndex = 1;
+    BeginBatch();
 }
 
 void Renderer2D::BeginScene(const EditorCamera& camera) {
@@ -220,18 +238,12 @@ void Renderer2D::BeginScene(const EditorCamera& camera) {
     s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
     s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DStorage::CameraData));
 
-    s_Data.QuadIndexCount = 0;
-    s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
-    s_Data.TextureSlotIndex = 1;
+    BeginBatch();
 }
 
 void Renderer2D::EndScene() {
 
     ZR_PROFILE_FUNCTION();
-
-    uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-    s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
 
     // for (QuadVertex* i = s_Data.QuadVertexBufferBase; i < s_Data.QuadVertexBufferPtr; i++)
     // ZR_CORE_WARN(i->ToString());
@@ -242,14 +254,29 @@ void Renderer2D::EndScene() {
 void Renderer2D::Flush() {
     ZR_PROFILE_FUNCTION();
 
-    // Bind all the textures
-    s_Data.TextureShader->Bind();
-    for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++) {
-        s_Data.TextureSlots[i]->Bind(i);
-    }
+    if (s_Data.QuadIndexCount) {
 
-    RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
-    s_Data.Stats.DrawCalls++;
+        uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+        s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+
+        // Bind all the textures
+        for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++) {
+            s_Data.TextureSlots[i]->Bind(i);
+        }
+
+        s_Data.TextureShader->Bind();
+        RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+        s_Data.Stats.DrawCalls++;
+    }
+    if (s_Data.CircleIndexCount) {
+
+        uint32_t dataSize = (uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase;
+        s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
+
+        s_Data.CircleShader->Bind();
+        RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleIndexCount);
+        s_Data.Stats.DrawCalls++;
+    }
 }
 
 void Renderer2D::DrawTransformedQuad(const glm::mat4& transform, const glm::vec4& color) {
@@ -299,26 +326,26 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
     DrawTransformedTexQuad(transform, src.Texture, src.Color, entityID, src.TilingFactor);
 }
 
-void DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity, const float& thickness,
-                const float& fade) {
+void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity, const float& thickness,
+                            const float& fade) {
 
     ZR_PROFILE_FUNCTION();
 
-    if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices)
-        FlushAndReset();
-
+    // TODO : Inplement for circles
+    // if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices)
+    //     FlushAndReset();
 
     for (uint32_t i = 0; i < 4; i++) {
-        s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-        s_Data.QuadVertexBufferPtr->Color = color;
-        s_Data.QuadVertexBufferPtr->TexCoord = s_TextureCoords[i];
-        s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-        s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr->EntityID = EntityID + 1;
-        s_Data.QuadVertexBufferPtr++;
+        s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPositions[i];
+        s_Data.CircleVertexBufferPtr->LocalPosition = transform * s_Data.QuadVertexPositions[i] * 2.0f;
+        s_Data.CircleVertexBufferPtr->Color = color;
+        s_Data.CircleVertexBufferPtr->Thickness = thickness;
+        s_Data.CircleVertexBufferPtr->Fade = fade;
+        s_Data.CircleVertexBufferPtr->EntityID = entity + 1;
+        s_Data.CircleVertexBufferPtr++;
     }
 
-    s_Data.QuadIndexCount += 6;
+    s_Data.CircleIndexCount += 6;
     s_Data.Stats.QuadCount++;
 }
 

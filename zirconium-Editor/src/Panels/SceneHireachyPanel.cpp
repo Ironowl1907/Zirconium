@@ -271,7 +271,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         ImGui::SliderFloat("Thickness", &component.Thickness, 0.0f, 1.f);
-        ImGui::SliderFloat("Fade", &component.Fade, 0.0f, 1.f);
+        ImGui::SliderFloat("Fade", &component.Fade, 0.025f, 1.f);
     });
 
     DrawComponent<CameraComponent>("Camera", entity, [](auto& component) {

@@ -74,7 +74,7 @@ struct SpriteRendererComponent {
 struct CircleRendererComponent {
     glm::vec4 Color{1.0f};
     float Thickness = 1.0f;
-    float Fade = 0.0f;
+    float Fade = 0.0025f;
 
     operator glm::vec4&() {
         return Color;

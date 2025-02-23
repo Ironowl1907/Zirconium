@@ -32,6 +32,7 @@ public:
 
 private:
     static void FlushAndReset();
+    static void BeginBatch();
 
     // Statistics
 

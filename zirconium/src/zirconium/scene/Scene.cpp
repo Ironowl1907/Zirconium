@@ -62,6 +62,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<RigidBodyComponent>(newEntity, entity);
     CopyComponentIfExists<BoxColiderComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
+    CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -88,6 +89,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<RigidBodyComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<BoxColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -101,11 +103,22 @@ Scene::~Scene() {}
 void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
     Renderer2D::BeginScene(camera);
 
-    auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-    for (auto entity : group) {
-        const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-        Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint64_t)entity);
+    {
+        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+        for (auto entity : group) {
+            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint64_t)entity);
+        }
     }
+
+    {
+        auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+        for (auto entity : view) {
+            const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
+            Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
+        }
+    }
+
     Renderer2D::EndScene();
 }
 
@@ -193,8 +206,8 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
         }
     }
 
-
     // Render Sprites
+    // Check for camera
     Camera* mainCamera = nullptr;
     glm::mat4 mainTransform;
     {
@@ -211,11 +224,23 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
 
     if (mainCamera) {
-        Renderer2D::BeginScene(*mainCamera, mainTransform);
-        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-        for (auto entity : group) {
-            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawTransformedQuad(transform.GetTransform(), (glm::vec4)sprite);
+      Renderer2D::BeginScene(*mainCamera, mainTransform);
+        // Quads
+        {
+            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+            for (auto entity : group) {
+                const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint32_t)entity);
+            }
+        }
+
+        // Circles
+        {
+            auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+            for (auto entity : view) {
+                const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
+                Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
+            }
         }
         Renderer2D::EndScene();
     }
@@ -283,5 +308,8 @@ void Scene::OnComponentAdded<BoxColiderComponent>(Entity entity, BoxColiderCompo
 
 template <>
 void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component) {}
 
 } // namespace zirconium

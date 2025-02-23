@@ -211,6 +211,18 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity) {
 
         out << YAML::EndMap;
     }
+
+    if (entity.HasComponent<CircleRendererComponent>()) {
+        out << YAML::Key << "CircleRendererComponent";
+        out << YAML::BeginMap;
+
+        auto& crc = entity.GetComponent<CircleRendererComponent>();
+        out << YAML::Key << "Color" << YAML::Value << crc.Color;
+        out << YAML::Key << "Thickness" << YAML::Value << crc.Thickness;
+        out << YAML::Key << "Fade" << YAML::Value << crc.Fade;
+
+        out << YAML::EndMap;
+    }
     out << YAML::EndMap;
 }
 
@@ -302,7 +314,16 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
             if (spriteRendererComponent) {
                 auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
-                ZR_CORE_TRACE("Deserialized Sprite component with uuid {0}", uuid);
+                ZR_CORE_TRACE("Deserialized Sprite Renderer component with uuid {0}", uuid);
+            }
+
+            auto circleRenererComponent = entity["CircleRendererComponent"];
+            if (circleRenererComponent) {
+                auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
+                src.Color = circleRenererComponent["Color"].as<glm::vec4>();
+                src.Thickness = circleRenererComponent["Thickness"].as<float>();
+                src.Fade = circleRenererComponent["Fade"].as<float>();
+                ZR_CORE_TRACE("Deserialized Circle Renderer component with uuid {0}", uuid);
             }
 
             auto rigidBodyComponent = entity["RigidBodyComponent"];
