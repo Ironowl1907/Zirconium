@@ -40,8 +40,8 @@ void main()
 #type fragment
 #version 450 core
 
-layout(location = 0) out vec4 color;
-layout(location = 1) out int color2;
+layout(location = 0) out vec4 o_Color;
+layout(location = 1) out int o_EntityID;
 
 struct VertexOutput
 {
@@ -59,12 +59,7 @@ layout(binding = 0) uniform sampler2D u_Textures[32];
 void main()
 {
     vec4 texColor = Input.Color;
-    color = texture(u_Textures[int(Input.TexIndex)], Input.TexCoords * Input.TilingFactor) * Input.Color;
+    o_Color = texture(u_Textures[int(Input.TexIndex)], Input.TexCoords * Input.TilingFactor) * Input.Color;
 
-    color2 = v_EntityID;
-    // if (v_EntityID == 0) color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    // if (v_EntityID == 1) color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    // if (v_EntityID == 2) color = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    // if (v_EntityID == 3) color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    // color2 = v_EntityID;
+    o_EntityID = v_EntityID;
 }

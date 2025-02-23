@@ -119,6 +119,8 @@ void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
         }
     }
 
+    Renderer2D::DrawLine(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec4(0.3f, 0.8f, 0.3f, 1.0f));
+
     Renderer2D::EndScene();
 }
 
@@ -224,7 +226,7 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
 
     if (mainCamera) {
-      Renderer2D::BeginScene(*mainCamera, mainTransform);
+        Renderer2D::BeginScene(*mainCamera, mainTransform);
         // Quads
         {
             auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);

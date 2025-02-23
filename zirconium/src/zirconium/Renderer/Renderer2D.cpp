@@ -37,6 +37,12 @@ struct CircleVertex {
     int EntityID = -1;
 };
 
+struct LineVertex {
+    glm::vec3 Position;
+    glm::vec4 Color;
+    int EntityID = -1;
+};
+
 [[maybe_unused]] static std::string QuadVertexToString(const QuadVertex& vert) {
     std::ostringstream oss;
     oss << "QuadVertex: "
@@ -49,28 +55,48 @@ struct CircleVertex {
     return oss.str();
 }
 
+[[maybe_unused]] static std::string LineVertexToString(const LineVertex& vert) {
+    std::ostringstream oss;
+    oss << "LineVert: "
+        << "  Position: (" << vert.Position.x << ", " << vert.Position.y << ", " << vert.Position.z << ") "
+        << "  Color: (" << vert.Color.r << ", " << vert.Color.g << ", " << vert.Color.b << ", " << vert.Color.a << ") "
+        << "  EntityID: " << vert.EntityID;
+    return oss.str();
+}
+
 struct Renderer2DStorage {
     static const uint32_t MaxQuads = 10000;
     static const uint32_t MaxVertices = MaxQuads * 4;
     static const uint32_t MaxIndices = MaxQuads * 6; // MUST BE DIVISIBLE FOR 6!!!
     static const uint32_t MaxTextureSlots = 32;      // TODO: RenderCAPS
 
+    // Quads
     Ref<VertexArray> QuadVertexArray;
     Ref<VertexBuffer> QuadVertexBuffer = nullptr;
     Ref<Shader> TextureShader;
     Ref<Texture2D> WhiteTexture;
 
-    Ref<VertexArray> CircleVertexArray;
-    Ref<VertexBuffer> CircleVertexBuffer = nullptr;
-    Ref<Shader> CircleShader;
-
     uint32_t QuadIndexCount = 0;
     QuadVertex* QuadVertexBufferBase = nullptr;
     QuadVertex* QuadVertexBufferPtr = nullptr;
 
+    // Circles
     uint32_t CircleIndexCount = 0;
     CircleVertex* CircleVertexBufferBase = nullptr;
     CircleVertex* CircleVertexBufferPtr = nullptr;
+
+    Ref<VertexArray> CircleVertexArray;
+    Ref<VertexBuffer> CircleVertexBuffer = nullptr;
+    Ref<Shader> CircleShader;
+
+    // Lines
+    uint32_t LineVertexCount = 0;
+    LineVertex* LineVertexBufferBase = nullptr;
+    LineVertex* LineVertexBufferPtr = nullptr;
+
+    Ref<VertexArray> LineVertexArray;
+    Ref<VertexBuffer> LineVertexBuffer = nullptr;
+    Ref<Shader> LineShader;
 
     std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
     uint32_t TextureSlotIndex = 1; // Texture slot 0 is for white texture
@@ -119,6 +145,7 @@ void Renderer2D::Init() {
 
     ZR_PROFILE_FUNCTION();
 
+    // Quads
     s_Data.QuadVertexArray = zirconium::VertexArray::Create();
 
     s_Data.QuadVertexBuffer = zirconium::VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
@@ -168,6 +195,20 @@ void Renderer2D::Init() {
     s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
     s_Data.CircleVertexArray->SetIndexBuffer(quadIB);
 
+    // Lines
+    s_Data.LineVertexArray = zirconium::VertexArray::Create();
+
+    s_Data.LineVertexBuffer = zirconium::VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));
+    zirconium::BufferLayout lineLayout = {
+        {ShaderDataType::Float3, "a_Position"},
+        {ShaderDataType::Float4, "a_Color"},
+        {ShaderDataType::Int, "a_EntityID"},
+    };
+    s_Data.LineVertexBuffer->SetLayout(circleLayout);
+
+    s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
+    s_Data.LineVertexArray->AddVertexBuffer(s_Data.LineVertexBuffer);
+
     s_Data.WhiteTexture = Texture2D::Create(1, 1);
     uint32_t whiteTextureData = 0xffffffff;
     s_Data.WhiteTexture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
@@ -190,6 +231,13 @@ void Renderer2D::Init() {
         std::filesystem::path path = "zirconium-Editor/res/shaders/CircleShader.glsl";
         std::filesystem::path fullPath = std::filesystem::absolute(path);
         s_Data.CircleShader = zirconium::Shader::Create(fullPath.c_str());
+    }
+
+    // Line Shader
+    {
+        std::filesystem::path path = "zirconium-Editor/res/shaders/LineShader.glsl";
+        std::filesystem::path fullPath = std::filesystem::absolute(path);
+        s_Data.TextureShader = zirconium::Shader::Create(fullPath.c_str());
     }
 
     s_Data.TextureSlots[0] = s_Data.WhiteTexture;
@@ -218,6 +266,9 @@ void Renderer2D::BeginBatch() {
     s_Data.CircleIndexCount = 0;
     s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
 
+    s_Data.LineVertexCount = 0;
+    s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+
     s_Data.TextureSlotIndex = 1;
 }
 
@@ -245,8 +296,8 @@ void Renderer2D::EndScene() {
 
     ZR_PROFILE_FUNCTION();
 
-    // for (QuadVertex* i = s_Data.QuadVertexBufferBase; i < s_Data.QuadVertexBufferPtr; i++)
-    // ZR_CORE_WARN(i->ToString());
+    for (LineVertex* i = s_Data.LineVertexBufferBase; i < s_Data.LineVertexBufferPtr; i++)
+    ZR_CORE_WARN(LineVertexToString(*i));
 
     Flush();
 }
@@ -270,11 +321,21 @@ void Renderer2D::Flush() {
     }
     if (s_Data.CircleIndexCount) {
 
+        uint32_t dataSize = (uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase;
+        s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
+
+        s_Data.LineShader->Bind();
+        RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+        s_Data.Stats.DrawCalls++;
+    }
+
+    if (s_Data.LineVertexCount) {
+
         uint32_t dataSize = (uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase;
         s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
 
         s_Data.CircleShader->Bind();
-        RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleIndexCount);
+        RenderCommand::DrawLines(s_Data.LineVertexArray, s_Data.LineVertexCount);
         s_Data.Stats.DrawCalls++;
     }
 }
@@ -347,6 +408,20 @@ void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, 
 
     s_Data.CircleIndexCount += 6;
     s_Data.Stats.QuadCount++;
+}
+
+void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID) {
+    s_Data.LineVertexBufferPtr->Position = p0;
+    s_Data.LineVertexBufferPtr->Color = color;
+    s_Data.LineVertexBufferPtr->EntityID = entityID;
+    s_Data.LineVertexBufferPtr++;
+
+    s_Data.LineVertexBufferPtr->Position = p1;
+    s_Data.LineVertexBufferPtr->Color = color;
+    s_Data.LineVertexBufferPtr->EntityID = entityID;
+    s_Data.LineVertexBufferPtr++;
+
+    s_Data.LineVertexCount += 2;
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {
