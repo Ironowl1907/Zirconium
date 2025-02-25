@@ -32,7 +32,6 @@ void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t 
 
 void OpenGLRenderAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount) {
     vertexArray->Bind();
-    ZR_CORE_WARN("Hey");
     glDrawArrays(GL_LINES, 0, vertexCount);
 }
 

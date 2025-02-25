@@ -204,7 +204,7 @@ void Renderer2D::Init() {
         {ShaderDataType::Float4, "a_Color"},
         {ShaderDataType::Int, "a_EntityID"},
     };
-    s_Data.LineVertexBuffer->SetLayout(circleLayout);
+    s_Data.LineVertexBuffer->SetLayout(lineLayout);
 
     s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
     s_Data.LineVertexArray->AddVertexBuffer(s_Data.LineVertexBuffer);
@@ -237,7 +237,7 @@ void Renderer2D::Init() {
     {
         std::filesystem::path path = "zirconium-Editor/res/shaders/LineShader.glsl";
         std::filesystem::path fullPath = std::filesystem::absolute(path);
-        s_Data.TextureShader = zirconium::Shader::Create(fullPath.c_str());
+        s_Data.LineShader = zirconium::Shader::Create(fullPath.c_str());
     }
 
     s_Data.TextureSlots[0] = s_Data.WhiteTexture;
@@ -252,8 +252,7 @@ void Renderer2D::Shutdown() {}
 void Renderer2D::FlushAndReset() {
     EndScene();
 
-    s_Data.QuadIndexCount = 0;
-    s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+    BeginBatch();
 
     s_Data.TextureSlotIndex = 1;
 }
@@ -297,7 +296,7 @@ void Renderer2D::EndScene() {
     ZR_PROFILE_FUNCTION();
 
     for (LineVertex* i = s_Data.LineVertexBufferBase; i < s_Data.LineVertexBufferPtr; i++)
-    ZR_CORE_WARN(LineVertexToString(*i));
+        ZR_CORE_WARN(LineVertexToString(*i));
 
     Flush();
 }
@@ -321,20 +320,21 @@ void Renderer2D::Flush() {
     }
     if (s_Data.CircleIndexCount) {
 
-        uint32_t dataSize = (uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase;
-        s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
+        uint32_t dataSize = (uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase;
+        s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
 
-        s_Data.LineShader->Bind();
-        RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+        s_Data.CircleShader->Bind();
+        RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleIndexCount);
         s_Data.Stats.DrawCalls++;
     }
 
     if (s_Data.LineVertexCount) {
 
-        uint32_t dataSize = (uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase;
-        s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
+        uint32_t dataSize = (uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase;
+        ZR_ASSERT(dataSize, "DataSize can't be zero!");
+        s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
 
-        s_Data.CircleShader->Bind();
+        s_Data.LineShader->Bind();
         RenderCommand::DrawLines(s_Data.LineVertexArray, s_Data.LineVertexCount);
         s_Data.Stats.DrawCalls++;
     }

@@ -35,7 +35,6 @@ void SceneHierarchyPanel::OnImGuiRender() {
 
     ImGuiPopupFlags flags = ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight;
     if (ImGui::BeginPopupContextWindow(0, flags)) {
-        // ZR_CORE_TRACE("Hey3");
         if (ImGui::MenuItem("Create Empty Entity")) {
             m_Context->CreateEntity("Empty Entity");
         }
