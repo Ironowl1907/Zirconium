@@ -98,6 +98,8 @@ struct Renderer2DStorage {
     Ref<VertexBuffer> LineVertexBuffer = nullptr;
     Ref<Shader> LineShader;
 
+    float LineWidth = 2.0f;
+
     std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
     uint32_t TextureSlotIndex = 1; // Texture slot 0 is for white texture
 
@@ -295,8 +297,8 @@ void Renderer2D::EndScene() {
 
     ZR_PROFILE_FUNCTION();
 
-    for (LineVertex* i = s_Data.LineVertexBufferBase; i < s_Data.LineVertexBufferPtr; i++)
-        ZR_CORE_WARN(LineVertexToString(*i));
+    // for (LineVertex* i = s_Data.LineVertexBufferBase; i < s_Data.LineVertexBufferPtr; i++)
+    //     ZR_CORE_WARN(LineVertexToString(*i));
 
     Flush();
 }
@@ -335,6 +337,7 @@ void Renderer2D::Flush() {
         s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
 
         s_Data.LineShader->Bind();
+        RenderCommand::SetLineWidth(s_Data.LineWidth);
         RenderCommand::DrawLines(s_Data.LineVertexArray, s_Data.LineVertexCount);
         s_Data.Stats.DrawCalls++;
     }
@@ -385,6 +388,9 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
     // Adding the +1 for now to allow zeroed ID entities
     // SetVertexData(transform, 0, src, entityID + 1, tilingFactor);
     DrawTransformedTexQuad(transform, src.Texture, src.Color, entityID, src.TilingFactor);
+
+    // For Wireframe-ish mode
+    // DrawRect(transform, src.Color, entityID);
 }
 
 void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity, const float& thickness,
@@ -422,6 +428,36 @@ void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::v
     s_Data.LineVertexBufferPtr++;
 
     s_Data.LineVertexCount += 2;
+}
+
+float Renderer2D::GetLineWidth() {
+    return s_Data.LineWidth;
+}
+void Renderer2D::SetLineWidth(float width) {
+    RenderCommand::SetLineWidth(width);
+}
+
+void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+                          const int& entityID) {
+    glm::vec3 p0 = glm::vec3(position.x - size.x * 0.5f, position.y - size.y * 0.5f, position.z);
+    glm::vec3 p1 = glm::vec3(position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z);
+    glm::vec3 p2 = glm::vec3(position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z);
+    glm::vec3 p3 = glm::vec3(position.x - size.x * 0.5f, position.y + size.y * 0.5f, position.z);
+
+    DrawLine(p0, p1, color, entityID);
+    DrawLine(p1, p2, color, entityID);
+    DrawLine(p2, p3, color, entityID);
+    DrawLine(p3, p0, color, entityID);
+}
+void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, const int& entityID) {
+    glm::vec3 vertex[4];
+    for (int i = 0; i < 4; i++)
+        vertex[i] = transform * s_Data.QuadVertexPositions[i];
+
+    DrawLine(vertex[0], vertex[1], color);
+    DrawLine(vertex[1], vertex[2], color);
+    DrawLine(vertex[2], vertex[3], color);
+    DrawLine(vertex[3], vertex[0], color);
 }
 
 Renderer2D::Statistics Renderer2D::GetStats() {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "OrthographicCamera.h"
+#include "RenderCommand.h"
 #include "SubTexture2D.h"
 #include "zirconium/Renderer/EditorCamera.h"
 #include "zirconium/Renderer/SubTexture2D.h"
@@ -28,6 +29,12 @@ public:
     static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, int entity,
                            const float& thickness = 1.0f, const float& fade = 0.00025f);
     static void DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID = -1);
+    static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+                         const int& entityID = -1);
+    static void DrawRect(const glm::mat4& transform, const glm::vec4& color, const int& entityID = -1);
+
+    static float GetLineWidth();
+    static void SetLineWidth(float width);
 
     static void ClearVB();
 

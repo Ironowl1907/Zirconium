@@ -31,6 +31,10 @@ public:
         s_RendererAPI->SetClearColor(color);
     }
 
+    inline static void SetLineWidth(const float& width) {
+        s_RendererAPI->SetLineWidth(width);
+    }
+
     inline static void Clear() {
         s_RendererAPI->Clear();
     }
