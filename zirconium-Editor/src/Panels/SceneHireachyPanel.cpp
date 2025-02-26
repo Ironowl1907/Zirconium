@@ -234,6 +234,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
+        if (!m_SelectionContext.HasComponent<CircleColiderComponent>())
+            if (ImGui::MenuItem("Circle Colider 2D")) {
+                m_SelectionContext.AddComponent<CircleColiderComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
         ImGui::EndPopup();
     }
     ImGui::PopItemWidth();
@@ -349,6 +355,14 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     DrawComponent<BoxColiderComponent>("Box Colider 2D", entity, [](auto& component) {
         ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
         ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+        ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("Resititution", &component.Restitution, 0.01f, 0.0f);
+    });
+
+    DrawComponent<CircleColiderComponent>("Circle Colider 2D", entity, [](auto& component) {
+        ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+        ImGui::DragFloat("Radius", &component.Radius);
         ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat("Resititution", &component.Restitution, 0.01f, 0.0f);

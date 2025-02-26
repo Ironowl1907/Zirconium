@@ -63,6 +63,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<BoxColiderComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
+    CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -90,6 +91,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<BoxColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -118,7 +120,6 @@ void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
             Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
         }
     }
-
 
     Renderer2D::EndScene();
 }
@@ -161,6 +162,20 @@ void Scene::OnRuntimeStart() {
 
             b2CreatePolygonShape(bodyId, &shapeDef, &colider);
         }
+
+        if (entity.HasComponent<CircleColiderComponent>()) {
+            auto& cc2b = entity.GetComponent<CircleColiderComponent>();
+
+            b2Circle colider = {{cc2b.Offset.x, cc2b.Offset.y}, cc2b.Radius};
+
+            b2ShapeDef shapeDef = b2DefaultShapeDef();
+
+            ZR_ASSERT(cc2b.Density, "Density can't be 0");
+            shapeDef.density = cc2b.Density;
+            shapeDef.friction = cc2b.Friction;
+            shapeDef.restitution = cc2b.Restitution;
+
+            b2CreateCircleShape(bodyId, &shapeDef, &colider); }
     }
 }
 void Scene::OnRuntimeStop() {
@@ -312,5 +327,8 @@ void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
 
 template <>
 void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<CircleColiderComponent>(Entity entity, CircleColiderComponent& component) {}
 
 } // namespace zirconium

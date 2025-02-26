@@ -404,7 +404,7 @@ void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, 
 
     for (uint32_t i = 0; i < 4; i++) {
         s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPositions[i];
-        s_Data.CircleVertexBufferPtr->LocalPosition = transform * s_Data.QuadVertexPositions[i] * 2.0f;
+        s_Data.CircleVertexBufferPtr->LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f;
         s_Data.CircleVertexBufferPtr->Color = color;
         s_Data.CircleVertexBufferPtr->Thickness = thickness;
         s_Data.CircleVertexBufferPtr->Fade = fade;

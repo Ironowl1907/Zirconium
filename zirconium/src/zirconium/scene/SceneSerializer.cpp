@@ -223,6 +223,21 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity) {
 
         out << YAML::EndMap;
     }
+
+    if (entity.HasComponent<CircleColiderComponent>()) {
+        out << YAML::Key << "CircleColiderComponent";
+        out << YAML::BeginMap;
+
+        auto& circleColiderComponent = entity.GetComponent<CircleColiderComponent>();
+        out << YAML::Key << "Offset" << YAML::Value << circleColiderComponent.Offset;
+        out << YAML::Key << "Radius" << YAML::Value << circleColiderComponent.Radius;
+
+        out << YAML::Key << "Density" << YAML::Value << circleColiderComponent.Density;
+        out << YAML::Key << "Friction" << YAML::Value << circleColiderComponent.Friction;
+        out << YAML::Key << "Restitution" << YAML::Value << circleColiderComponent.Restitution;
+
+        out << YAML::EndMap;
+    }
     out << YAML::EndMap;
 }
 
@@ -336,7 +351,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
             }
 
             auto boxColiderComponent = entity["BoxColiderComponent"];
-            if (rigidBodyComponent) {
+            if (boxColiderComponent) {
                 auto& src = deserializedEntity.AddComponent<BoxColiderComponent>();
                 src.Offset = (glm::vec2)boxColiderComponent["Offset"].as<glm::vec2>();
                 src.Size = (glm::vec2)boxColiderComponent["Size"].as<glm::vec2>();
@@ -344,7 +359,19 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 src.Density = boxColiderComponent["Density"].as<float>();
                 src.Friction = boxColiderComponent["Friction"].as<float>();
                 src.Restitution = boxColiderComponent["Restitution"].as<float>();
-                ZR_CORE_TRACE("Deserialized Sprite component with uuid {0}", uuid);
+                ZR_CORE_TRACE("Deserialized Box colider component with uuid {0}", uuid);
+            }
+
+            auto circleColiderComponent = entity["CircleColiderComponent"];
+            if (circleColiderComponent) {
+                auto& src = deserializedEntity.AddComponent<CircleColiderComponent>();
+                src.Offset = (glm::vec2)circleColiderComponent["Offset"].as<glm::vec2>();
+                src.Radius = circleColiderComponent["Radius"].as<float>();
+
+                src.Density = circleColiderComponent["Density"].as<float>();
+                src.Friction = circleColiderComponent["Friction"].as<float>();
+                src.Restitution = circleColiderComponent["Restitution"].as<float>();
+                ZR_CORE_TRACE("Deserialized Circle Colider component with uuid {0}", uuid);
             }
         }
     }
