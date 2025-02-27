@@ -26,10 +26,17 @@ public:
 
     void DuplicateEntity(Entity entity);
 
+    Entity GetMainCameraEntity();
+
     void OnUpdateEditor(TimeStep delta, EditorCamera& camera);
     void OnUpdateRuntime(TimeStep delta);
     void OnViewportResize(const uint32_t& width, const uint32_t& height);
     void DeleteEntity(Entity entity);
+
+    template <typename... Components>
+    auto GetAllEntitiesWith() {
+        return m_Registry.view<Components...>();
+    }
 
 private:
     template <typename T>

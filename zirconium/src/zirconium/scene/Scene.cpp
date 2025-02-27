@@ -166,7 +166,7 @@ void Scene::OnRuntimeStart() {
         if (entity.HasComponent<CircleColiderComponent>()) {
             auto& cc2b = entity.GetComponent<CircleColiderComponent>();
 
-            b2Circle colider = {{cc2b.Offset.x, cc2b.Offset.y}, cc2b.Radius};
+            b2Circle colider = {{cc2b.Offset.x, cc2b.Offset.y}, transform.Scale.x * cc2b.Radius};
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
 
@@ -175,7 +175,8 @@ void Scene::OnRuntimeStart() {
             shapeDef.friction = cc2b.Friction;
             shapeDef.restitution = cc2b.Restitution;
 
-            b2CreateCircleShape(bodyId, &shapeDef, &colider); }
+            b2CreateCircleShape(bodyId, &shapeDef, &colider);
+        }
     }
 }
 void Scene::OnRuntimeStop() {
@@ -223,43 +224,31 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
 
     // Render Sprites
-    // Check for camera
-    Camera* mainCamera = nullptr;
-    glm::mat4 mainTransform;
+
+    Entity cameraEntity = GetMainCameraEntity();
+
+    auto mainCamera = cameraEntity.GetComponent<CameraComponent>().Camera;
+    auto mainTransform = cameraEntity.GetComponent<TransformComponent>().GetTransform();
+
+    Renderer2D::BeginScene(mainCamera, mainTransform);
+    // Quads
     {
-        auto view = m_Registry.view<TransformComponent, CameraComponent>();
+        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+        for (auto entity : group) {
+            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint32_t)entity);
+        }
+    }
+
+    // Circles
+    {
+        auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
         for (auto entity : view) {
-            const auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
-
-            if (camera.Primary) {
-                mainCamera = &camera.Camera;
-                mainTransform = transform.GetTransform();
-                break;
-            }
+            const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
+            Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
         }
     }
-
-    if (mainCamera) {
-        Renderer2D::BeginScene(*mainCamera, mainTransform);
-        // Quads
-        {
-            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for (auto entity : group) {
-                const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint32_t)entity);
-            }
-        }
-
-        // Circles
-        {
-            auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
-            for (auto entity : view) {
-                const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
-                Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
-            }
-        }
-        Renderer2D::EndScene();
-    }
+    Renderer2D::EndScene();
 }
 
 Entity Scene::CreateEntity(const std::string& name) {
@@ -292,6 +281,17 @@ void Scene::OnViewportResize(const uint32_t& width, const uint32_t& height) {
 
 void Scene::DeleteEntity(Entity entity) {
     m_Registry.destroy((entt::entity)entity);
+}
+
+Entity Scene::GetMainCameraEntity() {
+    auto view = m_Registry.view<TransformComponent, CameraComponent>();
+    for (auto entity : view) {
+        const auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+        if (camera.Primary)
+            return {entity, this};
+    }
+    ZR_ASSERT(false, "Scene doesn't have main camera!");
+    return Entity();
 }
 
 template <typename T>

@@ -39,6 +39,8 @@ private:
     bool OnKeyPressed(KeyPressedEvent& e);
     bool OnMousePressed(MousePressedButtonEvent& e);
 
+    void OnOverlayRender();
+
 private:
     OrthoCameraController m_CameraController;
 
@@ -81,6 +83,8 @@ private:
     };
 
     SceneState m_SceneState = SceneState::Edit;
+
+    bool m_ShowPhysicsColiders = false;
 
     // Editor Resourses
     Ref<Texture2D> m_IconPlay, m_IconStop;

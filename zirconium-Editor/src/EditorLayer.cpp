@@ -9,6 +9,7 @@
 #include "zirconium/scene/SceneSerializer.h"
 #include <cstdint>
 #include <filesystem>
+#include <glm/ext/matrix_transform.hpp>
 #include <stdexcept>
 
 namespace zirconium {
@@ -111,6 +112,8 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         }
         }
 
+        OnOverlayRender();
+
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
         my -= m_ViewportBounds[0].y;
@@ -130,6 +133,55 @@ void EditorLayer::OnUpdate(TimeStep delta) {
 
         m_Framebuffer->Unbind();
     }
+}
+
+void EditorLayer::OnOverlayRender() {
+
+    if (m_SceneState == SceneState::Play) {
+        Entity camera = m_ActiveScene->GetMainCameraEntity();
+        Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera,
+                               camera.GetComponent<TransformComponent>().GetTransform());
+    } else {
+        Renderer2D::BeginScene(m_EditorCamera);
+    }
+
+    if (m_ShowPhysicsColiders) {
+        // Circle Coliders
+        {
+            auto view = m_ActiveScene->GetAllEntitiesWith<TransformComponent, CircleColiderComponent>();
+            for (auto entity : view) {
+                auto [tc, cc2D] = view.get<TransformComponent, CircleColiderComponent>(entity);
+
+                glm::vec3 translation = tc.Translation + glm::vec3(cc2D.Offset, 0.001f);
+                glm::vec3 scale = glm::vec3(2.0f) * tc.Scale * glm::vec3(cc2D.Radius);
+
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation) * glm::scale(glm::mat4(1.0f), scale);
+                Renderer2D::DrawCircle(transform, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), -1, 0.02f);
+                // Renderer2D::DrawTransformedQuad(transform, glm::vec4(1.0f));
+                // Renderer2D::DrawTransformedQuad(glm::mat4(1.0f), glm::vec4(1.0f));
+            }
+        }
+
+        // BoxColiders
+        {
+            auto view = m_ActiveScene->GetAllEntitiesWith<TransformComponent, BoxColiderComponent>();
+            for (auto entity : view) {
+                auto [tc, bc2D] = view.get<TransformComponent, BoxColiderComponent>(entity);
+
+                glm::vec3 translation = tc.Translation + glm::vec3(bc2D.Offset, 0.001f);
+                glm::vec3 scale = glm::vec3(bc2D.Size * 2.0f, 0.001f) * tc.Scale;
+
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation) *
+                                      glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                                      glm::scale(glm::mat4(1.0f), scale);
+                Renderer2D::DrawRect(transform, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+                // Renderer2D::DrawTransformedQuad(transform, glm::vec4(1.0f));
+                // Renderer2D::DrawTransformedQuad(glm::mat4(1.0f), glm::vec4(1.0f));
+            }
+        }
+    }
+
+    Renderer2D::EndScene();
 }
 
 void EditorLayer::OnScenePlay() {
@@ -309,6 +361,11 @@ void EditorLayer::OnImGuiRender() {
                     ImGui::EndPopup();
                 }
             }
+
+            ImGui::End();
+
+            ImGui::Begin("Settings");
+            ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
             ImGui::End();
         }
     }
