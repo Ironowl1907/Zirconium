@@ -62,8 +62,9 @@ void EditorLayer::OnAttach() {
 
     ZR_CORE_TRACE("Current working path: {}", std::filesystem::current_path().string());
 
-    m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/play-button-arrowhead.png");
-    m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/stop-button.png");
+    m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/PlayButton.png");
+    m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/StopButton.png");
+    m_IconSimulate = Texture2D::Create("zirconium-Editor/res/editorImg/SimulateButton.png");
 }
 void EditorLayer::OnDetach() {}
 
@@ -108,6 +109,10 @@ void EditorLayer::OnUpdate(TimeStep delta) {
         case SceneState::Edit: {
             m_ActiveScene->OnUpdateEditor(delta, m_EditorCamera);
             m_EditorScene = m_ActiveScene;
+            break;
+        }
+        case SceneState::Simulate: {
+            m_ActiveScene->OnUpdateSimulation(delta, m_EditorCamera);
             break;
         }
         }
@@ -185,6 +190,11 @@ void EditorLayer::OnOverlayRender() {
 }
 
 void EditorLayer::OnScenePlay() {
+    if (m_SceneState == SceneState::Simulate) {
+        ZR_CORE_WARN("Hey");
+        OnSceneStop();
+    }
+
     m_SceneState = SceneState::Play;
 
     ZR_ASSERT(m_EditorScene, "");
@@ -198,6 +208,22 @@ void EditorLayer::OnSceneStop() {
     m_ActiveScene->OnRuntimeStop();
 
     m_ActiveScene = m_EditorScene;
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+
+void EditorLayer::OnSimulationPlay() {
+    if (m_SceneState == SceneState::Play) {
+        ZR_CORE_WARN("Hey");
+        OnSceneStop();
+    }
+
+    m_SceneState = SceneState::Simulate;
+
+    ZR_ASSERT(m_EditorScene, "");
+
+    m_ActiveScene = Scene::Copy(m_EditorScene);
+
+    m_ActiveScene->OnSimulationStart();
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 
@@ -368,7 +394,7 @@ void EditorLayer::OnImGuiRender() {
             ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
             ImGui::End();
         }
-    }
+    } // namespace zirconium
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
@@ -448,14 +474,38 @@ void EditorLayer::UI_ToolBar() {
                  ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     float size = ImGui::GetWindowHeight() - 4.0f;
-    Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
-    ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
-    if (ImGui::ImageButton("##playbutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
-                           ImVec2(1, 1))) {
-        if (m_SceneState == SceneState::Play)
-            OnSceneStop();
-        else if (m_SceneState == SceneState::Edit)
-            OnScenePlay();
+    {
+        Ref<Texture2D> icon =
+            (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate) ? m_IconPlay : m_IconStop;
+        ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
+        if (ImGui::ImageButton("##playbutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
+                               ImVec2(1, 1))) {
+            if (m_SceneState == SceneState::Play)
+                OnSceneStop();
+            else if (m_SceneState == SceneState::Edit)
+                OnScenePlay();
+            else {
+                OnSceneStop();
+                OnScenePlay();
+            }
+        }
+    }
+    ImGui::SameLine();
+    {
+        Ref<Texture2D> icon =
+            (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;
+        // ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
+        if (ImGui::ImageButton("##simulatebutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
+                               ImVec2(1, 1))) {
+            if (m_SceneState == SceneState::Simulate)
+                OnSceneStop();
+            else if (m_SceneState == SceneState::Edit)
+                OnSimulationPlay();
+            else {
+                OnSceneStop();
+                OnSimulationPlay();
+            }
+        }
     }
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);

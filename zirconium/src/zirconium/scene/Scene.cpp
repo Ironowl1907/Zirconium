@@ -103,28 +103,11 @@ Scene::Scene() {
 Scene::~Scene() {}
 
 void Scene::OnUpdateEditor(TimeStep delta, EditorCamera& camera) {
-    Renderer2D::BeginScene(camera);
-
-    {
-        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-        for (auto entity : group) {
-            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint64_t)entity);
-        }
-    }
-
-    {
-        auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
-        for (auto entity : view) {
-            const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
-            Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
-        }
-    }
-
-    Renderer2D::EndScene();
+    RenderScene(camera);
 }
 
-void Scene::OnRuntimeStart() {
+void Scene::OnPhysicsInit() {
+
     b2WorldDef worldDefinition = b2DefaultWorldDef();
     worldDefinition.gravity = (b2Vec2){0.0f, -10.0f};
 
@@ -179,9 +162,18 @@ void Scene::OnRuntimeStart() {
         }
     }
 }
-void Scene::OnRuntimeStop() {
+
+void Scene::OnPhysicsShutdown() {
     b2DestroyWorld(*m_WorldID);
     delete m_WorldID;
+}
+
+void Scene::OnRuntimeStart() {
+    OnPhysicsInit();
+}
+
+void Scene::OnRuntimeStop() {
+    OnPhysicsShutdown();
 }
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
@@ -251,6 +243,43 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     Renderer2D::EndScene();
 }
 
+void Scene::OnSimulationStart() {
+    OnPhysicsInit();
+}
+
+void Scene::OnSimulationStop() {
+    OnPhysicsShutdown();
+}
+
+void Scene::OnUpdateSimulation(TimeStep delta, EditorCamera& camera) {
+
+    // Physics
+
+    constexpr float timestep = 1.0f / 60.0f;
+    constexpr int subStepCount = 8;
+
+    b2World_Step(*m_WorldID, timestep, subStepCount);
+
+    auto view = m_Registry.view<RigidBodyComponent>();
+
+    for (auto& e : view) {
+        Entity entity = {e, this};
+        auto& transform = entity.GetComponent<TransformComponent>();
+        auto& rb2d = entity.GetComponent<RigidBodyComponent>();
+
+        b2Vec2 position = b2Body_GetPosition(rb2d.RuntimeBody);
+        b2Rot rotation = b2Body_GetRotation(rb2d.RuntimeBody);
+
+        transform.Translation.x = position.x;
+        transform.Translation.y = position.y;
+
+        transform.Rotation.z = b2Rot_GetAngle(rotation);
+    }
+
+    // Render
+    RenderScene(camera);
+}
+
 Entity Scene::CreateEntity(const std::string& name) {
     return CreateEntityWithID(UUID(), name);
 }
@@ -277,6 +306,30 @@ void Scene::OnViewportResize(const uint32_t& width, const uint32_t& height) {
             cameraComponent.Camera.SetViewportSize(width, height);
         }
     }
+}
+
+void Scene::RenderScene(EditorCamera& camera) {
+    Renderer2D::BeginScene(camera);
+
+    // Draw Sprites
+    {
+        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+        for (auto entity : group) {
+            const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint64_t)entity);
+        }
+    }
+
+    // Draw Circles
+    {
+        auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+        for (auto entity : view) {
+            const auto& [transform, crc] = view.get<TransformComponent, CircleRendererComponent>(entity);
+            Renderer2D::DrawCircle(transform.GetTransform(), crc.Color, (uint32_t)entity, crc.Thickness, crc.Fade);
+        }
+    }
+
+    Renderer2D::EndScene();
 }
 
 void Scene::DeleteEntity(Entity entity) {
