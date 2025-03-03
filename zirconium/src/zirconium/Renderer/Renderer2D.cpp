@@ -297,6 +297,10 @@ void Renderer2D::EndScene() {
 
     ZR_PROFILE_FUNCTION();
 
+    for (LineVertex* i = s_Data.LineVertexBufferBase; i < s_Data.LineVertexBufferPtr; i++) {
+        ZR_CORE_WARN(LineVertexToString(*i));
+    }
+
     Flush();
 }
 

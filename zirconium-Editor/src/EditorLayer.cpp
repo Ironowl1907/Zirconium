@@ -150,6 +150,14 @@ void EditorLayer::OnOverlayRender() {
         Renderer2D::BeginScene(m_EditorCamera);
     }
 
+    // Show Selected Enity
+    if (Entity selected = m_SceneHierarchyPanel.GetSelectedEntity()) {
+        auto transform = selected.GetComponent<TransformComponent>().GetTransform();
+
+        // Draw Red quad
+        Renderer2D::DrawRect(transform, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), -1);
+    }
+
     if (m_ShowPhysicsColiders) {
         // Circle Coliders
         {
