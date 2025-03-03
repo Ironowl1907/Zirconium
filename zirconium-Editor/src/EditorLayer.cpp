@@ -152,10 +152,12 @@ void EditorLayer::OnOverlayRender() {
 
     // Show Selected Enity
     if (Entity selected = m_SceneHierarchyPanel.GetSelectedEntity()) {
-        auto transform = selected.GetComponent<TransformComponent>().GetTransform();
+        if (selected.HasComponent<TransformComponent>()) {
+            auto transform = selected.GetComponent<TransformComponent>().GetTransform();
 
-        // Draw Red quad
-        Renderer2D::DrawRect(transform, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), -1);
+            // Draw Red quad
+            Renderer2D::DrawRect(transform, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), -1);
+        }
     }
 
     if (m_ShowPhysicsColiders) {

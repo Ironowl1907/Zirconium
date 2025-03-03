@@ -31,7 +31,7 @@ public:
 
     template <typename T>
     T& GetComponent() const{
-        ZR_CORE_ASSERT(HasComponent<T>(), "Entity already does not has component")
+        ZR_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component")
         return m_Scene->m_Registry.get<T>(m_EntityHandle);
     }
 
