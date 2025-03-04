@@ -93,28 +93,6 @@ struct CameraComponent {
         : Camera() {}
 };
 
-// Foward Declaration
-class ScriptableEntity;
-
-struct NativeScriptComponent {
-    ScriptableEntity* Instance = nullptr;
-
-    ScriptableEntity* (*InstanciateScript)();
-    void (*DestroyScript)(NativeScriptComponent*);
-
-    template <typename T>
-    void Bind() {
-
-        InstanciateScript = []() {
-            return static_cast<ScriptableEntity*>(new T());
-        };
-
-        DestroyScript = [](NativeScriptComponent* nsc) {
-            delete nsc->Instance;
-            nsc->Instance = nullptr;
-        };
-    }
-};
 
 struct RigidBodyComponent {
     enum class BodyType { Static = 0, Dynamic = 1, Kinematics = 2 };

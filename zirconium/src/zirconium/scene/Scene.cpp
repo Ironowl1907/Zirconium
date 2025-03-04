@@ -12,7 +12,6 @@
 #include <unordered_map>
 
 #include "Scene.h"
-#include "ScriptableEntity.h"
 #include "box2d/box2d.h"
 
 #include "box2d/id.h"
@@ -61,7 +60,6 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<CameraComponent>(newEntity, entity);
     CopyComponentIfExists<RigidBodyComponent>(newEntity, entity);
     CopyComponentIfExists<BoxColiderComponent>(newEntity, entity);
-    CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
 }
@@ -89,7 +87,6 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<RigidBodyComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<BoxColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-    CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
@@ -178,17 +175,17 @@ void Scene::OnRuntimeStop() {
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
     // Update scripts
-    {
-        m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {
-            // Move to the game runtime `Scene::OnScenePlay`
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstanciateScript();
-                nsc.Instance->m_Entity = Entity{entity, this};
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnUpdate(delta);
-        });
-    }
+    // {
+    //     m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {
+    //         // Move to the game runtime `Scene::OnScenePlay`
+    //         if (!nsc.Instance) {
+    //             nsc.Instance = nsc.InstanciateScript();
+    //             nsc.Instance->m_Entity = Entity{entity, this};
+    //             nsc.Instance->OnCreate();
+    //         }
+    //         nsc.Instance->OnUpdate(delta);
+    //     });
+    // }
 
     // Physics
     {
@@ -365,9 +362,6 @@ void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRende
 
 template <>
 void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component) {}
-
-template <>
-void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 
 template <>
 void Scene::OnComponentAdded<RigidBodyComponent>(Entity entity, RigidBodyComponent& component) {}

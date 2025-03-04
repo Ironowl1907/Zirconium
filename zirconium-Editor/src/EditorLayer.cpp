@@ -14,28 +14,6 @@
 
 namespace zirconium {
 
-class CameraController : public ScriptableEntity {
-public:
-    void OnCreate() {
-        auto& transform = GetComponent<TransformComponent>();
-        transform.Translation.x = rand() % 10 - 5.0f;
-    }
-    void OnDestroy() {}
-
-    void OnUpdate(TimeStep delta) {
-        float speed = 5.0f;
-        auto& tc = GetComponent<TransformComponent>();
-        if (Input::IsKeyPressed(ZR_KEY_A))
-            tc.Translation.x -= speed * delta;
-        if (Input::IsKeyPressed(ZR_KEY_W))
-            tc.Translation.y += speed * delta;
-        if (Input::IsKeyPressed(ZR_KEY_D))
-            tc.Translation.x += speed * delta;
-        if (Input::IsKeyPressed(ZR_KEY_S))
-            tc.Translation.y -= speed * delta;
-    }
-};
-
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
     , m_CameraController(1.6f / 0.9f, true) {}
