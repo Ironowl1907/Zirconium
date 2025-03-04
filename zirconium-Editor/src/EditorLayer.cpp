@@ -7,6 +7,9 @@
 
 #include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/scene/SceneSerializer.h"
+
+#include "Tools/Gizmo.h"
+
 #include <cstdint>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
@@ -220,6 +223,11 @@ static bool s_SavingTo = false;
 static std::string s_FilePath = "";
 
 void EditorLayer::OnImGuiRender() {
+
+  EditorGizmo::ShowGizmoWindow();
+
+  bool a = true;
+  ImGui::ShowDemoWindow(&a);
 
     ZR_PROFILE_FUNCTION();
 
