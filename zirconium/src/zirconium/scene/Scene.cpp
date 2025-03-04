@@ -75,6 +75,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<BoxColiderComponent>(newEntity, entity);
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
+    CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -102,6 +103,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<BoxColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -398,5 +400,8 @@ void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRende
 
 template <>
 void Scene::OnComponentAdded<CircleColiderComponent>(Entity entity, CircleColiderComponent& component) {}
+
+template <>
+void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 
 } // namespace zirconium
