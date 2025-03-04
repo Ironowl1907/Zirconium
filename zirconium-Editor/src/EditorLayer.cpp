@@ -14,7 +14,6 @@
 
 namespace zirconium {
 
-
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
     , m_CameraController(1.6f / 0.9f, true) {}
@@ -44,7 +43,6 @@ void EditorLayer::OnAttach() {
     m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/PlayButton.png");
     m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/StopButton.png");
     m_IconSimulate = Texture2D::Create("zirconium-Editor/res/editorImg/SimulateButton.png");
-
 }
 void EditorLayer::OnDetach() {}
 
@@ -320,71 +318,94 @@ void EditorLayer::OnImGuiRender() {
             ImGui::EndMenu();
         }
 
-        ImGui::EndMenuBar();
-
-        m_SceneHierarchyPanel.OnImGuiRender();
-        m_ContentBrowserPanel.OnImGuiRender();
-
-        if (m_ShowRenderStats) {
-            static int location = 3;
-            ImGuiIO& io = ImGui::GetIO();
-            ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking |
-                                            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-                                            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-            if (location >= 0) {
-                const float PAD = 10.0f;
-                const ImGuiViewport* viewport = ImGui::GetMainViewport();
-                ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-                ImVec2 work_size = viewport->WorkSize;
-                ImVec2 window_pos, window_pos_pivot;
-                window_pos.x = (location & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
-                window_pos.y = (location & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
-                window_pos_pivot.x = (location & 1) ? 1.0f : 0.0f;
-                window_pos_pivot.y = (location & 2) ? 1.0f : 0.0f;
-                ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-                ImGui::SetNextWindowViewport(viewport->ID);
-                window_flags |= ImGuiWindowFlags_NoMove;
-            } else if (location == -2) {
-                // Center window
-                ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-                window_flags |= ImGuiWindowFlags_NoMove;
-            }
-            ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-            if (ImGui::Begin("Stats", &m_ShowRenderStats, window_flags)) {
-                ImGui::Text("Renderer Stats\n"
-                            "(right-click to change position)");
-                ImGui::Separator();
-                auto stats = Renderer2D::GetStats();
-                ImGui::Text("Draw call %d", stats.DrawCalls);
-                ImGui::Text("Quads %d", stats.QuadCount);
-                ImGui::Text("Vertices %d", stats.GetTotalVertexCount());
-                ImGui::Text("Indices %d", stats.GetTotalIndexCount());
-                if (ImGui::BeginPopupContextWindow()) {
-                    if (ImGui::MenuItem("Custom", NULL, location == -1))
-                        location = -1;
-                    if (ImGui::MenuItem("Center", NULL, location == -2))
-                        location = -2;
-                    if (ImGui::MenuItem("Top-left", NULL, location == 0))
-                        location = 0;
-                    if (ImGui::MenuItem("Top-right", NULL, location == 1))
-                        location = 1;
-                    if (ImGui::MenuItem("Bottom-left", NULL, location == 2))
-                        location = 2;
-                    if (ImGui::MenuItem("Bottom-right", NULL, location == 3))
-                        location = 3;
-                    if (m_ShowRenderStats && ImGui::MenuItem("Close"))
-                        m_ShowRenderStats = false;
-                    ImGui::EndPopup();
+        if (ImGui::BeginMenu("Editor")) {
+            if (ImGui::MenuItem("Play", "Ctrl+L", false, m_SceneState != SceneState::Play)) {
+                if (m_SceneState == SceneState::Edit)
+                    OnScenePlay();
+                else {
+                    OnSceneStop();
+                    OnScenePlay();
                 }
             }
-
-            ImGui::End();
-
-            ImGui::Begin("Settings");
-            ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
-            ImGui::End();
+            if (ImGui::MenuItem("Simulate", "Ctrl+K", false, m_SceneState != SceneState::Simulate)) {
+                if (m_SceneState == SceneState::Edit)
+                    OnSimulationPlay();
+                else {
+                    OnSceneStop();
+                    OnSimulationPlay();
+                }
+            }
+            if (ImGui::MenuItem("Stop", "Ctrl+W")) {
+                OnSceneStop();
+            }
+            ImGui::EndMenu();
         }
-    } // namespace zirconium
+
+        ImGui::EndMenuBar();
+    }
+
+    m_SceneHierarchyPanel.OnImGuiRender();
+    m_ContentBrowserPanel.OnImGuiRender();
+
+    ImGui::Begin("Settings");
+    ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
+    ImGui::End();
+
+    if (m_ShowRenderStats) {
+        static int location = 3;
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking |
+                                        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+                                        ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+        if (location >= 0) {
+            const float PAD = 10.0f;
+            const ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+            ImVec2 work_size = viewport->WorkSize;
+            ImVec2 window_pos, window_pos_pivot;
+            window_pos.x = (location & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
+            window_pos.y = (location & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
+            window_pos_pivot.x = (location & 1) ? 1.0f : 0.0f;
+            window_pos_pivot.y = (location & 2) ? 1.0f : 0.0f;
+            ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            window_flags |= ImGuiWindowFlags_NoMove;
+        } else if (location == -2) {
+            // Center window
+            ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            window_flags |= ImGuiWindowFlags_NoMove;
+        }
+        ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+        if (ImGui::Begin("Stats", &m_ShowRenderStats, window_flags)) {
+            ImGui::Text("Renderer Stats\n"
+                        "(right-click to change position)");
+            ImGui::Separator();
+            auto stats = Renderer2D::GetStats();
+            ImGui::Text("Draw call %d", stats.DrawCalls);
+            ImGui::Text("Quads %d", stats.QuadCount);
+            ImGui::Text("Vertices %d", stats.GetTotalVertexCount());
+            ImGui::Text("Indices %d", stats.GetTotalIndexCount());
+            if (ImGui::BeginPopupContextWindow()) {
+                if (ImGui::MenuItem("Custom", NULL, location == -1))
+                    location = -1;
+                if (ImGui::MenuItem("Center", NULL, location == -2))
+                    location = -2;
+                if (ImGui::MenuItem("Top-left", NULL, location == 0))
+                    location = 0;
+                if (ImGui::MenuItem("Top-right", NULL, location == 1))
+                    location = 1;
+                if (ImGui::MenuItem("Bottom-left", NULL, location == 2))
+                    location = 2;
+                if (ImGui::MenuItem("Bottom-right", NULL, location == 3))
+                    location = 3;
+                if (m_ShowRenderStats && ImGui::MenuItem("Close"))
+                    m_ShowRenderStats = false;
+                ImGui::EndPopup();
+            }
+        }
+
+        ImGui::End();
+    }
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 0.0f});
     ImGui::Begin("Viewport");
@@ -429,7 +450,7 @@ void EditorLayer::OnImGuiRender() {
     ImGui::End();
     ImGui::PopStyleVar();
 
-    UI_ToolBar();
+    // UI_ToolBar();
 
     ImGui::End();
 
@@ -447,60 +468,7 @@ void EditorLayer::OnImGuiRender() {
     }
 }
 
-void EditorLayer::UI_ToolBar() {
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0.0f, 2.0f});
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2{0.0f, 0.0f});
-
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
-
-    auto& colors = ImGui::GetStyle().Colors;
-    const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f});
-    const auto& buttonActive = colors[ImGuiCol_ButtonActive];
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{buttonActive.x, buttonActive.y, buttonActive.z, 0.5f});
-
-    ImGui::Begin("##toolbar", nullptr,
-                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-    float size = ImGui::GetWindowHeight() - 4.0f;
-    {
-        Ref<Texture2D> icon =
-            (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate) ? m_IconPlay : m_IconStop;
-        ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
-        if (ImGui::ImageButton("##playbutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
-                               ImVec2(1, 1))) {
-            if (m_SceneState == SceneState::Play)
-                OnSceneStop();
-            else if (m_SceneState == SceneState::Edit)
-                OnScenePlay();
-            else {
-                OnSceneStop();
-                OnScenePlay();
-            }
-        }
-    }
-    ImGui::SameLine();
-    {
-        Ref<Texture2D> icon =
-            (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;
-        // ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x * .5f - (size * .5f));
-        if (ImGui::ImageButton("##simulatebutton", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0),
-                               ImVec2(1, 1))) {
-            if (m_SceneState == SceneState::Simulate)
-                OnSceneStop();
-            else if (m_SceneState == SceneState::Edit)
-                OnSimulationPlay();
-            else {
-                OnSceneStop();
-                OnSimulationPlay();
-            }
-        }
-    }
-    ImGui::PopStyleVar(2);
-    ImGui::PopStyleColor(3);
-    ImGui::End();
-}
+void EditorLayer::UI_ToolBar() {}
 
 void EditorLayer::NewFile() {
     ZR_CORE_WARN("NewFile");
@@ -615,6 +583,36 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
             OnDuplicateEntity();
         }
         break;
+    }
+
+    case ZR_KEY_K: {
+        if (control) {
+            if (m_SceneState == SceneState::Edit)
+                OnSimulationPlay();
+            else {
+                OnSceneStop();
+                OnSimulationPlay();
+            }
+        }
+        break;
+    }
+
+    case ZR_KEY_L: {
+        if (control) {
+            if (m_SceneState == SceneState::Edit)
+                OnScenePlay();
+            else {
+                OnSceneStop();
+                OnScenePlay();
+            }
+        }
+        break;
+    }
+
+    case ZR_KEY_W: {
+        if (control) {
+            OnSceneStop();
+        }
     }
 
     default:
