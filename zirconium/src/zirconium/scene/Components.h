@@ -93,6 +93,25 @@ struct CameraComponent {
         : Camera() {}
 };
 
+class SciptableEntity;
+
+struct NativeScriptComponent {
+    class ScriptableEntity* Instance = nullptr;
+
+    ScriptableEntity* (*InstantiateScript)();
+    void (*DestroyScript)(NativeScriptComponent*);
+
+    template <typename T>
+    void Bind() {
+        InstantiateScript = []() {
+            return static_cast<ScriptableEntity*>(new T());
+        };
+        DestroyScript = [](NativeScriptComponent* nsc) {
+            delete nsc->Instance;
+            nsc->Instance = nullptr;
+        };
+    }
+};
 
 struct RigidBodyComponent {
     enum class BodyType { Static = 0, Dynamic = 1, Kinematics = 2 };

@@ -9,14 +9,27 @@
 #include <cstdint>
 #include <glm/trigonometric.hpp>
 #include <memory>
-#include <unordered_map>
 
 #include "Scene.h"
 #include "box2d/box2d.h"
 
+#include "NativeScript.h"
 #include "box2d/id.h"
 
 namespace zirconium {
+
+class CameraScript : public ScriptableEntity {
+public:
+    void OnCreate() override {
+        ZR_CORE_TRACE("Created Camera script component");
+    }
+
+    void OnUpdate(float dt) override {
+        auto& transform = GetComponent<TransformComponent>();
+        transform.Translation.x += 1.0f * dt; // Example movement
+        std::cout << "Transform.x " << &transform.Translation.x << " Entityid: " << (uint64_t)m_Entity << '\n';
+    }
+};
 
 static b2BodyType ZirconiumRigidBody2DToB2DRigidBodyType(RigidBodyComponent::BodyType bodyType) {
     switch (bodyType) {
@@ -166,6 +179,11 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnRuntimeStart() {
+    // // Testing
+    // auto entity = CreateEntity("Squared");
+    // entity.AddComponent<SpriteRendererComponent>();
+    // entity.AddComponent<NativeScriptComponent>().Bind<CameraScript>();
+
     OnPhysicsInit();
 }
 
@@ -175,17 +193,19 @@ void Scene::OnRuntimeStop() {
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
     // Update scripts
-    // {
-    //     m_Registry.view<NativeScriptComponent>().each([this, &delta](auto entity, auto& nsc) {
-    //         // Move to the game runtime `Scene::OnScenePlay`
-    //         if (!nsc.Instance) {
-    //             nsc.Instance = nsc.InstanciateScript();
-    //             nsc.Instance->m_Entity = Entity{entity, this};
-    //             nsc.Instance->OnCreate();
-    //         }
-    //         nsc.Instance->OnUpdate(delta);
-    //     });
-    // }
+    {
+        auto view = m_Registry.view<NativeScriptComponent>();
+        for (auto entity : view) {
+            auto& scriptComponent = m_Registry.get<NativeScriptComponent>(entity);
+            if (!scriptComponent.Instance) {
+                scriptComponent.Instance = scriptComponent.InstantiateScript();
+                scriptComponent.Instance->m_Entity = Entity(entity, this);
+                scriptComponent.Instance->OnCreate();
+            }
+
+            scriptComponent.Instance->OnUpdate(delta);
+        }
+    }
 
     // Physics
     {
@@ -225,6 +245,7 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
         auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (auto entity : group) {
             const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
             Renderer2D::DrawSprite(transform.GetTransform(), sprite, (uint32_t)entity);
         }
     }

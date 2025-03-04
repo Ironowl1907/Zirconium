@@ -14,6 +14,7 @@
 
 namespace zirconium {
 
+
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
     , m_CameraController(1.6f / 0.9f, true) {}
@@ -43,6 +44,7 @@ void EditorLayer::OnAttach() {
     m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/PlayButton.png");
     m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/StopButton.png");
     m_IconSimulate = Texture2D::Create("zirconium-Editor/res/editorImg/SimulateButton.png");
+
 }
 void EditorLayer::OnDetach() {}
 

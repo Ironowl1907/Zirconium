@@ -39,6 +39,7 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Scene.h"
 #include "zirconium/scene/Entity.h"
+#include "zirconium/scene/NativeScript.h"
 
 // --- Helpers ---
 #include "zirconium/Core/Transform.h"
