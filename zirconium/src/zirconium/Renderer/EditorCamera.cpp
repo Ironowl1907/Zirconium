@@ -56,18 +56,29 @@ float EditorCamera::ZoomSpeed() const {
 }
 
 void EditorCamera::OnUpdate(TimeStep ts) {
-    if (Input::IsKeyPressed(ZR_KEY_LEFT_ALT)) {
-        const glm::vec2& mouse{Input::GetMouseX(), Input::GetMouseY()};
-        glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
-        m_InitialMousePosition = mouse;
+    // if (Input::IsKeyPressed(ZR_KEY_LEFT_ALT)) {
+    //     const glm::vec2& mouse{Input::GetMouseX(), Input::GetMouseY()};
+    //     glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
+    //     m_InitialMousePosition = mouse;
 
-        if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_MIDDLE))
-            OnMousePan(delta);
-        else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT))
-            OnMouseRotate(delta);
-        else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_RIGHT))
-            OnZoom(delta.y);
-    }
+    //     if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_MIDDLE))
+    //         OnMousePan(delta);
+    //     else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT))
+    //         OnMouseRotate(delta);
+    //     else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_RIGHT))
+    //         OnZoom(delta.y);
+    // }
+
+    const glm::vec2& mouse{Input::GetMouseX(), Input::GetMouseY()};
+    glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
+    m_InitialMousePosition = mouse;
+
+    if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_MIDDLE))
+        OnMousePan(delta);
+    else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_LEFT) && Input::IsKeyPressed(ZR_KEY_LEFT_ALT))
+        OnMouseRotate(delta);
+    else if (Input::IsMouseButtonPressed(ZR_MOUSE_BUTTON_RIGHT) && Input::IsKeyPressed(ZR_KEY_LEFT_ALT))
+        OnZoom(delta.y);
 
     UpdateView();
 }
