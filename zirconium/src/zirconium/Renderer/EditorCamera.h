@@ -32,6 +32,8 @@ public:
     float GetPitch() const { return m_Pitch; }
     float GetYaw() const { return m_Yaw; }
 
+    glm::vec2 WorldToScreen(const glm::vec3& worldPos, int viewportWidth, int viewportHeight);
+
 
 private:
     void UpdateProjection();

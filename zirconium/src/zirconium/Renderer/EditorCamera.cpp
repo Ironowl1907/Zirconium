@@ -102,6 +102,21 @@ void EditorCamera::OnZoom(float delta) {
     }
 }
 
+glm::vec2 EditorCamera::WorldToScreen(const glm::vec3& worldPos, int viewportWidth, int viewportHeight) {
+
+    glm::vec4 clipSpace = m_Projection * m_ViewMatrix * glm::vec4(worldPos, 1.0f);
+
+    // Perspective divide to get Normalized Device Coordinates (NDC)
+    if (clipSpace.w != 0.0f)
+        clipSpace /= clipSpace.w;
+
+    // Convert to screen space
+    float screenX = (clipSpace.x * 0.5f + 0.5f) * viewportWidth;
+    float screenY = (1.0f - (clipSpace.y * 0.5f + 0.5f)) * viewportHeight; // Flip Y-axis
+
+    return {screenX, screenY};
+}
+
 glm::vec3 EditorCamera::GetUpDirection() const {
     return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
 }

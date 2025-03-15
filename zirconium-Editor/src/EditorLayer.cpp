@@ -174,6 +174,19 @@ void EditorLayer::OnOverlayRender() {
         }
     }
 
+    ImDrawList* drawList = ImGui::GetForegroundDrawList();
+
+    // World-space positions of a line
+    glm::vec3 worldStart(0.0f, 0.0f, 0.0f);
+    glm::vec3 worldEnd(1.0f, 1.0f, 0.0f);
+
+    // Convert to screen-space
+    glm::vec2 screenStart = m_EditorCamera.WorldToScreen(worldStart, m_ViewportSize.x, m_ViewportSize.y);
+    glm::vec2 screenEnd = m_EditorCamera.WorldToScreen(worldEnd, m_ViewportSize.x, m_ViewportSize.y);
+
+    // Draw the line
+    drawList->AddLine({screenStart.x, screenStart.y}, {screenEnd.x, screenEnd.y}, IM_COL32(255, 0, 0, 255), 2.0f);
+
     Renderer2D::EndScene();
 }
 

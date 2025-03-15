@@ -40,6 +40,8 @@ void ImGuiLayer::OnAttach() {
     ZR_PROFILE_FUNCTION();
 
     // Setup Dear ImGui context
+    ZR_CORE_WARN("ImGui Creating Context");
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
