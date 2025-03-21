@@ -8,6 +8,7 @@
 #include "zirconium/Renderer/Texture.h"
 
 #include "box2d/id.h"
+#include "sol/sol.hpp"
 #include <cstdint>
 
 namespace zirconium {
@@ -140,6 +141,11 @@ struct CircleColiderComponent {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
+};
+
+struct LuaScriptedComponent{
+  sol::function OnUpdate;
+  sol::function OnInit;
 };
 
 } // namespace zirconium

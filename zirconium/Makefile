@@ -27,7 +27,7 @@ ifeq ($(config),debug)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_DEBUG -DZR_ENABLE_ASSERTS -DGLFW_INCLUDE_NONE
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include -Ivendor/sol2/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
@@ -65,7 +65,7 @@ ifeq ($(config),release)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_RELEASE -DZR_ENABLE_ASSERTS
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include -Ivendor/sol2/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
@@ -103,7 +103,7 @@ ifeq ($(config),dist)
   PCH = src/zrpch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DYAML_CPP_STATIC_DEFINE -DZIR_DIST
-  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include
+  INCLUDES += -Isrc -Isrc/zirconium -Ivendor/GLFW/include -Ivendor/glad/include -Ivendor/imgui -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/src/entt -Ivendor/ImGuiFileDialog -Ivendor/yaml-cpp/include -Ivendor/shaderc/libshaderc/include -Ivendor/spirv-cross -Ivendor/Box2D/include -Ivendor/sol2/include
   FORCE_INCLUDE += -include $(OBJDIR)/$(notdir $(PCH))
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete

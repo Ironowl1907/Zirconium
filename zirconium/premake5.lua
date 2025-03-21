@@ -32,6 +32,7 @@ includedirs({
     IncludeDir["shaderc"],
     IncludeDir["spirv-cross"],
     IncludeDir["Box2D"],
+    IncludeDir["Sol2"],
 })
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
