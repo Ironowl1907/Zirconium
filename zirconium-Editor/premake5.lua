@@ -29,6 +29,11 @@ libdirs {
 }
 
 
+libdirs({
+    "zirconium/vendor/lua/lua-5.4.7/install/lib"
+})
+
+
 links({
     "zirconium",
     "Box2D",
@@ -40,6 +45,7 @@ links({
     "GLFW",
     "ImGui",
     "fmt",
+    "lua",
 })
 -- Linux-specific settings
 filter("system:linux")

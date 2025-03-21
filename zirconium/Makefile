@@ -33,9 +33,9 @@ ifeq ($(config),debug)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -fPIC -std=c++20 -pthread -ggdb -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib -llua
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Debug/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
-  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef
@@ -71,9 +71,9 @@ ifeq ($(config),release)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib -llua
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Release/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
-  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef
@@ -109,9 +109,9 @@ ifeq ($(config),dist)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++20 -pthread -Wall -Wextra -Werror -Wno-unused-parameter -Wno-delete-incomplete
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib
+  LIBS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a -lshaderc-combined -lspirv-cross -lopengl32.lib -llua
   LDDEPS += vendor/glfw/bin/GLFW/libGLFW.a vendor/glad/bin/Glad/libGlad.a vendor/spdlog/bin/SpdLog/libSpdLog.a vendor/imgui/bin/ImGui/libImGui.a vendor/yaml-cpp/bin/Dist/libyaml-cpp.a vendor/Box2D/bin/Box2D/libBox2D.a
-  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -L/usr/lib64 -m64 -pthread
+  ALL_LDFLAGS += $(LDFLAGS) -Lvendor/shaderc/libshaderc -Lvendor/spirv-cross -Lvendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
   define PREBUILDCMDS
   endef

@@ -404,4 +404,7 @@ void Scene::OnComponentAdded<CircleColiderComponent>(Entity entity, CircleColide
 template <>
 void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 
+template <>
+void Scene::OnComponentAdded<LuaScriptedComponent>(Entity entity, LuaScriptedComponent& component) {}
+
 } // namespace zirconium

@@ -240,6 +240,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
+        if (!m_SelectionContext.HasComponent<LuaScriptedComponent>())
+            if (ImGui::MenuItem("Script")) {
+                m_SelectionContext.AddComponent<LuaScriptedComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
         ImGui::EndPopup();
     }
     ImGui::PopItemWidth();
@@ -271,6 +277,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
             ImGui::EndDragDropTarget();
         }
+    });
+
+    DrawComponent<LuaScriptedComponent>("Script", entity, [](auto& component) {
+        ImGui::Button("Script Path", ImVec2(200.0f, 0.0f));
+        ImGui::SameLine();
+        ImGui::Text("This should be a path");
     });
 
     DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {

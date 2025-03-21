@@ -37,6 +37,10 @@ includedirs({
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
 
+libdirs({
+    "zirconium/vendor/lua/lua-5.4.7/install/lib"
+})
+
 
 links({
     "shaderc-combined",
@@ -48,6 +52,7 @@ links({
     "spirv-cross",
     "opengl32.lib",
     "Box2D",
+    "lua",
 })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)
