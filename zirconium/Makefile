@@ -160,6 +160,7 @@ OBJECTS := \
 	$(OBJDIR)/Texture.o \
 	$(OBJDIR)/UniformBuffer.o \
 	$(OBJDIR)/VertexArray.o \
+	$(OBJDIR)/ScriptSystem.o \
 	$(OBJDIR)/Entity.o \
 	$(OBJDIR)/Scene.o \
 	$(OBJDIR)/SceneCamera.o \
@@ -327,6 +328,9 @@ $(OBJDIR)/UniformBuffer.o: src/zirconium/Renderer/UniformBuffer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VertexArray.o: src/zirconium/Renderer/VertexArray.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ScriptSystem.o: src/zirconium/Scripting/ScriptSystem.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Entity.o: src/zirconium/scene/Entity.cpp

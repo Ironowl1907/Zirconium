@@ -1,8 +1,8 @@
 #pragma once
 
 #include "zirconium/Core/Timestep.h"
+#include "zirconium/scene/Components.h"
 #include "zirconium/scene/Scene.h"
-#include "zirconium/scene/Component.h"
 
 namespace zirconium {
 
@@ -21,8 +21,11 @@ public:
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
 
 private:
+    ScriptingSystem();
+    ~ScriptingSystem();
+
 private:
-    static ScriptingSystem* m_Instance = nullptr;
+    static ScriptingSystem* m_Instance;
     Scene* m_Scene = nullptr;
 };
 

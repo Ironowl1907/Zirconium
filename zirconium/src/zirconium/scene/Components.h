@@ -144,6 +144,7 @@ struct CircleColiderComponent {
 };
 
 struct LuaScriptedComponent{
+  sol::state LuaState;
   sol::function OnUpdate;
   sol::function OnInit;
 };
