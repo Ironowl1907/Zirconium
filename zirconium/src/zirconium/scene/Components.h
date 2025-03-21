@@ -10,6 +10,7 @@
 #include "box2d/id.h"
 #include "sol/sol.hpp"
 #include <cstdint>
+#include <filesystem>
 
 namespace zirconium {
 
@@ -143,10 +144,13 @@ struct CircleColiderComponent {
     float Restitution = 0.0f;
 };
 
-struct LuaScriptedComponent{
-  sol::state LuaState;
-  sol::function OnUpdate;
-  sol::function OnInit;
+struct LuaScriptedComponent {
+    sol::state LuaState;
+
+    std::filesystem::path ScriptPath = "";
+
+    sol::function OnUpdate;
+    sol::function OnInit;
 };
 
 } // namespace zirconium

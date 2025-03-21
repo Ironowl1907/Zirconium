@@ -3,6 +3,7 @@
 #include "zirconium/Core/Timestep.h"
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Scene.h"
+#include <filesystem>
 
 namespace zirconium {
 
@@ -16,6 +17,8 @@ public:
 
     void UpdateScripts(TimeStep& deltatime);
     void InitScripts();
+
+    bool LoadScript2Component(LuaScriptedComponent& scComponent, std::filesystem::path& scriptPath);
 
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
