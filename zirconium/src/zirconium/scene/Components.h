@@ -9,6 +9,7 @@
 
 #include "box2d/id.h"
 #include "sol/sol.hpp"
+#define SOL_ALL_SAFIEST_ON 1
 #include <cstdint>
 #include <filesystem>
 

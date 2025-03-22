@@ -1,9 +1,11 @@
 #include "SceneHireachyPanel.h"
+#include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/scene/Components.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <filesystem>
 #include <memory>
 
 namespace zirconium {
@@ -279,8 +281,21 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         }
     });
 
-    DrawComponent<LuaScriptedComponent>("Script", entity, [](auto& component) {
+    DrawComponent<LuaScriptedComponent>("Script", entity, [this](auto& component) {
         ImGui::Button("Script Path", ImVec2(200.0f, 0.0f));
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                const char* data = reinterpret_cast<const char*>(payload->Data);
+                const int dataSize = payload->DataSize;
+
+                LuaScriptedComponent& scComponent = GetSelectedEntity().GetComponent<LuaScriptedComponent>();
+                std::filesystem::path path(data);
+                if (!ScriptingSystem::Get()->LoadScript2Component(scComponent, path)) {
+                    ZR_ASSERT(false, "Error Loading script!");
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
         ImGui::SameLine();
         ImGui::Text("This should be a path");
     });

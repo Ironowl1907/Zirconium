@@ -5,6 +5,10 @@
 
 namespace zirconium {
 
+ScriptingSystem* ScriptingSystem::m_Instance = nullptr;
+
+ScriptingSystem::ScriptingSystem() {}
+
 ScriptingSystem::~ScriptingSystem() {
     delete m_Instance;
 }
@@ -32,14 +36,19 @@ bool ScriptingSystem::LoadScript2Component(LuaScriptedComponent& scComponent, st
     ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
 
     scComponent.LuaState.open_libraries(sol::lib::base);
-    scComponent.LuaState.script_file(scriptPath); // Execute script file
+    try {
+        scComponent.LuaState.safe_script_file(scriptPath); // Execute script file
+    }
+    catch (const sol::error& e) {
+      ZR_ERROR("Error loading lua script! \n {}", e.what());
+    }
 
     scComponent.OnUpdate = scComponent.LuaState["OnUpdate"];
     scComponent.OnInit = scComponent.LuaState["OnInit"];
 
-    if (!scComponent.OnInit || !scComponent.OnUpdate())
-        return false;
-    return true;
+    ZR_WARN("OnUpdate {0}, OnInit {1}", (bool)scComponent.OnUpdate, (bool)scComponent.OnInit);
+
+    return (bool)scComponent.OnUpdate && (bool)scComponent.OnInit;
 }
 
 } // namespace zirconium
