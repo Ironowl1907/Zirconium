@@ -243,9 +243,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             }
 
         if (!m_SelectionContext.HasComponent<LuaScriptedComponent>())
-            if (ImGui::MenuItem("Script")) {
+            if (ImGui::MenuItem("Lua Script")) {
                 m_SelectionContext.AddComponent<LuaScriptedComponent>();
                 ImGui::CloseCurrentPopup();
+
+                auto view =  GetAllEntitiesWith<LuaScriptedComponent>();
+                ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
             }
 
         ImGui::EndPopup();

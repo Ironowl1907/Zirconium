@@ -76,6 +76,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
+    CopyComponentIfExists<LuaScriptedComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -104,6 +105,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<LuaScriptedComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -181,10 +183,31 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnRuntimeStart() {
-    // // Testing
-    // auto entity = CreateEntity("Squared");
-    // entity.AddComponent<SpriteRendererComponent>();
-    // entity.AddComponent<NativeScriptComponent>().Bind<CameraScript>();
+    ZR_CORE_TRACE("Starting runtime");
+
+    auto view = GetAllEntitiesWith<LuaScriptedComponent>();
+    ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
+
+    // Init Entity Scripts
+    {
+        auto view = GetAllEntitiesWith<LuaScriptedComponent>();
+        for (auto e : view) {
+            ZR_CORE_TRACE("Enter");
+            Entity entity(e, this);
+            sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
+
+            if (!initFunc)
+                continue;
+
+            ZR_CORE_TRACE("Running Init function for {}", entity.GetTag());
+            auto result = initFunc();
+            if (!result.valid()) {
+                sol::error e = result;
+                ZR_ERROR("Lua Error: Runtime Error in init function of entity'{0}' \n{1}",
+                         entity.GetComponent<TagComponent>().Tag, e.what());
+            }
+        }
+    }
 
     OnPhysicsInit();
 }
