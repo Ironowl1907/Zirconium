@@ -46,6 +46,7 @@ private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
     void OnPhysicsInit();
+    void OnScriptsInit();
     void OnPhysicsShutdown();
 
 private:

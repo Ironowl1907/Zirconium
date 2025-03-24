@@ -182,30 +182,29 @@ void Scene::OnPhysicsShutdown() {
     delete m_WorldID;
 }
 
-void Scene::OnRuntimeStart() {
+void Scene::OnScriptsInit() {
     auto view = GetAllEntitiesWith<LuaScriptedComponent>();
     ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
 
-    // Init Entity Scripts
-    {
-        auto view = GetAllEntitiesWith<LuaScriptedComponent>();
-        for (auto e : view) {
-            Entity entity(e, this);
-            sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
+    for (auto e : view) {
+        Entity entity(e, this);
+        sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
 
-            if (!initFunc)
-                continue;
+        if (!initFunc)
+            continue;
 
-            ZR_CORE_TRACE("Running Init function for {}", entity.GetTag());
-            auto result = initFunc();
-            if (!result.valid()) {
-                sol::error e = result;
-                ZR_ERROR("Lua Error: Runtime Error in init function of entity'{0}' \n{1}",
-                         entity.GetComponent<TagComponent>().Tag, e.what());
-            }
+        ZR_CORE_TRACE("Running Init function for {}", entity.GetTag());
+        auto result = initFunc();
+        if (!result.valid()) {
+            sol::error e = result;
+            ZR_ERROR("Lua Error: Runtime Error in init function of entity'{0}' \n{1}",
+                     entity.GetComponent<TagComponent>().Tag, e.what());
         }
     }
+}
 
+void Scene::OnRuntimeStart() {
+    OnScriptsInit();
     OnPhysicsInit();
 }
 
