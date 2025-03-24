@@ -18,7 +18,7 @@ public:
     void UpdateScripts(TimeStep& deltatime);
     void InitScripts();
 
-    bool LoadScript2Component(LuaScriptedComponent& scComponent, std::filesystem::path& scriptPath);
+    bool LoadScript2Entity(Entity& entity, std::filesystem::path& scriptPath);
 
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
@@ -30,6 +30,8 @@ private:
 private:
     static ScriptingSystem* m_Instance;
     Scene* m_Scene = nullptr;
+
+    std::unordered_map<UUID, sol::state> m_LuaStates;
 };
 
 } // namespace zirconium

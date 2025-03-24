@@ -246,9 +246,6 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             if (ImGui::MenuItem("Lua Script")) {
                 m_SelectionContext.AddComponent<LuaScriptedComponent>();
                 ImGui::CloseCurrentPopup();
-
-                auto view =  GetAllEntitiesWith<LuaScriptedComponent>();
-                ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
             }
 
         ImGui::EndPopup();
@@ -291,9 +288,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 const char* data = reinterpret_cast<const char*>(payload->Data);
                 const int dataSize = payload->DataSize;
 
-                LuaScriptedComponent& scComponent = GetSelectedEntity().GetComponent<LuaScriptedComponent>();
                 std::filesystem::path path(data);
-                if (!ScriptingSystem::Get()->LoadScript2Component(scComponent, path)) {
+                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
                     ZR_ASSERT(false, "Error Loading script!");
                 }
             }

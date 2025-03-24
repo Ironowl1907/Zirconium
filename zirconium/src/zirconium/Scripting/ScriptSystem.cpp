@@ -1,5 +1,6 @@
 #include "ScriptSystem.h"
 #include "zirconium/scene/Components.h"
+#include "zirconium/scene/Entity.h"
 #include "zrpch.h"
 #include <filesystem>
 
@@ -32,19 +33,24 @@ void ScriptingSystem::InitScripts() {
     }
 }
 
-bool ScriptingSystem::LoadScript2Component(LuaScriptedComponent& scComponent, std::filesystem::path& scriptPath) {
+bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path& scriptPath) {
     ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
+    ZR_ASSERT(entity.HasComponent<LuaScriptedComponent>(), "Tring to load script without LuaScriptedComponent!")
 
-    scComponent.LuaState.open_libraries(sol::lib::base);
+    sol::state& luaState = m_LuaStates[entity.GetID()]; // Get or create state
+    LuaScriptedComponent& scComponent = entity.GetComponent<LuaScriptedComponent>();
+
+    luaState.open_libraries(sol::lib::base);
+
     try {
-        scComponent.LuaState.safe_script_file(scriptPath); // Execute script file
-    }
-    catch (const sol::error& e) {
-      ZR_ERROR("Error loading lua script! \n {}", e.what());
+        luaState.safe_script_file(scriptPath); // Execute script file
+    } catch (const sol::error& e) {
+        ZR_ERROR("Error loading lua script! \n {}", e.what());
+        return false;
     }
 
-    scComponent.OnUpdate = scComponent.LuaState["OnUpdate"];
-    scComponent.OnInit = scComponent.LuaState["OnInit"];
+    scComponent.OnUpdate = luaState["OnUpdate"];
+    scComponent.OnInit = luaState["OnInit"];
 
     ZR_WARN("OnUpdate {0}, OnInit {1}", (bool)scComponent.OnUpdate, (bool)scComponent.OnInit);
 

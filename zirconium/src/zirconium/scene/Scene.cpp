@@ -183,8 +183,6 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnRuntimeStart() {
-    ZR_CORE_TRACE("Starting runtime");
-
     auto view = GetAllEntitiesWith<LuaScriptedComponent>();
     ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
 
@@ -192,7 +190,6 @@ void Scene::OnRuntimeStart() {
     {
         auto view = GetAllEntitiesWith<LuaScriptedComponent>();
         for (auto e : view) {
-            ZR_CORE_TRACE("Enter");
             Entity entity(e, this);
             sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
 

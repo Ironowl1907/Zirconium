@@ -146,7 +146,7 @@ struct CircleColiderComponent {
 };
 
 struct LuaScriptedComponent {
-    sol::state LuaState;
+    Ref<sol::state> LuaState;
 
     std::filesystem::path ScriptPath = "";
 
