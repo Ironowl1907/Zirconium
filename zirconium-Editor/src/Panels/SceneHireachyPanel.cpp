@@ -1,10 +1,12 @@
 #include "SceneHireachyPanel.h"
 #include "zirconium/Scripting/ScriptSystem.h"
+#include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/scene/Components.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <cstring>
 #include <filesystem>
 #include <memory>
 
@@ -19,8 +21,6 @@ void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
     m_SelectionContext = {};
 }
 void SceneHierarchyPanel::OnImGuiRender() {
-    // bool t = true;
-    // ImGui::ShowDemoWindow(&t);
     ImGui::Begin("Scene Hierarchy");
 
     if (m_Context) {
@@ -281,22 +281,46 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         }
     });
 
+    static bool BrowsingScript = false;
     DrawComponent<LuaScriptedComponent>("Script", entity, [this](auto& component) {
-        ImGui::Button("Script Path", ImVec2(200.0f, 0.0f));
+        auto& pathName = m_SelectionContext.GetComponent<LuaScriptedComponent>().ScriptPath;
+        char buffer[128];
+        std::strcpy(buffer, pathName.c_str());
+
+        ImGui::SetNextItemWidth(200);
+        if (ImGui::InputText("Script Path", buffer, sizeof(buffer))) {
+            std::filesystem::path path(buffer);
+            if (std::filesystem::exists(path))
+                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    ZR_ASSERT(false, "Error Loading script!");
+        }
+
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
                 const char* data = reinterpret_cast<const char*>(payload->Data);
                 const int dataSize = payload->DataSize;
 
                 std::filesystem::path path(data);
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
+                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
                     ZR_ASSERT(false, "Error Loading script!");
-                }
             }
             ImGui::EndDragDropTarget();
         }
+
         ImGui::SameLine();
-        ImGui::Text("This should be a path");
+        if (ImGui::Button("Browse")) {
+            BrowsingScript = true;
+        }
+        if (BrowsingScript) {
+            std::string path;
+            if (FileDialogs::SaveFile(path, ".lua")) {
+                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, std::filesystem::path(path)) &&
+                    !path.empty())
+                    ZR_ASSERT(false, "Error Loading script!");
+
+                BrowsingScript = false;
+            }
+        }
     });
 
     DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {

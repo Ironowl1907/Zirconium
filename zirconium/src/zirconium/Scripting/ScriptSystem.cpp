@@ -33,7 +33,7 @@ void ScriptingSystem::InitScripts() {
     }
 }
 
-bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path& scriptPath) {
+bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
     ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
     ZR_ASSERT(entity.HasComponent<LuaScriptedComponent>(), "Tring to load script without LuaScriptedComponent!")
 
@@ -54,6 +54,7 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path& s
 
     ZR_WARN("OnUpdate {0}, OnInit {1}", (bool)scComponent.OnUpdate, (bool)scComponent.OnInit);
 
+    scComponent.ScriptPath = scriptPath;
     return (bool)scComponent.OnUpdate && (bool)scComponent.OnInit;
 }
 

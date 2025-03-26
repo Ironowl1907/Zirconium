@@ -223,8 +223,8 @@ void EditorLayer::OnImGuiRender() {
 
     ZR_PROFILE_FUNCTION();
 
-    // bool t = true;
-    // ImGui::ShowDemoWindow(&t);
+    bool t = true;
+    ImGui::ShowDemoWindow(&t);
 
     // READ THIS !!!
     // TL;DR; this demo is more complicated than what most users you would normally use.

@@ -18,7 +18,7 @@ public:
     void UpdateScripts(TimeStep& deltatime);
     void InitScripts();
 
-    bool LoadScript2Entity(Entity& entity, std::filesystem::path& scriptPath);
+    bool LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath);
 
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
