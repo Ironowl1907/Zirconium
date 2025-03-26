@@ -213,7 +213,7 @@ void Scene::OnRuntimeStop() {
 }
 
 void Scene::OnUpdateRuntime(TimeStep delta) {
-    // Update scripts
+    // Update Native Scripts
     {
         auto view = m_Registry.view<NativeScriptComponent>();
         for (auto entity : view) {
@@ -225,6 +225,25 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
             }
 
             scriptComponent.Instance->OnUpdate(delta);
+        }
+    }
+    // Update Lua Scripts
+    {
+        auto view = GetAllEntitiesWith<LuaScriptedComponent>();
+
+        for (auto e : view) {
+            Entity entity(e, this);
+            sol::protected_function updateFunction = entity.GetComponent<LuaScriptedComponent>().OnUpdate();
+
+            if (!updateFunction)
+                continue;
+
+            auto result = updateFunction();
+            if (!result.valid()) {
+                sol::error e = result;
+                ZR_ERROR("Lua Error: Runtime Error in update function of entity'{0}' \n{1}",
+                         entity.GetComponent<TagComponent>().Tag, e.what());
+            }
         }
     }
 
