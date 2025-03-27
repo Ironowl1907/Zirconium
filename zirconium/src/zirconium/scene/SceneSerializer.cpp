@@ -287,7 +287,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
             if (tagComponent) {
                 name = tagComponent["Tag"].as<std::string>();
             }
-            ZR_CORE_TRACE("Deserialized Tag component '{0}' with uuid {1}", name, uuid);
+            ZR_CORE_TRACE("Deserializing '{0}' with uuid {1}", name, uuid);
 
             Entity deserializedEntity = m_Scene->CreateEntityWithID(uuid, name);
 
@@ -298,7 +298,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 tc.Translation = transformComponent["Translation"].as<glm::vec3>();
                 tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
                 tc.Scale = transformComponent["Scale"].as<glm::vec3>();
-                ZR_CORE_TRACE("Deserialized Transform component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Transform component with uuid {0}", uuid);
             } else
                 ZR_ASSERT(false, "Enity '{}' doesn't have a transform component", name);
 
@@ -322,14 +322,14 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 cc.Primary = cameraComponent["Primary"].as<bool>();
                 cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 
-                ZR_CORE_TRACE("Deserialized Camera component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Camera component with uuid {0}", uuid);
             }
 
             auto spriteRendererComponent = entity["SpriteRendererComponent"];
             if (spriteRendererComponent) {
                 auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
-                ZR_CORE_TRACE("Deserialized Sprite Renderer component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Sprite Renderer component with uuid {0}", uuid);
             }
 
             auto circleRenererComponent = entity["CircleRendererComponent"];
@@ -338,7 +338,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 src.Color = circleRenererComponent["Color"].as<glm::vec4>();
                 src.Thickness = circleRenererComponent["Thickness"].as<float>();
                 src.Fade = circleRenererComponent["Fade"].as<float>();
-                ZR_CORE_TRACE("Deserialized Circle Renderer component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Circle Renderer component with uuid {0}", uuid);
             }
 
             auto rigidBodyComponent = entity["RigidBodyComponent"];
@@ -347,7 +347,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 std::string type = rigidBodyComponent["Type"].as<std::string>();
                 src.Type = B2TypeFromString(type);
                 src.FixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
-                ZR_CORE_TRACE("Deserialized RigidBody component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized RigidBody component with uuid {0}", uuid);
             }
 
             auto boxColiderComponent = entity["BoxColiderComponent"];
@@ -359,7 +359,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 src.Density = boxColiderComponent["Density"].as<float>();
                 src.Friction = boxColiderComponent["Friction"].as<float>();
                 src.Restitution = boxColiderComponent["Restitution"].as<float>();
-                ZR_CORE_TRACE("Deserialized Box colider component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Box colider component with uuid {0}", uuid);
             }
 
             auto circleColiderComponent = entity["CircleColiderComponent"];
@@ -371,7 +371,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 src.Density = circleColiderComponent["Density"].as<float>();
                 src.Friction = circleColiderComponent["Friction"].as<float>();
                 src.Restitution = circleColiderComponent["Restitution"].as<float>();
-                ZR_CORE_TRACE("Deserialized Circle Colider component with uuid {0}", uuid);
+                ZR_CORE_TRACE("   Deserialized Circle Colider component with uuid {0}", uuid);
             }
         }
     }
