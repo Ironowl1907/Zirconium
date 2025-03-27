@@ -288,7 +288,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         std::strcpy(buffer, pathName.c_str());
 
         ImGui::SetNextItemWidth(200);
-        if (ImGui::InputText("Script Path", buffer, sizeof(buffer))) {
+        if (ImGui::InputText("Script Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path))
                 if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))

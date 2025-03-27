@@ -45,7 +45,7 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
     try {
         luaState.safe_script_file(scriptPath); // Execute script file
     } catch (const sol::error& e) {
-        ZR_ERROR("Error loading lua script! \n {}", e.what());
+        ZR_ERROR("Error loading lua script! \n{}", e.what());
         return false;
     }
 
