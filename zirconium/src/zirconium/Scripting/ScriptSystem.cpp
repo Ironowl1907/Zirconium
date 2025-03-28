@@ -71,10 +71,12 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
 void ScriptingSystem::RegisterComponentsToLua(sol::state& lua) {
 
     // Transform Component
-    lua.new_usertype<zirconium::TransformComponent>(
-        "TransformComponent", "Translation", &zirconium::TransformComponent::Translation, "Rotation",
-        &zirconium::TransformComponent::Rotation, "Scale", &zirconium::TransformComponent::Scale, "GetTransform",
-        &zirconium::TransformComponent::GetTransform);
+    lua.new_usertype<zirconium::TransformComponent>(                //
+        "TransformComponent",                                       //
+        "Translation", &zirconium::TransformComponent::Translation, //
+        "Rotation", &zirconium::TransformComponent::Rotation,       //
+        "Scale", &zirconium::TransformComponent::Scale,             //
+        "GetTransform", &zirconium::TransformComponent::GetTransform);
 
     // Tag Component
     lua.new_usertype<zirconium::TagComponent>("TagComponent", "Tag", &zirconium::TagComponent::Tag);
@@ -111,7 +113,6 @@ void ScriptingSystem::RegisterVectors(sol::state& lua) {
         sol::meta_function::multiplication, sol::resolve<glm::vec3(const glm::vec3&, float)>(&glm::operator*),
         sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, float)>(&glm::operator/));
 
-
     lua.new_usertype<glm::vec2>(
         "vec2", //
         sol::constructors<glm::vec2(), glm::vec2(float, float)>(), "x", &glm::vec2::x, "y", &glm::vec2::y,
@@ -121,7 +122,6 @@ void ScriptingSystem::RegisterVectors(sol::state& lua) {
         sol::meta_function::subtraction, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(&glm::operator-),
         sol::meta_function::multiplication, sol::resolve<glm::vec2(const glm::vec2&, float)>(&glm::operator*),
         sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, float)>(&glm::operator/));
-
 }
 
 void ScriptingSystem::RegisterEntity(sol::state& lua) {
