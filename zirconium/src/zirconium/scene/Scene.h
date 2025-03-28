@@ -46,6 +46,7 @@ private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
     void OnPhysicsInit();
+    void OnScriptsInit();
     void OnPhysicsShutdown();
 
 private:
@@ -59,5 +60,6 @@ private:
     friend class Entity;
     friend class SceneSerializer;
     friend class SceneHierarchyPanel;
+    friend class ScriptingSystem;
 };
 } // namespace zirconium

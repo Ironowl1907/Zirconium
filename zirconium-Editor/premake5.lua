@@ -19,6 +19,7 @@ includedirs({
     -- IncludeDir["ImGuiFD"],
     -- IncludeDir["yaml-cpp"],
     IncludeDir["Box2D"],
+    IncludeDir["Sol2"],
 })
 
 libdirs {
@@ -26,6 +27,11 @@ libdirs {
     "zirconium/vendor/spirv-cross/",
     "./zirconium/vendor/yaml-cpp/bin/Release"
 }
+
+
+libdirs({
+    "zirconium/vendor/lua/lua-5.4.7/install/lib"
+})
 
 
 links({
@@ -39,6 +45,7 @@ links({
     "GLFW",
     "ImGui",
     "fmt",
+    "lua",
 })
 -- Linux-specific settings
 filter("system:linux")

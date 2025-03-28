@@ -15,3 +15,4 @@ IncludeDir["ImGuiFD"] = path.join(dependenciesBaseDir, "zirconium/vendor/ImGuiFi
 IncludeDir["shaderc"] = path.join(dependenciesBaseDir, "zirconium/vendor/shaderc/libshaderc/include")
 IncludeDir["spirv-cross"] = path.join(dependenciesBaseDir, "zirconium/vendor/spirv-cross/")
 IncludeDir["Box2D"] = path.join(dependenciesBaseDir, "zirconium/vendor/Box2D/include")
+IncludeDir["Sol2"] = path.join(dependenciesBaseDir, "zirconium/vendor/sol2/include")

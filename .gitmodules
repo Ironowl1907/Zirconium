@@ -30,3 +30,6 @@
 [submodule "zirconium/vendor/Box2D"]
 	path = zirconium/vendor/Box2D
 	url = https://github.com/Ironowl1907/box2d.git
+[submodule "zirconium/vendor/sol2"]
+	path = zirconium/vendor/sol2
+	url = https://github.com/ThePhD/sol2.git
