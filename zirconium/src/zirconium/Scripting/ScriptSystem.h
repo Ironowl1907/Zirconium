@@ -19,13 +19,18 @@ public:
     void InitScripts();
 
     bool LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath);
-
+    void RegisterComponentsToLua(sol::state& lua);
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
+
+    void LoadTypes(sol::state& state);
 
 private:
     ScriptingSystem();
     ~ScriptingSystem();
+
+    void RegisterVectors(sol::state& lua);
+    void RegisterEntity(sol::state& lua);
 
 private:
     static ScriptingSystem* m_Instance;
