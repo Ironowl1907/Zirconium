@@ -47,8 +47,8 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
     RegisterEntity(luaState);
     RegisterVectors(luaState);
 
-    luaState["GetEntity"] = [&entity]() -> Entity* {
-        return &entity;
+    luaState["GetEntity"] = [&entity]() -> Entity {
+        return entity; // Return the Entity object by value
     };
 
     try {
@@ -124,18 +124,34 @@ void ScriptingSystem::RegisterVectors(sol::state& lua) {
         sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, float)>(&glm::operator/));
 }
 
+// void ScriptingSystem::RegisterEntity(sol::state& lua) {
+//     lua.new_usertype<Entity>(
+//         "Entity",                      //
+//         sol::constructors<Entity()>(), //
+//         "GetComponent_Transform",      //
+//         [](Entity* e) -> TransformComponent& {
+//             return e->GetComponent<TransformComponent>();
+//         },
+//         "GetComponent_Sprite", //
+//         [](Entity* e) -> SpriteRendererComponent& {
+//             return e->GetComponent<SpriteRendererComponent>();
+//         });
+// }
+
 void ScriptingSystem::RegisterEntity(sol::state& lua) {
-    lua.new_usertype<Entity>(
-        "Entity",                      //
-        sol::constructors<Entity()>(), //
-        "GetComponent_Transform",      //
-        [](Entity* e) -> zirconium::TransformComponent& {
-            return e->GetComponent<zirconium::TransformComponent>();
-        },
-        "GetComponent_Sprite", //
-        [](Entity* e) -> zirconium::SpriteRendererComponent& {
-            return e->GetComponent<zirconium::SpriteRendererComponent>();
-        });
+    lua.new_usertype<Entity>("Entity",                      //
+                             sol::constructors<Entity()>(), //
+                             "GetComponent_Transform",      //
+                             [](Entity* e) -> TransformComponent& {
+                                 if (!e || !(*e)) {
+                                     throw std::runtime_error("Entity pointer is invalid.");
+                                 }
+                                 if (e->HasComponent<TransformComponent>()) {
+                                     return e->GetComponent<TransformComponent>();
+                                 } else {
+                                     throw std::runtime_error("Transform component not found.");
+                                 }
+                             });
 }
 
 } // namespace zirconium
