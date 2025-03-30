@@ -21,16 +21,13 @@ struct LuaScripted {
     virtual void ExposeAtributesLua(sol::state& lua, entt::registry& registry) = 0;
 };
 
-struct IDComponent : public LuaScripted {
+struct IDComponent {
     UUID ID;
 
     IDComponent()
         : ID() {}
     IDComponent(uint64_t id)
         : ID(id) {}
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<IDComponent>("IDComponent", "ID", &IDComponent::ID);
-    }
 };
 
 struct TagComponent : public LuaScripted {
@@ -43,7 +40,6 @@ struct TagComponent : public LuaScripted {
         lua.new_usertype<TagComponent>("TagComponent",           //
                                        "Tag", &TagComponent::Tag //
         );
-
         lua["GetTagComponent"] = [&registry](uint64_t entity) -> TagComponent& {
             return registry.get<TagComponent>(static_cast<entt::entity>(entity));
         };

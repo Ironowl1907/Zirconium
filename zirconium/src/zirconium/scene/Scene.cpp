@@ -214,8 +214,6 @@ void Scene::ExposeAllComponentsToLua(sol::state& lua, entt::registry& registry) 
     auto view = registry.view<entt::entity>();
 
     for (auto entity : view) {
-        if (registry.any_of<IDComponent>(entity))
-            expose(registry.get<IDComponent>(entity));
         if (registry.any_of<TagComponent>(entity))
             expose(registry.get<TagComponent>(entity));
         if (registry.any_of<TransformComponent>(entity))
