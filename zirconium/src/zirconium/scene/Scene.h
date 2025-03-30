@@ -3,6 +3,7 @@
 #include "entt.hpp"
 #include "zirconium/Core/Timestep.h"
 
+#include "sol/sol.hpp"
 #include "zirconium/Renderer/EditorCamera.h"
 #include <cstddef>
 
@@ -31,6 +32,7 @@ public:
     void OnUpdateRuntime(TimeStep delta);
     void OnViewportResize(const uint32_t& width, const uint32_t& height);
     void DeleteEntity(Entity entity);
+    void ExposeAllComponentsToLua(sol::state& lua, entt::registry& registry);
 
     void DuplicateEntity(Entity entity);
     Entity GetMainCameraEntity();

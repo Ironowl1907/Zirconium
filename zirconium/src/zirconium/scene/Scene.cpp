@@ -187,6 +187,9 @@ void Scene::OnScriptsInit() {
     ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
 
     for (auto e : view) {
+        auto& luaScriptComponent = m_Registry.get<LuaScriptComponent>(e);
+        ExposeAllComponentsToLua(*luaScriptComponent.LuaState, m_Registry);
+
         Entity entity(e, this);
         sol::protected_function initFunc = entity.GetComponent<LuaScriptComponent>().OnInit();
 
@@ -203,6 +206,34 @@ void Scene::OnScriptsInit() {
     }
 }
 
+void Scene::ExposeAllComponentsToLua(sol::state& lua, entt::registry& registry) {
+    auto expose = [&](auto& component) {
+        component.ExposeAtributesLua(lua, registry);
+    };
+
+    auto view = registry.view<entt::entity>();
+
+    for (auto entity : view) {
+        if (registry.any_of<IDComponent>(entity))
+            expose(registry.get<IDComponent>(entity));
+        if (registry.any_of<TagComponent>(entity))
+            expose(registry.get<TagComponent>(entity));
+        if (registry.any_of<TransformComponent>(entity))
+            expose(registry.get<TransformComponent>(entity));
+        if (registry.any_of<SpriteRendererComponent>(entity))
+            expose(registry.get<SpriteRendererComponent>(entity));
+        if (registry.any_of<CameraComponent>(entity))
+            expose(registry.get<CameraComponent>(entity));
+        if (registry.any_of<RigidBodyComponent>(entity))
+            expose(registry.get<RigidBodyComponent>(entity));
+        if (registry.any_of<BoxColiderComponent>(entity))
+            expose(registry.get<BoxColiderComponent>(entity));
+        if (registry.any_of<CircleRendererComponent>(entity))
+            expose(registry.get<CircleRendererComponent>(entity));
+        if (registry.any_of<CircleColiderComponent>(entity))
+            expose(registry.get<CircleColiderComponent>(entity));
+    }
+}
 void Scene::OnRuntimeStart() {
     OnScriptsInit();
     OnPhysicsInit();

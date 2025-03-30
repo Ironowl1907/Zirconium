@@ -5,5 +5,5 @@ end
 -- This is called every frame for the entity
 function OnUpdate(dt)
     local entity = GetEntityID()
-    print(entity)
+    local tag = GetTagComponent(entity)
 end
