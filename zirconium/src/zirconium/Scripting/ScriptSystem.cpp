@@ -2,6 +2,7 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include "zrpch.h"
+#include <cstdint>
 #include <filesystem>
 
 namespace zirconium {
@@ -15,19 +16,19 @@ ScriptingSystem::~ScriptingSystem() {
 }
 
 void ScriptingSystem::UpdateScripts(TimeStep& deltatime) {
-    auto view = m_Scene->GetAllEntitiesWith<LuaScriptedComponent>();
+    auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
     for (auto entity : view) {
-        LuaScriptedComponent& scriptComponent = view.get<LuaScriptedComponent>(entity);
+        LuaScriptComponent& scriptComponent = view.get<LuaScriptComponent>(entity);
 
         scriptComponent.OnUpdate((float)deltatime);
     }
 }
 void ScriptingSystem::InitScripts() {
-    auto view = m_Scene->GetAllEntitiesWith<LuaScriptedComponent>();
+    auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
     for (auto entity : view) {
-        LuaScriptedComponent& scriptComponent = view.get<LuaScriptedComponent>(entity);
+        LuaScriptComponent& scriptComponent = view.get<LuaScriptComponent>(entity);
 
         scriptComponent.OnInit();
     }
@@ -35,20 +36,19 @@ void ScriptingSystem::InitScripts() {
 
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
     ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
-    ZR_ASSERT(entity.HasComponent<LuaScriptedComponent>(), "Trying to load script without LuaScriptedComponent!");
+    ZR_ASSERT(entity.HasComponent<LuaScriptComponent>(), "Trying to load script without LuaScriptComponent!");
 
     sol::state& luaState = m_LuaStates[entity.GetID()];
-    LuaScriptedComponent& scComponent = entity.GetComponent<LuaScriptedComponent>();
+    LuaScriptComponent& scComponent = entity.GetComponent<LuaScriptComponent>();
 
     luaState.open_libraries(sol::lib::base);
 
     // Register components
     RegisterComponentsToLua(luaState);
-    RegisterEntity(luaState);
     RegisterVectors(luaState);
 
-    luaState["GetEntity"] = [&entity]() -> Entity {
-        return entity; // Return the Entity object by value
+    luaState["GetEntityID"] = [&entity]() -> uint64_t {
+        return (uint64_t) entity;
     };
 
     try {
@@ -97,7 +97,6 @@ void ScriptingSystem::RegisterComponentsToLua(sol::state& lua) {
 }
 
 void ScriptingSystem::LoadTypes(sol::state& state) {
-    RegisterEntity(state);
     RegisterVectors(state);
 }
 
@@ -138,20 +137,20 @@ void ScriptingSystem::RegisterVectors(sol::state& lua) {
 //         });
 // }
 
-void ScriptingSystem::RegisterEntity(sol::state& lua) {
-    lua.new_usertype<Entity>("Entity",                      //
-                             sol::constructors<Entity()>(), //
-                             "GetComponent_Transform",      //
-                             [](Entity* e) -> TransformComponent& {
-                                 if (!e || !(*e)) {
-                                     throw std::runtime_error("Entity pointer is invalid.");
-                                 }
-                                 if (e->HasComponent<TransformComponent>()) {
-                                     return e->GetComponent<TransformComponent>();
-                                 } else {
-                                     throw std::runtime_error("Transform component not found.");
-                                 }
-                             });
-}
+// void ScriptingSystem::RegisterEntity(sol::state& lua) {
+//     lua.new_usertype<Entity>("Entity",                      //
+//                              sol::constructors<Entity()>(), //
+//                              "GetComponent_Transform",      //
+//                              [](Entity* e) -> TransformComponent& {
+//                                  if (!e || !(*e)) {
+//                                      throw std::runtime_error("Entity pointer is invalid.");
+//                                  }
+//                                  if (e->HasComponent<TransformComponent>()) {
+//                                      return e->GetComponent<TransformComponent>();
+//                                  } else {
+//                                      throw std::runtime_error("Transform component not found.");
+//                                  }
+//                              });
+// }
 
 } // namespace zirconium

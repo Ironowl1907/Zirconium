@@ -76,7 +76,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
-    CopyComponentIfExists<LuaScriptedComponent>(newEntity, entity);
+    CopyComponentIfExists<LuaScriptComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -105,7 +105,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-    CopyComponent<LuaScriptedComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<LuaScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -183,12 +183,12 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnScriptsInit() {
-    auto view = GetAllEntitiesWith<LuaScriptedComponent>();
+    auto view = GetAllEntitiesWith<LuaScriptComponent>();
     ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
 
     for (auto e : view) {
         Entity entity(e, this);
-        sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
+        sol::protected_function initFunc = entity.GetComponent<LuaScriptComponent>().OnInit();
 
         if (!initFunc)
             continue;
@@ -229,11 +229,11 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
     // Update Lua Scripts
     {
-        auto view = GetAllEntitiesWith<LuaScriptedComponent>();
+        auto view = GetAllEntitiesWith<LuaScriptComponent>();
 
         for (auto e : view) {
             Entity entity(e, this);
-            sol::protected_function updateFunction = entity.GetComponent<LuaScriptedComponent>().OnUpdate();
+            sol::protected_function updateFunction = entity.GetComponent<LuaScriptComponent>().OnUpdate();
 
             if (!updateFunction)
                 continue;
@@ -443,6 +443,6 @@ template <>
 void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 
 template <>
-void Scene::OnComponentAdded<LuaScriptedComponent>(Entity entity, LuaScriptedComponent& component) {}
+void Scene::OnComponentAdded<LuaScriptComponent>(Entity entity, LuaScriptComponent& component) {}
 
 } // namespace zirconium

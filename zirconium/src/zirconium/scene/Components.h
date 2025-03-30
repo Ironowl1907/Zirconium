@@ -15,6 +15,7 @@
 
 namespace zirconium {
 
+
 struct IDComponent {
     IDComponent()
         : ID() {}
@@ -145,7 +146,7 @@ struct CircleColiderComponent {
     float Restitution = 0.0f;
 };
 
-struct LuaScriptedComponent {
+struct LuaScriptComponent {
     Ref<sol::state> LuaState;
 
     std::filesystem::path ScriptPath = "";

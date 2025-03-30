@@ -30,7 +30,7 @@ private:
     ~ScriptingSystem();
 
     void RegisterVectors(sol::state& lua);
-    void RegisterEntity(sol::state& lua);
+    // void RegisterEntity(sol::state& lua);
 
 private:
     static ScriptingSystem* m_Instance;

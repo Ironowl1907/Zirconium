@@ -242,9 +242,9 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<LuaScriptedComponent>())
+        if (!m_SelectionContext.HasComponent<LuaScriptComponent>())
             if (ImGui::MenuItem("Lua Script")) {
-                m_SelectionContext.AddComponent<LuaScriptedComponent>();
+                m_SelectionContext.AddComponent<LuaScriptComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
@@ -282,8 +282,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     });
 
     static bool BrowsingScript = false;
-    DrawComponent<LuaScriptedComponent>("Script", entity, [this](auto& component) {
-        auto& pathName = m_SelectionContext.GetComponent<LuaScriptedComponent>().ScriptPath;
+    DrawComponent<LuaScriptComponent>("Script", entity, [this](auto& component) {
+        auto& pathName = m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath;
         char buffer[128];
         std::strcpy(buffer, pathName.c_str());
 
