@@ -4,6 +4,7 @@
 #include "zrpch.h"
 #include <cstdint>
 #include <filesystem>
+#include <memory>
 
 namespace zirconium {
 
@@ -41,6 +42,8 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
     sol::state& luaState = m_LuaStates[entity.GetID()];
     LuaScriptComponent& scComponent = entity.GetComponent<LuaScriptComponent>();
 
+    scComponent.LuaState = &luaState;
+
     luaState.open_libraries(sol::lib::base);
 
     // Register components
@@ -48,7 +51,7 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
     RegisterVectors(luaState);
 
     luaState["GetEntityID"] = [&entity]() -> uint64_t {
-        return (uint64_t) entity;
+        return (uint64_t)entity;
     };
 
     try {

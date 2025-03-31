@@ -188,6 +188,7 @@ void Scene::OnScriptsInit() {
 
     for (auto e : view) {
         auto& luaScriptComponent = m_Registry.get<LuaScriptComponent>(e);
+        ZR_ASSERT(luaScriptComponent.LuaState, "Invalid luaScriptComponent");
         ExposeAllComponentsToLua(*luaScriptComponent.LuaState, m_Registry);
 
         Entity entity(e, this);

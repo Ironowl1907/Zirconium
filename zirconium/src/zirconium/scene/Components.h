@@ -195,7 +195,7 @@ struct NativeScriptComponent {
 };
 
 struct LuaScriptComponent {
-    Ref<sol::state> LuaState;
+    sol::state* LuaState;
 
     std::filesystem::path ScriptPath = "";
 
