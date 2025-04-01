@@ -38,6 +38,7 @@ void ScriptingSystem::InitScripts() {
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
     ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
     ZR_ASSERT(entity.HasComponent<LuaScriptComponent>(), "Trying to load script without LuaScriptComponent!");
+    ZR_ASSERT((bool)entity, "Entity not vaild");
 
     sol::state& luaState = m_LuaStates[entity.GetID()];
     LuaScriptComponent& scComponent = entity.GetComponent<LuaScriptComponent>();
@@ -50,8 +51,18 @@ bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path sc
     RegisterComponentsToLua(luaState);
     RegisterVectors(luaState);
 
-    luaState["GetEntityID"] = [&entity]() -> uint64_t {
-        return (uint64_t)entity;
+    uint64_t entityID = static_cast<uint64_t>(entity);
+    luaState.new_usertype<Entity>(     //
+        "Entity",                      //
+        sol::constructors<Entity()>(), //
+        "GetID", [entityID](Entity& e) -> uint64_t {
+            // ZR_ASSERT((bool)e, "Entity not vaild");
+            return entityID;
+        });
+
+    ZR_CORE_WARN("Entity: {}", static_cast<uint64_t>(entity));
+    luaState["GetEntity"] = [&entity]() -> Entity& {
+        return entity;
     };
 
     try {
@@ -125,35 +136,5 @@ void ScriptingSystem::RegisterVectors(sol::state& lua) {
         sol::meta_function::multiplication, sol::resolve<glm::vec2(const glm::vec2&, float)>(&glm::operator*),
         sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, float)>(&glm::operator/));
 }
-
-// void ScriptingSystem::RegisterEntity(sol::state& lua) {
-//     lua.new_usertype<Entity>(
-//         "Entity",                      //
-//         sol::constructors<Entity()>(), //
-//         "GetComponent_Transform",      //
-//         [](Entity* e) -> TransformComponent& {
-//             return e->GetComponent<TransformComponent>();
-//         },
-//         "GetComponent_Sprite", //
-//         [](Entity* e) -> SpriteRendererComponent& {
-//             return e->GetComponent<SpriteRendererComponent>();
-//         });
-// }
-
-// void ScriptingSystem::RegisterEntity(sol::state& lua) {
-//     lua.new_usertype<Entity>("Entity",                      //
-//                              sol::constructors<Entity()>(), //
-//                              "GetComponent_Transform",      //
-//                              [](Entity* e) -> TransformComponent& {
-//                                  if (!e || !(*e)) {
-//                                      throw std::runtime_error("Entity pointer is invalid.");
-//                                  }
-//                                  if (e->HasComponent<TransformComponent>()) {
-//                                      return e->GetComponent<TransformComponent>();
-//                                  } else {
-//                                      throw std::runtime_error("Transform component not found.");
-//                                  }
-//                              });
-// }
 
 } // namespace zirconium

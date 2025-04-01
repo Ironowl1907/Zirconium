@@ -41,6 +41,7 @@ struct TagComponent : public LuaScripted {
                                        "Tag", &TagComponent::Tag //
         );
         lua["GetTagComponent"] = [&registry](uint64_t entity) -> TagComponent& {
+          ZR_CORE_WARN("Entered");
             return registry.get<TagComponent>(static_cast<entt::entity>(entity));
         };
     }
