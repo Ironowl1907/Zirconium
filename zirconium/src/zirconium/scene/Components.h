@@ -18,16 +18,17 @@ namespace zirconium {
 
 struct LuaScripted {
     virtual ~LuaScripted() {}
-    virtual void ExposeAtributesLua(sol::state& lua, entt::registry& registry) = 0;
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) = 0;
 };
 
-struct IDComponent {
+struct IDComponent : LuaScripted {
     UUID ID;
 
     IDComponent()
         : ID() {}
     IDComponent(uint64_t id)
         : ID(id) {}
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct TagComponent : public LuaScripted {
@@ -36,15 +37,7 @@ struct TagComponent : public LuaScripted {
     TagComponent() = default;
     TagComponent(const std::string& tag)
         : Tag(tag) {}
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<TagComponent>("TagComponent",           //
-                                       "Tag", &TagComponent::Tag //
-        );
-        lua["GetTagComponent"] = [&registry](uint64_t entity) -> TagComponent& {
-            ZR_CORE_WARN("Entered");
-            return registry.get<TagComponent>(static_cast<entt::entity>(entity));
-        };
-    }
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct TransformComponent : public LuaScripted {
@@ -63,12 +56,22 @@ struct TransformComponent : public LuaScripted {
         return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
     }
 
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<TransformComponent>("TransformComponent", "Translation", &TransformComponent::Translation, //
-                                             "Rotation", &TransformComponent::Rotation,                             //
-                                             "Scale", &TransformComponent::Scale,                                   //
-                                             "GetTransform", &TransformComponent::GetTransform                      //
-        );
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {
+        lua["getTransform"] = [](entt::entity entity) -> sol::table {
+            auto* transform = registry.try_get<TransformComponent>(entity);
+            if (!transform)
+                return sol::nil;
+
+            return sol::table(lua, {{"x", transform->x}, {"y", transform->y}});
+        };
+
+        lua["setTransform"] = [](entt::entity entity, float x, float y) {
+            auto* transform = registry.try_get<TransformComponent>(entity);
+            if (transform) {
+                transform->x = x;
+                transform->y = y;
+            }
+        };
     }
 };
 
@@ -88,12 +91,8 @@ struct SpriteRendererComponent : public LuaScripted {
         uint32_t whiteTextureData = 0xffffffff;
         Texture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
     }
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<SpriteRendererComponent>("SpriteRendererComponent",                             //
-                                                  "Color", &SpriteRendererComponent::Color,              //
-                                                  "TilingFactor", &SpriteRendererComponent::TilingFactor //
-        );
-    }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct CameraComponent : public LuaScripted {
@@ -103,11 +102,8 @@ struct CameraComponent : public LuaScripted {
 
     CameraComponent()
         : Camera() {}
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<CameraComponent>("CameraComponent", "Primary", &CameraComponent::Primary, //
-                                          "FixedAspectRatio", &CameraComponent::FixedAspectRatio   //
-        );
-    }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct RigidBodyComponent : public LuaScripted {
@@ -115,11 +111,8 @@ struct RigidBodyComponent : public LuaScripted {
     BodyType Type = BodyType::Dynamic;
     bool FixedRotation = false;
     b2BodyId RuntimeBody;
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<RigidBodyComponent>("RigidBodyComponent", "Type", &RigidBodyComponent::Type, //
-                                             "FixedRotation", &RigidBodyComponent::FixedRotation      //
-        );
-    }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct BoxColiderComponent : public LuaScripted {
@@ -128,15 +121,8 @@ struct BoxColiderComponent : public LuaScripted {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<BoxColiderComponent>("BoxColiderComponent",                           //
-                                              "Offset", &BoxColiderComponent::Offset,          //
-                                              "Size", &BoxColiderComponent::Size,              //
-                                              "Density", &BoxColiderComponent::Density,        //
-                                              "Friction", &BoxColiderComponent::Friction,      //
-                                              "Restitution", &BoxColiderComponent::Restitution //
-        );
-    }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct CircleRendererComponent : LuaScripted {
@@ -150,13 +136,8 @@ struct CircleRendererComponent : LuaScripted {
     operator const glm::vec4&() const {
         return Color;
     }
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<CircleRendererComponent>("CircleRendererComponent",                        //
-                                                  "Color", &CircleRendererComponent::Color,         //
-                                                  "Thickness", &CircleRendererComponent::Thickness, //
-                                                  "Fade", &CircleRendererComponent::Fade            //
-        );
-    }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct CircleColiderComponent : public LuaScripted {
@@ -165,19 +146,11 @@ struct CircleColiderComponent : public LuaScripted {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
-    void ExposeAtributesLua(sol::state& lua, entt::registry& registry) override {
-        lua.new_usertype<CircleColiderComponent>(
-            "CircleColiderComponent", "Offset", &CircleColiderComponent::Offset, "Radius",
-            &CircleColiderComponent::Radius, "Density", &CircleColiderComponent::Density, "Friction",
-            &CircleColiderComponent::Friction, "Restitution", &CircleColiderComponent::Restitution);
 
-        lua["GetCircleColiderComponent"] = [&registry](uint64_t entity) -> CircleColiderComponent& {
-            return registry.get<CircleColiderComponent>(static_cast<entt::entity>(entity));
-        };
-    }
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct NativeScriptComponent {
+struct NativeScriptComponent : public LuaScripted {
     class ScriptableEntity* Instance = nullptr;
 
     ScriptableEntity* (*InstantiateScript)();
@@ -193,6 +166,8 @@ struct NativeScriptComponent {
             nsc->Instance = nullptr;
         };
     }
+
+    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct LuaScriptComponent {
