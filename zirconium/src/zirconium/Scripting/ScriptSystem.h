@@ -7,6 +7,8 @@
 
 namespace zirconium {
 
+class Scene;
+
 class ScriptingSystem {
 public:
     static ScriptingSystem* Get() {
@@ -15,15 +17,13 @@ public:
         return m_Instance;
     }
 
+    void Init(Scene* scene);
     void UpdateScripts(TimeStep& deltatime);
     void InitScripts();
 
     bool LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath);
-    void RegisterComponentsToLua(sol::state& lua);
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
-
-    void LoadTypes(sol::state& state);
 
 private:
     ScriptingSystem();
@@ -36,7 +36,10 @@ private:
     static ScriptingSystem* m_Instance;
     Scene* m_Scene = nullptr;
 
-    std::unordered_map<UUID, sol::state> m_LuaStates;
+    // std::unordered_map<UUID, sol::state> m_LuaStates;
+    sol::state m_LuaState;
+
+    friend class Scene;
 };
 
 } // namespace zirconium

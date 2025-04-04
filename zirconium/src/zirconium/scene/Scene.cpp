@@ -4,6 +4,7 @@
 #include "zrpch.h"
 
 #include "zirconium/Renderer/Renderer2D.h"
+#include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include <cstdint>
@@ -183,28 +184,10 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnScriptsInit() {
-    auto view = GetAllEntitiesWith<LuaScriptComponent>();
-    ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
+    ScriptingSystem* sc = ScriptingSystem::Get();
 
-    for (auto e : view) {
-        auto& luaScriptComponent = m_Registry.get<LuaScriptComponent>(e);
-        ZR_ASSERT(luaScriptComponent.LuaState, "Invalid luaScriptComponent");
-        ExposeAllComponentsToLua(*luaScriptComponent.LuaState, m_Registry);
-
-        Entity entity(e, this);
-        sol::protected_function initFunc = entity.GetComponent<LuaScriptComponent>().OnInit();
-
-        if (!initFunc)
-            continue;
-
-        ZR_CORE_TRACE("Running Init function for {}", entity.GetTag());
-        auto result = initFunc();
-        if (!result.valid()) {
-            sol::error e = result;
-            ZR_ERROR("Lua Error: Runtime Error in init function of entity'{0}' \n{1}",
-                     entity.GetComponent<TagComponent>().Tag, e.what());
-        }
-    }
+    sc->Init(this);
+    sc->InitScripts();
 }
 
 void Scene::ExposeAllComponentsToLua(sol::state& lua, entt::registry& registry) {
@@ -259,22 +242,7 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
     // Update Lua Scripts
     {
-        auto view = GetAllEntitiesWith<LuaScriptComponent>();
-
-        for (auto e : view) {
-            Entity entity(e, this);
-            sol::protected_function updateFunction = entity.GetComponent<LuaScriptComponent>().OnUpdate();
-
-            if (!updateFunction)
-                continue;
-
-            auto result = updateFunction();
-            if (!result.valid()) {
-                sol::error e = result;
-                ZR_ERROR("Lua Error: Runtime Error in update function of entity'{0}' \n{1}",
-                         entity.GetComponent<TagComponent>().Tag, e.what());
-            }
-        }
+        ScriptingSystem::Get()->UpdateScripts(delta);
     }
 
     // Physics

@@ -41,7 +41,7 @@ struct TagComponent : public LuaScripted {
                                        "Tag", &TagComponent::Tag //
         );
         lua["GetTagComponent"] = [&registry](uint64_t entity) -> TagComponent& {
-          ZR_CORE_WARN("Entered");
+            ZR_CORE_WARN("Entered");
             return registry.get<TagComponent>(static_cast<entt::entity>(entity));
         };
     }
@@ -196,12 +196,8 @@ struct NativeScriptComponent {
 };
 
 struct LuaScriptComponent {
-    sol::state* LuaState;
-
-    std::filesystem::path ScriptPath = "";
-
-    sol::function OnUpdate;
-    sol::function OnInit;
+    std::string ScriptPath;
+    sol::table ScriptInstance;
 };
 
 } // namespace zirconium

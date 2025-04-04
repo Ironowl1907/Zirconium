@@ -291,7 +291,9 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::InputText("Script Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path))
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                else
                     ZR_ASSERT(false, "Error Loading script!");
         }
 
@@ -301,8 +303,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 const int dataSize = payload->DataSize;
 
                 std::filesystem::path path(data);
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                else
                     ZR_ASSERT(false, "Error Loading script!");
+
+                ZR_CORE_TRACE("Dropped path");
             }
             ImGui::EndDragDropTarget();
         }
