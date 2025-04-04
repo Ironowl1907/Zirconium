@@ -1,9 +1,9 @@
--- This is called the when the entity is created
-function OnInit()
-    print("[Lua] Init function")
-end
+return {
+    onCreate = function(self)
+        print("Entity created with script:", self)
+    end,
 
--- This is called every frame for the entity
-function OnUpdate()
-    print("[Lua] Update function")
-end
+    onUpdate = function(self, deltaTime)
+        print("Updating entity with dt:", deltaTime)
+    end
+}
