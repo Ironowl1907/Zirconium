@@ -1,11 +1,9 @@
--- This is called the when the entity is created
-function OnInit()
-end
+return {
+    onCreate = function(self)
+        print("Entity created with script:", self)
+    end,
 
--- This is called every frame for the entity
-function OnUpdate(dt)
-    local entity = GetEntity()
-    local id = entity:GetID()
-    local tag = GetTagComponent(id)
-    print("Tag: " .. tag.Tag)
-end
+    onUpdate = function(self, deltaTime)
+        print("Updating entity with dt:", deltaTime)
+    end
+}
