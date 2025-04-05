@@ -28,7 +28,7 @@ public:
 
     using LuaExposerFn = std::function<void(sol::state&, entt::registry&)>;
 
-   static inline std::vector<LuaExposerFn>& GetLuaComponentRegistry() {
+    static inline std::vector<LuaExposerFn>& GetLuaComponentRegistry() {
         static std::vector<LuaExposerFn> registry;
         return registry;
     }
@@ -38,7 +38,6 @@ public:
 private:
     ScriptingSystem();
     ~ScriptingSystem();
-
 
 private:
     static ScriptingSystem* m_Instance;
@@ -50,12 +49,18 @@ private:
     friend class Scene;
 };
 
-#define REGISTER_COMPONENT_TO_LUA(Func)               \
-    static bool _registered = [] {                    \
+#define CONCAT_IMPL(x, y) x##y
+#define CONCAT(x, y) CONCAT_IMPL(x, y)
+
+#define UNIQUE_NAME(base) CONCAT(base, __COUNTER__)
+
+#define REGISTER_COMPONENT_TO_LUA(Func)                                \
+    static bool UNIQUE_NAME(_registered_) = [] {                       \
         ScriptingSystem::GetLuaComponentRegistry().emplace_back(Func); \
-        return true;                                  \
-    }();
+        return true;                                                   \
+    }()
 
 REGISTER_COMPONENT_TO_LUA(TransformComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(SpriteRendererComponent::Expose2Lua);
 
 } // namespace zirconium

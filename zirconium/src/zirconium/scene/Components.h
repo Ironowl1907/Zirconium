@@ -14,7 +14,6 @@
 #include <cstdint>
 #include <filesystem>
 
-
 namespace zirconium {
 
 struct IDComponent {
@@ -88,6 +87,28 @@ struct SpriteRendererComponent {
         uint32_t whiteTextureData = 0xffffffff;
         Texture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
     }
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("GetSpriteColor", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* sprite = registry.try_get<SpriteRendererComponent>(entity);
+            if (!sprite)
+                return sol::nil;
+
+            sol::table color = lua.create_table();
+            color["r"] = sprite->Color.r;
+            color["g"] = sprite->Color.g;
+            color["b"] = sprite->Color.b;
+            color["a"] = sprite->Color.a;
+            return color;
+        });
+
+        lua.set_function("SetSpriteColor", [&registry](entt::entity entity, float r, float g, float b, float a) {
+            SpriteRendererComponent* sprite = registry.try_get<SpriteRendererComponent>(entity);
+            if (sprite) {
+                sprite->Color = {r, g, b, a};
+            }
+        });
+    }
 };
 
 struct CameraComponent {
@@ -157,6 +178,5 @@ struct LuaScriptComponent {
     std::string ScriptPath;
     sol::table ScriptInstance;
 };
-
 
 } // namespace zirconium
