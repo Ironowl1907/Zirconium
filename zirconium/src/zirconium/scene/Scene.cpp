@@ -190,32 +190,6 @@ void Scene::OnScriptsInit() {
     sc->InitScripts();
 }
 
-void Scene::ExposeAllComponentsToLua(sol::state& lua, entt::registry& registry) {
-    auto expose = [&](auto& component) {
-        component.ExposeAtributesLua(lua, registry);
-    };
-
-    auto view = registry.view<entt::entity>();
-
-    for (auto entity : view) {
-        if (registry.any_of<TagComponent>(entity))
-            expose(registry.get<TagComponent>(entity));
-        if (registry.any_of<TransformComponent>(entity))
-            expose(registry.get<TransformComponent>(entity));
-        if (registry.any_of<SpriteRendererComponent>(entity))
-            expose(registry.get<SpriteRendererComponent>(entity));
-        if (registry.any_of<CameraComponent>(entity))
-            expose(registry.get<CameraComponent>(entity));
-        if (registry.any_of<RigidBodyComponent>(entity))
-            expose(registry.get<RigidBodyComponent>(entity));
-        if (registry.any_of<BoxColiderComponent>(entity))
-            expose(registry.get<BoxColiderComponent>(entity));
-        if (registry.any_of<CircleRendererComponent>(entity))
-            expose(registry.get<CircleRendererComponent>(entity));
-        if (registry.any_of<CircleColiderComponent>(entity))
-            expose(registry.get<CircleColiderComponent>(entity));
-    }
-}
 void Scene::OnRuntimeStart() {
     OnScriptsInit();
     OnPhysicsInit();

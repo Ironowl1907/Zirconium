@@ -14,39 +14,33 @@
 #include <cstdint>
 #include <filesystem>
 
+
 namespace zirconium {
 
-struct LuaScripted {
-    virtual ~LuaScripted() {}
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) = 0;
-};
-
-struct IDComponent : LuaScripted {
+struct IDComponent {
     UUID ID;
 
     IDComponent()
         : ID() {}
     IDComponent(uint64_t id)
         : ID(id) {}
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct TagComponent : public LuaScripted {
+struct TagComponent {
     std::string Tag;
 
     TagComponent() = default;
     TagComponent(const std::string& tag)
         : Tag(tag) {}
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct TransformComponent : public LuaScripted {
+struct TransformComponent {
     glm::vec3 Translation{0.0f};
     glm::vec3 Rotation{0.0f};
     glm::vec3 Scale{1.0f};
 
     TransformComponent() = default;
-    TransformComponent(const glm::vec4& translation)
+    TransformComponent(const glm::vec3& translation)
         : Translation(translation) {}
 
     glm::mat4 GetTransform() const {
@@ -56,26 +50,29 @@ struct TransformComponent : public LuaScripted {
         return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
     }
 
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {
-        lua["getTransform"] = [](entt::entity entity) -> sol::table {
-            auto* transform = registry.try_get<TransformComponent>(entity);
-            if (!transform)
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("GetTranslation", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* t = registry.try_get<TransformComponent>(entity);
+            if (!t)
                 return sol::nil;
 
-            return sol::table(lua, {{"x", transform->x}, {"y", transform->y}});
-        };
+            sol::table tbl = lua.create_table();
+            tbl["x"] = t->Translation.x;
+            tbl["y"] = t->Translation.y;
+            tbl["z"] = t->Translation.z;
+            return tbl;
+        });
 
-        lua["setTransform"] = [](entt::entity entity, float x, float y) {
-            auto* transform = registry.try_get<TransformComponent>(entity);
-            if (transform) {
-                transform->x = x;
-                transform->y = y;
+        lua.set_function("SetTranslation", [&registry](entt::entity entity, float x, float y, float z) {
+            auto* t = registry.try_get<TransformComponent>(entity);
+            if (t) {
+                t->Translation = {x, y, z};
             }
-        };
+        });
     }
 };
 
-struct SpriteRendererComponent : public LuaScripted {
+struct SpriteRendererComponent {
     glm::vec4 Color{1.0f};
     Ref<Texture2D> Texture;
     float TilingFactor = 1.0f;
@@ -91,41 +88,33 @@ struct SpriteRendererComponent : public LuaScripted {
         uint32_t whiteTextureData = 0xffffffff;
         Texture->SetData(&whiteTextureData, 1 * sizeof(whiteTextureData));
     }
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct CameraComponent : public LuaScripted {
+struct CameraComponent {
     SceneCamera Camera;
     bool Primary = true;
     bool FixedAspectRatio = false;
 
     CameraComponent()
         : Camera() {}
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct RigidBodyComponent : public LuaScripted {
+struct RigidBodyComponent {
     enum class BodyType { Static = 0, Dynamic = 1, Kinematics = 2 };
     BodyType Type = BodyType::Dynamic;
     bool FixedRotation = false;
     b2BodyId RuntimeBody;
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct BoxColiderComponent : public LuaScripted {
+struct BoxColiderComponent {
     glm::vec2 Offset{0.0f};
     glm::vec2 Size{0.5f};
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct CircleRendererComponent : LuaScripted {
+struct CircleRendererComponent {
     glm::vec4 Color{1.0f};
     float Thickness = 1.0f;
     float Fade = 0.0025f;
@@ -136,21 +125,17 @@ struct CircleRendererComponent : LuaScripted {
     operator const glm::vec4&() const {
         return Color;
     }
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct CircleColiderComponent : public LuaScripted {
+struct CircleColiderComponent {
     glm::vec2 Offset{0.0f};
     float Radius = 0.5f;
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
-struct NativeScriptComponent : public LuaScripted {
+struct NativeScriptComponent {
     class ScriptableEntity* Instance = nullptr;
 
     ScriptableEntity* (*InstantiateScript)();
@@ -166,13 +151,12 @@ struct NativeScriptComponent : public LuaScripted {
             nsc->Instance = nullptr;
         };
     }
-
-    virtual void ExposeAPI2Lua(sol::state& lua, Entity& entity) {}
 };
 
 struct LuaScriptComponent {
     std::string ScriptPath;
     sol::table ScriptInstance;
 };
+
 
 } // namespace zirconium

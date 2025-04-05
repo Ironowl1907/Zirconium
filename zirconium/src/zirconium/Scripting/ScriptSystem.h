@@ -4,6 +4,7 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Scene.h"
 #include <filesystem>
+#include <functional>
 
 namespace zirconium {
 
@@ -25,12 +26,19 @@ public:
     ScriptingSystem(const ScriptingSystem&) = delete;
     ScriptingSystem& operator=(const ScriptingSystem&) = delete;
 
+    using LuaExposerFn = std::function<void(sol::state&, entt::registry&)>;
+
+   static inline std::vector<LuaExposerFn>& GetLuaComponentRegistry() {
+        static std::vector<LuaExposerFn> registry;
+        return registry;
+    }
+
+    void RegisterAllComponentsToLua(sol::state& lua, entt::registry& registry);
+
 private:
     ScriptingSystem();
     ~ScriptingSystem();
 
-    void RegisterVectors(sol::state& lua);
-    // void RegisterEntity(sol::state& lua);
 
 private:
     static ScriptingSystem* m_Instance;
@@ -41,5 +49,13 @@ private:
 
     friend class Scene;
 };
+
+#define REGISTER_COMPONENT_TO_LUA(Func)               \
+    static bool _registered = [] {                    \
+        ScriptingSystem::GetLuaComponentRegistry().emplace_back(Func); \
+        return true;                                  \
+    }();
+
+REGISTER_COMPONENT_TO_LUA(TransformComponent::Expose2Lua);
 
 } // namespace zirconium
