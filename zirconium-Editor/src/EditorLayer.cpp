@@ -179,7 +179,6 @@ void EditorLayer::OnOverlayRender() {
 
 void EditorLayer::OnScenePlay() {
     if (m_SceneState == SceneState::Simulate) {
-        ZR_CORE_WARN("Hey");
         OnSceneStop();
     }
 
@@ -192,6 +191,7 @@ void EditorLayer::OnScenePlay() {
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
 void EditorLayer::OnSceneStop() {
+  if (m_SceneState == SceneState::Edit) return;
     m_SceneState = SceneState::Edit;
     m_ActiveScene->OnRuntimeStop();
 
