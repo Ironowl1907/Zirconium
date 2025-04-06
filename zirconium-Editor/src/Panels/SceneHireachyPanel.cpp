@@ -242,9 +242,9 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<LuaScriptedComponent>())
+        if (!m_SelectionContext.HasComponent<LuaScriptComponent>())
             if (ImGui::MenuItem("Lua Script")) {
-                m_SelectionContext.AddComponent<LuaScriptedComponent>();
+                m_SelectionContext.AddComponent<LuaScriptComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
@@ -282,8 +282,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     });
 
     static bool BrowsingScript = false;
-    DrawComponent<LuaScriptedComponent>("Script", entity, [this](auto& component) {
-        auto& pathName = m_SelectionContext.GetComponent<LuaScriptedComponent>().ScriptPath;
+    DrawComponent<LuaScriptComponent>("Script", entity, [this](auto& component) {
+        auto& pathName = m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath;
         char buffer[128];
         std::strcpy(buffer, pathName.c_str());
 
@@ -291,7 +291,9 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::InputText("Script Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path))
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                else
                     ZR_ASSERT(false, "Error Loading script!");
         }
 
@@ -301,8 +303,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 const int dataSize = payload->DataSize;
 
                 std::filesystem::path path(data);
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                else
                     ZR_ASSERT(false, "Error Loading script!");
+
+                ZR_CORE_TRACE("Dropped path");
             }
             ImGui::EndDragDropTarget();
         }

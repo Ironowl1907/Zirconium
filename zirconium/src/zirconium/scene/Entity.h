@@ -30,7 +30,7 @@ public:
     }
 
     template <typename T>
-    T& GetComponent() const{
+    T& GetComponent() const {
         ZR_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component")
         return m_Scene->m_Registry.get<T>(m_EntityHandle);
     }
@@ -71,6 +71,10 @@ public:
 
     const std::string& GetTag() const {
         return GetComponent<TagComponent>().Tag;
+    }
+
+    Scene* GetScene() {
+        return m_Scene;
     }
 
 private:

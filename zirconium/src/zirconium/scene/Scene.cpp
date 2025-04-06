@@ -4,6 +4,7 @@
 #include "zrpch.h"
 
 #include "zirconium/Renderer/Renderer2D.h"
+#include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include <cstdint>
@@ -76,7 +77,7 @@ void Scene::DuplicateEntity(Entity entity) {
     CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CircleColiderComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
-    CopyComponentIfExists<LuaScriptedComponent>(newEntity, entity);
+    CopyComponentIfExists<LuaScriptComponent>(newEntity, entity);
 }
 Ref<Scene> Scene::Copy(Ref<Scene> other) {
     Ref<Scene> newScene = std::make_shared<Scene>();
@@ -105,7 +106,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
     CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CircleColiderComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-    CopyComponent<LuaScriptedComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<LuaScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
     return newScene;
 }
@@ -183,24 +184,10 @@ void Scene::OnPhysicsShutdown() {
 }
 
 void Scene::OnScriptsInit() {
-    auto view = GetAllEntitiesWith<LuaScriptedComponent>();
-    ZR_CORE_TRACE("Entities with LuaScriptedComponent: {}", view.size());
+    ScriptingSystem* sc = ScriptingSystem::Get();
 
-    for (auto e : view) {
-        Entity entity(e, this);
-        sol::protected_function initFunc = entity.GetComponent<LuaScriptedComponent>().OnInit();
-
-        if (!initFunc)
-            continue;
-
-        ZR_CORE_TRACE("Running Init function for {}", entity.GetTag());
-        auto result = initFunc();
-        if (!result.valid()) {
-            sol::error e = result;
-            ZR_ERROR("Lua Error: Runtime Error in init function of entity'{0}' \n{1}",
-                     entity.GetComponent<TagComponent>().Tag, e.what());
-        }
-    }
+    sc->Init(this);
+    sc->InitScripts();
 }
 
 void Scene::OnRuntimeStart() {
@@ -229,22 +216,7 @@ void Scene::OnUpdateRuntime(TimeStep delta) {
     }
     // Update Lua Scripts
     {
-        auto view = GetAllEntitiesWith<LuaScriptedComponent>();
-
-        for (auto e : view) {
-            Entity entity(e, this);
-            sol::protected_function updateFunction = entity.GetComponent<LuaScriptedComponent>().OnUpdate();
-
-            if (!updateFunction)
-                continue;
-
-            auto result = updateFunction();
-            if (!result.valid()) {
-                sol::error e = result;
-                ZR_ERROR("Lua Error: Runtime Error in update function of entity'{0}' \n{1}",
-                         entity.GetComponent<TagComponent>().Tag, e.what());
-            }
-        }
+        ScriptingSystem::Get()->UpdateScripts(delta);
     }
 
     // Physics
@@ -443,6 +415,6 @@ template <>
 void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {}
 
 template <>
-void Scene::OnComponentAdded<LuaScriptedComponent>(Entity entity, LuaScriptedComponent& component) {}
+void Scene::OnComponentAdded<LuaScriptComponent>(Entity entity, LuaScriptComponent& component) {}
 
 } // namespace zirconium

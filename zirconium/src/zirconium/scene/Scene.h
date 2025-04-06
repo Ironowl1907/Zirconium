@@ -3,6 +3,7 @@
 #include "entt.hpp"
 #include "zirconium/Core/Timestep.h"
 
+#include "sol/sol.hpp"
 #include "zirconium/Renderer/EditorCamera.h"
 #include <cstddef>
 
@@ -29,8 +30,11 @@ public:
     void OnUpdateSimulation(TimeStep delta, EditorCamera& camera);
     void OnUpdateEditor(TimeStep delta, EditorCamera& camera);
     void OnUpdateRuntime(TimeStep delta);
+
     void OnViewportResize(const uint32_t& width, const uint32_t& height);
+
     void DeleteEntity(Entity entity);
+
 
     void DuplicateEntity(Entity entity);
     Entity GetMainCameraEntity();
@@ -41,6 +45,10 @@ public:
     }
 
     void RenderScene(EditorCamera& camera);
+
+    entt::registry& GetRegistry() {
+        return m_Registry;
+    }
 
 private:
     template <typename T>

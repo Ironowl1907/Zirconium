@@ -2,7 +2,9 @@
 #include "zirconium/scene/Components.h"
 #include "zirconium/scene/Entity.h"
 #include "zrpch.h"
+#include <cstdint>
 #include <filesystem>
+#include <memory>
 
 namespace zirconium {
 
@@ -14,48 +16,56 @@ ScriptingSystem::~ScriptingSystem() {
     delete m_Instance;
 }
 
+void ScriptingSystem::Init(Scene* scene) {
+    m_Scene = scene;
+    m_LuaState.open_libraries(sol::lib::base);
+}
 void ScriptingSystem::UpdateScripts(TimeStep& deltatime) {
-    auto view = m_Scene->GetAllEntitiesWith<LuaScriptedComponent>();
-
-    for (auto entity : view) {
-        LuaScriptedComponent& scriptComponent = view.get<LuaScriptedComponent>(entity);
-
-        scriptComponent.OnUpdate((float)deltatime);
+    auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
+    for (auto e : view) {
+        Entity entity(e, m_Scene);
+        auto& script = entity.GetComponent<LuaScriptComponent>();
+        if (script.ScriptInstance["onUpdate"].valid()) {
+            script.ScriptInstance["onUpdate"](e, (float)deltatime);
+        }
     }
 }
 void ScriptingSystem::InitScripts() {
-    auto view = m_Scene->GetAllEntitiesWith<LuaScriptedComponent>();
+    ZR_ASSERT(m_Scene, "Scene is NULL!");
+    auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
-    for (auto entity : view) {
-        LuaScriptedComponent& scriptComponent = view.get<LuaScriptedComponent>(entity);
+    // Expose Components
+    RegisterAllComponentsToLua(m_LuaState, m_Scene->m_Registry);
 
-        scriptComponent.OnInit();
+    for (auto e : view) {
+        Entity entity(e, m_Scene);
+
+        // Load ScriptInstance table
+        {
+            const char* scriptPath = entity.GetComponent<LuaScriptComponent>().ScriptPath.c_str();
+            auto& luaScript = entity.GetComponent<LuaScriptComponent>();
+
+            sol::table scriptInstance = m_LuaState.script_file(scriptPath);
+            luaScript.ScriptInstance = scriptInstance;
+        }
+
+        // Run onCreate function for entities
+        sol::table& scriptInstance = entity.GetComponent<LuaScriptComponent>().ScriptInstance;
+        if (scriptInstance["onCreate"].valid()) {
+            scriptInstance["onCreate"](e, scriptInstance);
+        }
     }
 }
 
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
-    ZR_ASSERT(std::filesystem::exists(scriptPath), "Path '{}' couldn't be found!");
-    ZR_ASSERT(entity.HasComponent<LuaScriptedComponent>(), "Tring to load script without LuaScriptedComponent!")
+    ZR_CORE_TRACE("Loaded script");
+    return true; // TODO: Fix returning
+}
 
-    sol::state& luaState = m_LuaStates[entity.GetID()]; // Get or create state
-    LuaScriptedComponent& scComponent = entity.GetComponent<LuaScriptedComponent>();
-
-    luaState.open_libraries(sol::lib::base);
-
-    try {
-        luaState.safe_script_file(scriptPath); // Execute script file
-    } catch (const sol::error& e) {
-        ZR_ERROR("Error loading lua script! \n{}", e.what());
-        return false;
+void ScriptingSystem::RegisterAllComponentsToLua(sol::state& lua, entt::registry& registry) {
+    for (auto& exposer : GetLuaComponentRegistry()) {
+        exposer(lua, registry);
     }
-
-    scComponent.OnUpdate = luaState["OnUpdate"];
-    scComponent.OnInit = luaState["OnInit"];
-
-    ZR_WARN("OnUpdate {0}, OnInit {1}", (bool)scComponent.OnUpdate, (bool)scComponent.OnInit);
-
-    scComponent.ScriptPath = scriptPath;
-    return (bool)scComponent.OnUpdate && (bool)scComponent.OnInit;
 }
 
 } // namespace zirconium
