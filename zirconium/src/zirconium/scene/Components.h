@@ -118,6 +118,19 @@ struct CameraComponent {
 
     CameraComponent()
         : Camera() {}
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("IsPrimaryCamera", [&registry](entt::entity entity) -> bool {
+            auto* cam = registry.try_get<CameraComponent>(entity);
+            return cam ? cam->Primary : false;
+        });
+
+        lua.set_function("SetPrimaryCamera", [&registry](entt::entity entity, bool primary) {
+            auto* cam = registry.try_get<CameraComponent>(entity);
+            if (cam)
+                cam->Primary = primary;
+        });
+    }
 };
 
 struct RigidBodyComponent {
@@ -125,6 +138,25 @@ struct RigidBodyComponent {
     BodyType Type = BodyType::Dynamic;
     bool FixedRotation = false;
     b2BodyId RuntimeBody;
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("SetFixedRotation", [&registry](entt::entity entity, bool fixed) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb)
+                rb->FixedRotation = fixed;
+        });
+
+        lua.set_function("GetBodyType", [&registry](entt::entity entity) -> int {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? static_cast<int>(rb->Type) : -1;
+        });
+
+        lua.set_function("SetBodyType", [&registry](entt::entity entity, int type) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb && type >= 0 && type <= 2)
+                rb->Type = static_cast<RigidBodyComponent::BodyType>(type);
+        });
+    }
 };
 
 struct BoxColiderComponent {
@@ -133,6 +165,37 @@ struct BoxColiderComponent {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("GetBoxCollider", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* c = registry.try_get<BoxColiderComponent>(entity);
+            if (!c)
+                return sol::nil;
+
+            sol::table tbl = lua.create_table();
+            tbl["offset_x"] = c->Offset.x;
+            tbl["offset_y"] = c->Offset.y;
+            tbl["size_x"] = c->Size.x;
+            tbl["size_y"] = c->Size.y;
+            tbl["density"] = c->Density;
+            tbl["friction"] = c->Friction;
+            tbl["restitution"] = c->Restitution;
+            return tbl;
+        });
+
+        lua.set_function("SetBoxCollider",
+                         [&registry](entt::entity entity, float offset_x, float offset_y, float size_x, float size_y,
+                                     float density, float friction, float restitution) {
+                             auto* c = registry.try_get<BoxColiderComponent>(entity);
+                             if (c) {
+                                 c->Offset = {offset_x, offset_y};
+                                 c->Size = {size_x, size_y};
+                                 c->Density = density;
+                                 c->Friction = friction;
+                                 c->Restitution = restitution;
+                             }
+                         });
+    }
 };
 
 struct CircleRendererComponent {
@@ -146,6 +209,53 @@ struct CircleRendererComponent {
     operator const glm::vec4&() const {
         return Color;
     }
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("GetCircleColor", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (!circle)
+                return sol::nil;
+
+            sol::table color = lua.create_table();
+            color["r"] = circle->Color.r;
+            color["g"] = circle->Color.g;
+            color["b"] = circle->Color.b;
+            color["a"] = circle->Color.a;
+            return color;
+        });
+
+        lua.set_function("SetCircleColor", [&registry](entt::entity entity, float r, float g, float b, float a) {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (circle)
+                circle->Color = {r, g, b, a};
+        });
+
+        lua.set_function("GetCircleThickness", [&registry](entt::entity entity) -> sol::optional<float> {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (!circle)
+                return sol::nullopt;
+            return circle->Thickness;
+        });
+
+        lua.set_function("SetCircleThickness", [&registry](entt::entity entity, float thickness) {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (circle)
+                circle->Thickness = thickness;
+        });
+
+        lua.set_function("GetCircleFade", [&registry](entt::entity entity) -> sol::optional<float> {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (!circle)
+                return sol::nullopt;
+            return circle->Fade;
+        });
+
+        lua.set_function("SetCircleFade", [&registry](entt::entity entity, float fade) {
+            auto* circle = registry.try_get<CircleRendererComponent>(entity);
+            if (circle)
+                circle->Fade = fade;
+        });
+    }
 };
 
 struct CircleColiderComponent {
@@ -154,6 +264,36 @@ struct CircleColiderComponent {
     float Density = 1.0f;
     float Friction = 0.5f;
     float Restitution = 0.0f;
+
+    static void Expose2Lua(sol::state& lua, entt::registry& registry) {
+        lua.set_function("GetCircleCollider", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* c = registry.try_get<CircleColiderComponent>(entity);
+            if (!c)
+                return sol::nil;
+
+            sol::table tbl = lua.create_table();
+            tbl["offset_x"] = c->Offset.x;
+            tbl["offset_y"] = c->Offset.y;
+            tbl["radius"] = c->Radius;
+            tbl["density"] = c->Density;
+            tbl["friction"] = c->Friction;
+            tbl["restitution"] = c->Restitution;
+            return tbl;
+        });
+
+        lua.set_function("SetCircleCollider",
+                         [&registry](entt::entity entity, float offset_x, float offset_y, float radius, float density,
+                                     float friction, float restitution) {
+                             auto* c = registry.try_get<CircleColiderComponent>(entity);
+                             if (c) {
+                                 c->Offset = {offset_x, offset_y};
+                                 c->Radius = radius;
+                                 c->Density = density;
+                                 c->Friction = friction;
+                                 c->Restitution = restitution;
+                             }
+                         });
+    }
 };
 
 struct NativeScriptComponent {

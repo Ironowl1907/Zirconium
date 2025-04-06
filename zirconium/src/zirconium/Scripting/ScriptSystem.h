@@ -62,5 +62,10 @@ private:
 
 REGISTER_COMPONENT_TO_LUA(TransformComponent::Expose2Lua);
 REGISTER_COMPONENT_TO_LUA(SpriteRendererComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(CameraComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(RigidBodyComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(BoxColiderComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(CircleRendererComponent::Expose2Lua);
+REGISTER_COMPONENT_TO_LUA(CircleRendererComponent::Expose2Lua);
 
 } // namespace zirconium
