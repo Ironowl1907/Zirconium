@@ -1,5 +1,27 @@
 Scene: Untitled
 Entities:
+  - Entity: 17611914368386583853
+    TagComponent:
+      Tag: Circle
+    LuaScriptComponent:
+      Path: TestingFiles/TestScript.lua
+    TransformComponent:
+      Translation: [1.4, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CircleRendererComponent:
+      Color: [1, 1, 1, 1]
+      Thickness: 1
+      Fade: 0.0025
+  - Entity: 7090411716987908928
+    TagComponent:
+      Tag: Square
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]
   - Entity: 11327488918694726279
     TagComponent:
       Tag: Camera
@@ -18,12 +40,3 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 7090411716987908928
-    TagComponent:
-      Tag: Square
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 1, 1, 1]
