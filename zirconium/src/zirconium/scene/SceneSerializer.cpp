@@ -4,6 +4,7 @@
 #include "SceneCamera.h"
 #include "zrpch.h"
 
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -137,6 +138,16 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity) {
 
         auto& tag = entity.GetComponent<TagComponent>().Tag;
         out << YAML::Key << "Tag" << YAML::Value << tag.c_str();
+
+        out << YAML::EndMap;
+    }
+
+    if (entity.HasComponent<LuaScriptComponent>()) {
+        out << YAML::Key << "LuaScriptComponent";
+        out << YAML::BeginMap;
+
+        auto& lsc = entity.GetComponent<LuaScriptComponent>();
+        out << YAML::Key << "Path" << YAML::Value << lsc.ScriptPath.c_str();
 
         out << YAML::EndMap;
     }
@@ -330,6 +341,14 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
                 ZR_CORE_TRACE("   Deserialized Sprite Renderer component with uuid {0}", uuid);
+            }
+
+            auto luaScriptComponent = entity["LuaScriptComponent"];
+            if (luaScriptComponent) {
+              ZR_CORE_TRACE("Heyy");
+                auto& src = deserializedEntity.AddComponent<LuaScriptComponent>();
+                src.ScriptPath = std::filesystem::path(luaScriptComponent["Path"].as<std::string>());
+                ZR_CORE_TRACE("   Deserialized Lua Script component with uuid {0}", uuid);
             }
 
             auto circleRenererComponent = entity["CircleRendererComponent"];
