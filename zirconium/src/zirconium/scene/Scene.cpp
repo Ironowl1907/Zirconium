@@ -183,16 +183,16 @@ void Scene::OnPhysicsShutdown() {
     delete m_WorldID;
 }
 
-void Scene::OnScriptsInit() {
+bool Scene::OnScriptsInit() {
     ScriptingSystem* sc = ScriptingSystem::Get();
 
     sc->Init(this);
-    sc->InitScripts();
+    return sc->InitScripts();
 }
 
-void Scene::OnRuntimeStart() {
-    OnScriptsInit();
+bool Scene::OnRuntimeStart() {
     OnPhysicsInit();
+    return OnScriptsInit();
 }
 
 void Scene::OnRuntimeStop() {
