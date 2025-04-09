@@ -282,6 +282,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     });
 
     static bool BrowsingScript = false;
+    static bool CreatingScript = false;
+    static bool BrowseOnCreatingScript = false;
     DrawComponent<LuaScriptComponent>("Script", entity, [this](auto& component) {
         auto& pathName = m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath;
         char buffer[128];
@@ -308,15 +310,18 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 else
                     ZR_ASSERT(false, "Error Loading script!");
 
-                ZR_CORE_TRACE("Dropped path");
             }
             ImGui::EndDragDropTarget();
         }
 
-        ImGui::SameLine();
-        if (ImGui::Button("Browse")) {
+        if (ImGui::Button("Browse"))
             BrowsingScript = true;
-        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Create Script"))
+            CreatingScript = true;
+
         if (BrowsingScript) {
             std::string path;
             if (FileDialogs::SaveFile(path, ".lua")) {
@@ -327,8 +332,37 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 BrowsingScript = false;
             }
         }
-    });
 
+        if (CreatingScript) {
+            ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+            ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            ImGui::Begin("Create Script", 0,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+
+            ImGui::Text("Create a Script");
+
+            char buffer[128];
+            if (ImGui::InputText("Script Path", buffer, sizeof(buffer))) {
+            }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Browse")) {
+                BrowseOnCreatingScript = true;
+            }
+
+            std::string path = "./";
+            if (BrowseOnCreatingScript) {
+
+                if (FileDialogs::SaveFile(path, ".lua")) {
+                }
+
+                if (ImGui::Button("Click")) {
+                    CreatingScript = false;
+                }
+                ImGui::End();
+            }
+        }
+    });
     DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         ImGui::SliderFloat("Thickness", &component.Thickness, 0.0f, 1.f);
