@@ -309,7 +309,6 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                     m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
                 else
                     ZR_ASSERT(false, "Error Loading script!");
-
             }
             ImGui::EndDragDropTarget();
         }
@@ -337,11 +336,15 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             ImVec2 center = ImGui::GetMainViewport()->GetCenter();
             ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
             ImGui::Begin("Create Script", 0,
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_AlwaysAutoResize);
 
             ImGui::Text("Create a Script");
 
             char buffer[128];
+            static std::string path = "./";
+
+            std::strcpy(buffer, path.c_str());
             if (ImGui::InputText("Script Path", buffer, sizeof(buffer))) {
             }
             ImGui::SameLine();
@@ -350,17 +353,26 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 BrowseOnCreatingScript = true;
             }
 
-            std::string path = "./";
             if (BrowseOnCreatingScript) {
-
                 if (FileDialogs::SaveFile(path, ".lua")) {
+                    BrowseOnCreatingScript = false;
                 }
-
-                if (ImGui::Button("Click")) {
-                    CreatingScript = false;
-                }
-                ImGui::End();
             }
+
+            ImGui::Separator();
+
+            if (ImGui::Button("Cancel"))
+                CreatingScript = false;
+            ImGui::SameLine();
+            if (ImGui::Button("Save")) {
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                else
+                    ZR_ASSERT(false, "Error Loading script!");
+                CreatingScript = false;
+            }
+
+            ImGui::End();
         }
     });
     DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component) {
