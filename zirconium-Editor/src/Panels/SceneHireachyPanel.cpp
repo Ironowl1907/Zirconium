@@ -364,10 +364,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             if (ImGui::Button("Cancel"))
                 CreatingScript = false;
             ImGui::SameLine();
-            if (ImGui::Button("Save")) {
-                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+            if (ImGui::Button("Create Script")) {
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
                     m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
-                else
+                    CopyFiles("zirconium/src/zirconium/Scripting/ScriptTemplates/BasicTemplate.lua", path);
+                } else
                     ZR_ASSERT(false, "Error Loading script!");
                 CreatingScript = false;
             }
