@@ -24,7 +24,7 @@ public:
 
     void OnSimulationStart();
     void OnSimulationStop();
-    void OnRuntimeStart();
+    bool OnRuntimeStart();
     void OnRuntimeStop();
 
     void OnUpdateSimulation(TimeStep delta, EditorCamera& camera);
@@ -54,7 +54,7 @@ private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
     void OnPhysicsInit();
-    void OnScriptsInit();
+    bool OnScriptsInit();
     void OnPhysicsShutdown();
 
 private:

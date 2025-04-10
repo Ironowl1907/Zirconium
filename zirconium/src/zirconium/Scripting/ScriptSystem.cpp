@@ -30,7 +30,7 @@ void ScriptingSystem::UpdateScripts(TimeStep& deltatime) {
         }
     }
 }
-void ScriptingSystem::InitScripts() {
+bool ScriptingSystem::InitScripts() {
     ZR_ASSERT(m_Scene, "Scene is NULL!");
     auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
@@ -45,7 +45,12 @@ void ScriptingSystem::InitScripts() {
             const char* scriptPath = entity.GetComponent<LuaScriptComponent>().ScriptPath.c_str();
             auto& luaScript = entity.GetComponent<LuaScriptComponent>();
 
-            sol::table scriptInstance = m_LuaState.script_file(scriptPath);
+            auto scriptInstance = m_LuaState.safe_script_file(scriptPath, sol::script_pass_on_error);
+            if (!scriptInstance.valid()) {
+                sol::error err = scriptInstance; // Retrieve the error
+                ZR_CORE_ERROR("Lua Error: {}", err.what());
+                return false;
+            }
             luaScript.ScriptInstance = scriptInstance;
         }
 
@@ -55,6 +60,7 @@ void ScriptingSystem::InitScripts() {
             scriptInstance["onCreate"](e, scriptInstance);
         }
     }
+    return true;
 }
 
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {

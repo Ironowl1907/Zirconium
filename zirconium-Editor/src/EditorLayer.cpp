@@ -187,11 +187,16 @@ void EditorLayer::OnScenePlay() {
     ZR_ASSERT(m_EditorScene, "");
     m_ActiveScene = Scene::Copy(m_EditorScene);
 
-    m_ActiveScene->OnRuntimeStart();
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+    if (!m_ActiveScene->OnRuntimeStart()) {
+            m_SceneState = SceneState::Edit;
+            return;
+        }
 }
 void EditorLayer::OnSceneStop() {
-  if (m_SceneState == SceneState::Edit) return;
+    if (m_SceneState == SceneState::Edit)
+        return;
     m_SceneState = SceneState::Edit;
     m_ActiveScene->OnRuntimeStop();
 

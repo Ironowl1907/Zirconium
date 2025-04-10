@@ -20,7 +20,7 @@ public:
 
     void Init(Scene* scene);
     void UpdateScripts(TimeStep& deltatime);
-    void InitScripts();
+    bool InitScripts();
 
     bool LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath);
     ScriptingSystem(const ScriptingSystem&) = delete;
