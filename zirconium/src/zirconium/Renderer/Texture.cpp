@@ -31,9 +31,21 @@ Ref<Texture2D> Texture2D::Create(const uint32_t& width, const uint32_t& height) 
     return nullptr;
 }
 
-Texture2DLibrary::Texture2DLibrary(){}
-Texture2DLibrary::~Texture2DLibrary(){}
+void Texture2DLibrary::Init() {
+    m_Instance = new Texture2DLibrary();
+}
 
-void Texture2DLibrary::Add(const std::string& name, const Ref<Texture2D>& shader) {}
-Ref<Texture2D> Texture2DLibrary::Load(const std::string& name, const std::string& filePath) {return {};}
+Texture2DLibrary::Texture2DLibrary() {}
+Texture2DLibrary::~Texture2DLibrary() {
+    delete m_Instance;
+}
+
+Ref<Texture2D> Texture2DLibrary::Add(const std::string& path) {
+  return {};
+}
+Ref<Texture2D> Texture2DLibrary::Load(const std::string& name, const std::string& filePath) {
+    return {};
+}
+
+Texture2DLibrary* Texture2DLibrary::m_Instance = nullptr;
 } // namespace zirconium

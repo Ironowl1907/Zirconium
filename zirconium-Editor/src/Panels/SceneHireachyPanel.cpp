@@ -261,22 +261,28 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         DrawVec3Control("Scale", tc.Scale, 1.0f);
     });
 
-    DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component) {
+    DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [this](auto& component) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         ImGui::SliderFloat("Tiling Factor", &component.TilingFactor, 0.0f, 100.f);
-        ImGui::Button("Texture", ImVec2(200.0f, 0.0f));
-        if (ImGui::BeginDragDropTarget()) {
 
+        auto& pathName = m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture->GetPath();
+        char buffer[128];
+        std::strcpy(buffer, pathName.c_str());
+
+        ImGui::SetNextItemWidth(200);
+        if (ImGui::InputText("Texture Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            std::filesystem::path path(buffer);
+            if (std::filesystem::exists(path))
+                Texture2DLibrary::Get()->Add(path);
+        }
+        if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
                 const char* data = reinterpret_cast<const char*>(payload->Data);
                 const int dataSize = payload->DataSize;
-                try {
-                    component.Texture = Texture2D::Create(std::string(data));
-                } catch (const std::runtime_error& e) {
-                    ZR_CORE_ERROR("Coundn't open file! {}", e.what());
-                }
-            }
 
+                std::filesystem::path path(data);
+                m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
+            }
             ImGui::EndDragDropTarget();
         }
     });

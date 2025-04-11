@@ -113,6 +113,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 
 Scene::Scene() {
     m_Registry = entt::registry();
+    Texture2DLibrary::Init();
 };
 
 Scene::~Scene() {}
@@ -376,6 +377,5 @@ Entity Scene::GetMainCameraEntity() {
     ZR_ASSERT(false, "Scene doesn't have main camera!");
     return Entity();
 }
-
 
 } // namespace zirconium
