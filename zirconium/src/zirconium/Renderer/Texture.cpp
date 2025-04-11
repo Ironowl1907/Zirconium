@@ -30,4 +30,10 @@ Ref<Texture2D> Texture2D::Create(const uint32_t& width, const uint32_t& height) 
     ZR_CORE_ASSERT(false, "Unknown RenderAPI!");
     return nullptr;
 }
+
+Texture2DLibrary::Texture2DLibrary(){}
+Texture2DLibrary::~Texture2DLibrary(){}
+
+void Texture2DLibrary::Add(const std::string& name, const Ref<Texture2D>& shader) {}
+Ref<Texture2D> Texture2DLibrary::Load(const std::string& name, const std::string& filePath) {return {};}
 } // namespace zirconium

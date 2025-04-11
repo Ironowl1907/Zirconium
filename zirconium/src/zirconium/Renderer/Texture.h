@@ -22,4 +22,17 @@ public:
 
     virtual bool operator==(const Texture2D& other) = 0;
 };
+
+class Texture2DLibrary {
+
+public:
+    Texture2DLibrary();
+    ~Texture2DLibrary();
+
+    void Add(const std::string& name, const Ref<Texture2D>& shader);
+    Ref<Texture2D> Load(const std::string& name, const std::string& filePath);
+
+private:
+    std::unordered_map<std::string, Ref<Texture2D>> m_Shaders;
+};
 }; // namespace zirconium
