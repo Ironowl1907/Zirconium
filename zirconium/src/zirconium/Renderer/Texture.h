@@ -38,7 +38,7 @@ private:
     Texture2DLibrary();
     ~Texture2DLibrary();
     static Texture2DLibrary* m_Instance;
-    std::unordered_map<std::string, Ref<Texture2D>> m_Shaders;
+    std::unordered_map<std::string, Ref<Texture2D>> m_Textures;
 };
 
 }; // namespace zirconium
