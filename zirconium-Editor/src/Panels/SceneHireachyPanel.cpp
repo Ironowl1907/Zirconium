@@ -273,7 +273,10 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::InputText("Texture Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path))
-                Texture2DLibrary::Get()->Add(path);
+                m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
+            else {
+                ZR_CORE_ERROR("Invalid path for loading texture! {}", path.c_str());
+            }
         }
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {

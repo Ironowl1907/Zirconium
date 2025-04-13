@@ -41,14 +41,19 @@ Texture2DLibrary::~Texture2DLibrary() {
 }
 
 Ref<Texture2D> Texture2DLibrary::Add(const std::string& path) {
-    if (m_Textures.find(path) != m_Textures.end())
-        ZR_CORE_ERROR("Texture {} already exists!", path);
-
-    m_Textures[path] = Texture2D::Create(path);
+    if (m_Textures.find(path) != m_Textures.end()) {
+        ZR_CORE_WARN("Texture {} already exists!", path);
+    } else {
+        m_Textures[path] = Texture2D::Create(path);
+    }
     return m_Textures[path];
 }
-Ref<Texture2D> Texture2DLibrary::Load(const std::string& name, const std::string& filePath) {
-    return {};
+Ref<Texture2D> Texture2DLibrary::Load(const std::string& path) {
+    if (m_Textures.find(path) == m_Textures.end()) {
+        ZR_CORE_WARN("Creating Texture");
+        Add(path);
+    }
+    return m_Textures[path];
 }
 
 Texture2DLibrary* Texture2DLibrary::m_Instance = nullptr;

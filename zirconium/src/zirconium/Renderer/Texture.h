@@ -32,7 +32,7 @@ public:
     static void Init();
 
     Ref<Texture2D> Add(const std::string& path);
-    Ref<Texture2D> Load(const std::string& name, const std::string& filePath);
+    Ref<Texture2D> Load(const std::string& path);
 
 private:
     Texture2DLibrary();
