@@ -108,6 +108,21 @@ struct SpriteRendererComponent {
                 sprite->Color = {r, g, b, a};
             }
         });
+
+        lua.set_function("SetSpriteTexture", [&registry](entt::entity entity, std::string path) {
+            SpriteRendererComponent* sprite = registry.try_get<SpriteRendererComponent>(entity);
+            if (sprite) {
+                sprite->Texture = Texture2DLibrary::Get()->Add(path);
+            }
+        });
+
+        lua.set_function("GetSpriteTexture", [&registry](entt::entity entity) -> std::string {
+            SpriteRendererComponent* sprite = registry.try_get<SpriteRendererComponent>(entity);
+            if (sprite) {
+                return sprite->Texture->GetPath();
+            }
+            return "";
+        });
     }
 };
 

@@ -22,6 +22,10 @@ public:
         return m_Height;
     }
 
+    virtual const std::string& GetPath() const override {
+        return m_Path;
+    }
+
     virtual void SetData(const void* data, const uint32_t& size) const override;
 
     virtual void Bind(const uint32_t slot) const override;
