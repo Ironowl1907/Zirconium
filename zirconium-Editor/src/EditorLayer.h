@@ -21,11 +21,11 @@ public:
     virtual void OnImGuiRender() override;
     virtual void OnEvent(Event& event) override;
 
-    void NewFile();
-    void OpenFile(const std::string);
-    void OpenFile(const std::filesystem::path path);
-    void Save();
-    void SaveToFile(const std::string);
+    void NewSceneFile();
+    void OpenSceneFile(const std::string);
+    void OpenSceneFile(const std::filesystem::path path);
+    void SaveScene();
+    void SaveSceneToFile(const std::string);
 
     // UI Panels
     void UI_ToolBar();

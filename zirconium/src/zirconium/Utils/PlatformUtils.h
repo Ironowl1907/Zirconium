@@ -1,14 +1,14 @@
 #pragma once
 
-#include <string>
 #include <filesystem>
+#include <string>
 
 namespace zirconium {
 
 class FileDialogs {
 public:
-    static bool OpenFile(std::string& path, const char* flags = ".zr");
-    static bool SaveFile(std::string& path, const char* flags = ".zr");
+    static bool OpenFile(std::string& path, const char* flags);
+    static bool SaveFile(std::string& path, const char* flags);
 };
 
 inline bool CopyFiles(const std::string& templatePath, const std::string& newScriptPath) {

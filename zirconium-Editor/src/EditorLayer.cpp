@@ -190,9 +190,9 @@ void EditorLayer::OnScenePlay() {
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
     if (!m_ActiveScene->OnRuntimeStart()) {
-            m_SceneState = SceneState::Edit;
-            return;
-        }
+        m_SceneState = SceneState::Edit;
+        return;
+    }
 }
 void EditorLayer::OnSceneStop() {
     if (m_SceneState == SceneState::Edit)
@@ -306,13 +306,13 @@ void EditorLayer::OnImGuiRender() {
             // which we can't undo at the moment without finer window depth/z control.
 
             if (ImGui::MenuItem("New", "Ctrl+N")) {
-                NewFile();
+                NewSceneFile();
             }
             if (ImGui::MenuItem("Open...", "Ctrl+O")) {
                 s_Opening = true;
             }
             if (ImGui::MenuItem("Save", "Ctrl+S")) {
-                Save();
+                SaveScene();
             }
             if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
                 s_SavingTo = true;
@@ -443,7 +443,7 @@ void EditorLayer::OnImGuiRender() {
             const char* data = reinterpret_cast<const char*>(payload->Data);
             const int dataSize = payload->DataSize;
             try {
-                OpenFile(std::string(data));
+                OpenSceneFile(std::string(data));
             } catch (const std::runtime_error& e) {
                 ZR_CORE_ERROR("Coundn't open file! {}", e.what());
             }
@@ -460,14 +460,14 @@ void EditorLayer::OnImGuiRender() {
     ImGui::End();
 
     if (s_Opening) {
-        if (FileDialogs::OpenFile(s_FilePath)) {
-            OpenFile(s_FilePath);
+        if (FileDialogs::OpenFile(s_FilePath, ".zscene")) {
+            OpenSceneFile(s_FilePath);
             s_Opening = false;
         }
     }
     if (s_SavingTo) {
-        if (FileDialogs::SaveFile(s_FilePath)) {
-            SaveToFile(s_FilePath);
+        if (FileDialogs::SaveFile(s_FilePath, ".zscene")) {
+            SaveSceneToFile(s_FilePath);
             s_SavingTo = false;
         }
     }
@@ -475,7 +475,7 @@ void EditorLayer::OnImGuiRender() {
 
 void EditorLayer::UI_ToolBar() {}
 
-void EditorLayer::NewFile() {
+void EditorLayer::NewSceneFile() {
     ZR_CORE_WARN("NewFile");
     m_ActiveScene = std::make_shared<Scene>();
     m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -483,12 +483,12 @@ void EditorLayer::NewFile() {
 
     m_CurrentScenePath = std::filesystem::path();
 }
-void EditorLayer::OpenFile(const std::string path) {
+void EditorLayer::OpenSceneFile(const std::string path) {
 
     if (m_SceneState != SceneState::Edit)
         m_SceneState = SceneState::Edit;
 
-    ZR_CORE_WARN("OpenFile: {}", path);
+    ZR_CORE_WARN("Open Scene File: {}", path);
     if (path.empty())
         return;
 
@@ -506,15 +506,15 @@ void EditorLayer::OpenFile(const std::string path) {
     m_CurrentScenePath = path;
 }
 
-void EditorLayer::OpenFile(const std::filesystem::path path) {
-    OpenFile(path.string());
+void EditorLayer::OpenSceneFile(const std::filesystem::path path) {
+    OpenSceneFile(path.string());
 }
 
-void EditorLayer::Save() {
+void EditorLayer::SaveScene() {
     if (!m_CurrentScenePath.empty())
-        SaveToFile(m_CurrentScenePath);
+        SaveSceneToFile(m_CurrentScenePath);
 }
-void EditorLayer::SaveToFile(const std::string path) {
+void EditorLayer::SaveSceneToFile(const std::string path) {
     ZR_CORE_WARN("SaveToFile: {}", path);
     if (!path.empty()) {
         SceneSerializer serializer(m_ActiveScene);
@@ -564,7 +564,7 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
             if (shift)
                 s_SavingTo = true;
             else
-                Save();
+                SaveScene();
         }
         break;
     }
@@ -578,7 +578,7 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
 
     case ZR_KEY_N: {
         if (control) {
-            NewFile();
+            NewSceneFile();
         }
         break;
     }
