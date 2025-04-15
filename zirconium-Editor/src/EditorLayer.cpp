@@ -5,8 +5,8 @@
 #include "imgui.h"
 #include "zirconium.h"
 
-#include "zirconium/Utils/PlatformUtils.h"
 #include "zirconium/Scene/SceneSerializer.h"
+#include "zirconium/Utils/PlatformUtils.h"
 #include <cstdint>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
@@ -301,27 +301,6 @@ void EditorLayer::OnImGuiRender() {
     style.WindowMinSize.x = minWinSize;
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows,
-            // which we can't undo at the moment without finer window depth/z control.
-
-            if (ImGui::MenuItem("New", "Ctrl+N")) {
-                NewSceneFile();
-            }
-            if (ImGui::MenuItem("Open...", "Ctrl+O")) {
-                s_Opening = true;
-            }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) {
-                SaveScene();
-            }
-            if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
-                s_SavingTo = true;
-            }
-
-            if (ImGui::MenuItem("Exit"))
-                Application::Get().Close();
-            ImGui::EndMenu();
-        }
 
         if (ImGui::BeginMenu("Scene")) {
             if (ImGui::MenuItem("Play", "Ctrl+L", false, m_SceneState != SceneState::Play)) {
@@ -343,6 +322,46 @@ void EditorLayer::OnImGuiRender() {
             if (ImGui::MenuItem("Stop", "Ctrl+W")) {
                 OnSceneStop();
             }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("New", "Ctrl+N")) {
+                NewSceneFile();
+            }
+            if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+                s_Opening = true;
+            }
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {
+                SaveScene();
+            }
+            if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
+                s_SavingTo = true;
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("Exit"))
+                Application::Get().Close();
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Project")) {
+            if (ImGui::MenuItem("New Project", "")) {
+            }
+            if (ImGui::MenuItem("Open Project...", "")) {
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("Settings", "")) {
+            }
+
             ImGui::EndMenu();
         }
 
