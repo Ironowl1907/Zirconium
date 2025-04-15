@@ -146,6 +146,7 @@ OBJECTS := \
 	$(OBJDIR)/LinuxPlatformUtils.o \
 	$(OBJDIR)/linux.o \
 	$(OBJDIR)/linuxInput.o \
+	$(OBJDIR)/ProjectFile.o \
 	$(OBJDIR)/Buffer.o \
 	$(OBJDIR)/EditorCamera.o \
 	$(OBJDIR)/FrameBuffer.o \
@@ -160,11 +161,11 @@ OBJECTS := \
 	$(OBJDIR)/Texture.o \
 	$(OBJDIR)/UniformBuffer.o \
 	$(OBJDIR)/VertexArray.o \
-	$(OBJDIR)/ScriptSystem.o \
 	$(OBJDIR)/Entity.o \
 	$(OBJDIR)/Scene.o \
 	$(OBJDIR)/SceneCamera.o \
 	$(OBJDIR)/SceneSerializer.o \
+	$(OBJDIR)/ScriptSystem.o \
 	$(OBJDIR)/zrpch.o \
 	$(OBJDIR)/stb_image.o \
 
@@ -288,6 +289,9 @@ $(OBJDIR)/linux.o: src/zirconium/Platform/linux/linux.cpp
 $(OBJDIR)/linuxInput.o: src/zirconium/Platform/linux/linuxInput.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ProjectFile.o: src/zirconium/Project/ProjectFile.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Buffer.o: src/zirconium/Renderer/Buffer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -330,19 +334,19 @@ $(OBJDIR)/UniformBuffer.o: src/zirconium/Renderer/UniformBuffer.cpp
 $(OBJDIR)/VertexArray.o: src/zirconium/Renderer/VertexArray.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Entity.o: src/zirconium/Scene/Entity.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Scene.o: src/zirconium/Scene/Scene.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/SceneCamera.o: src/zirconium/Scene/SceneCamera.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/SceneSerializer.o: src/zirconium/Scene/SceneSerializer.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ScriptSystem.o: src/zirconium/Scripting/ScriptSystem.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Entity.o: src/zirconium/scene/Entity.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Scene.o: src/zirconium/scene/Scene.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/SceneCamera.o: src/zirconium/scene/SceneCamera.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/SceneSerializer.o: src/zirconium/scene/SceneSerializer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/zrpch.o: src/zrpch.cpp

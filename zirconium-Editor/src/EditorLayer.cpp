@@ -6,7 +6,7 @@
 #include "zirconium.h"
 
 #include "zirconium/Utils/PlatformUtils.h"
-#include "zirconium/scene/SceneSerializer.h"
+#include "zirconium/Scene/SceneSerializer.h"
 #include <cstdint>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>

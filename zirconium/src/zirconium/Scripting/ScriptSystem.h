@@ -1,8 +1,9 @@
 #pragma once
 
 #include "zirconium/Core/Timestep.h"
-#include "zirconium/scene/Components.h"
-#include "zirconium/scene/Scene.h"
+#include "zirconium/Scene/Components.h"
+#include "zirconium/Scene/Scene.h"
+#include "zirconium/Scene/Entity.h"
 #include <filesystem>
 #include <functional>
 

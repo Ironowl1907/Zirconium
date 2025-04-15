@@ -6,7 +6,7 @@
 #include "zirconium/Renderer/EditorCamera.h"
 #include "zirconium/Renderer/SubTexture2D.h"
 #include "zirconium/Renderer/Texture.h"
-#include "zirconium/scene/Components.h"
+#include "zirconium/Scene/Components.h"
 
 namespace zirconium {
 class Renderer2D {

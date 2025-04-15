@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core.h"
-#include "zirconium/scene/Entity.h"
-#include "zirconium/scene/Scene.h"
+#include "zirconium/Scene/Entity.h"
+#include "zirconium/Scene/Scene.h"
 
 namespace zirconium {
 class SceneHierarchyPanel {

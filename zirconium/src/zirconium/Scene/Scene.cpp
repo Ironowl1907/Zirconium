@@ -5,8 +5,8 @@
 
 #include "zirconium/Renderer/Renderer2D.h"
 #include "zirconium/Scripting/ScriptSystem.h"
-#include "zirconium/scene/Components.h"
-#include "zirconium/scene/Entity.h"
+#include "zirconium/Scene/Components.h"
+#include "zirconium/Scene/Entity.h"
 #include <cstdint>
 #include <glm/trigonometric.hpp>
 #include <memory>

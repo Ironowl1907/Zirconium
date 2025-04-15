@@ -1,6 +1,4 @@
 #include "ScriptSystem.h"
-#include "zirconium/scene/Components.h"
-#include "zirconium/scene/Entity.h"
 #include "zrpch.h"
 #include <cstdint>
 #include <filesystem>
