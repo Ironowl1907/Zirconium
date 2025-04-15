@@ -323,7 +323,7 @@ void EditorLayer::OnImGuiRender() {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Editor")) {
+        if (ImGui::BeginMenu("Scene")) {
             if (ImGui::MenuItem("Play", "Ctrl+L", false, m_SceneState != SceneState::Play)) {
                 if (m_SceneState == SceneState::Edit)
                     OnScenePlay();

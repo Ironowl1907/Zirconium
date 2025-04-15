@@ -8,16 +8,25 @@
 
 namespace zirconium {
 
-void ProjectFile::Load(std::filesystem::path& path) {}
+void ProjectFile::Load(std::filesystem::path& path) {
+    std::ifstream stream(path);
+    std::stringstream strStream;
+    strStream << stream.rdbuf();
+
+    YAML::Node data = YAML::Load(strStream.str());
+    if (!data["Project"])
+        ZR_ASSERT(false, "Not Compatible .zr file. Can't find project name!");
+
+    m_ProjectName = data["ProjectName"].as<std::string>();
+    m_DefaultScene = data["DefaultScene"].as<std::string>();
+
+    m_SelfPath = path.c_str();
+}
+
 void ProjectFile::Serialize(std::filesystem::path& path) {
     YAML::Emitter out;
     out << YAML::Key << "ProjectName" << YAML::Value << m_ProjectName;
-
-    out << YAML::Key << "Scenes" << YAML::Value << YAML::BeginMap;
-    for (auto& [name, path] : m_Scenes) {
-        out << YAML::Key << name << YAML::Value << path.c_str();
-    }
-    out << YAML::EndMap;
+    out << YAML::Key << "DefaultScene" << YAML::Value << m_DefaultScene;
 }
 
 } // namespace zirconium
