@@ -7,6 +7,7 @@
 
 #include "zirconium/Scene/SceneSerializer.h"
 #include "zirconium/Utils/PlatformUtils.h"
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
@@ -223,6 +224,7 @@ void EditorLayer::OnSimulationPlay() {
 static bool s_Opening = false;
 static bool s_SavingTo = false;
 static std::string s_FilePath = "";
+static bool s_CreatingProject = false;
 
 void EditorLayer::OnImGuiRender() {
 
@@ -351,6 +353,7 @@ void EditorLayer::OnImGuiRender() {
 
         if (ImGui::BeginMenu("Project")) {
             if (ImGui::MenuItem("New Project", "")) {
+                s_CreatingProject = true;
             }
             if (ImGui::MenuItem("Open Project...", "")) {
             }
@@ -489,6 +492,55 @@ void EditorLayer::OnImGuiRender() {
             SaveSceneToFile(s_FilePath);
             s_SavingTo = false;
         }
+    }
+
+    if (s_CreatingProject) {
+        static bool ls_Browsing = false;
+
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Create Project", 0,
+                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_AlwaysAutoResize);
+
+        ImGui::Text("New Project");
+
+        char pathBuffer[128];
+        char nameBuffer[128];
+        static std::string path = "./";
+        static std::string name = "";
+
+        std::strcpy(pathBuffer, path.c_str());
+        std::strcpy(nameBuffer, name.c_str());
+
+        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer))) {
+        }
+
+        if (ImGui::InputText("Folder Path", pathBuffer, sizeof(pathBuffer))) {
+        }
+        ImGui::SameLine();
+
+        if (ImGui::Button("Browse")) {
+            ls_Browsing = true;
+        }
+
+        if (ls_Browsing) {
+            if (FileDialogs::SaveFile(path, NULL)) {
+                ls_Browsing = false;
+            }
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::Button("Cancel"))
+            s_CreatingProject = false;
+
+        ImGui::SameLine();
+        if (ImGui::Button("Create Project")) {
+            s_CreatingProject = false;
+        }
+
+        ImGui::End();
     }
 }
 
