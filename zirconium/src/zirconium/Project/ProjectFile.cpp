@@ -8,7 +8,7 @@
 
 namespace zirconium {
 
-void ProjectFile::Load(std::filesystem::path& path) {
+void ProjectFile::Load(const std::filesystem::path& path) {
     std::ifstream stream(path);
     std::stringstream strStream;
     strStream << stream.rdbuf();
@@ -27,6 +27,19 @@ void ProjectFile::Serialize(std::filesystem::path& path) {
     YAML::Emitter out;
     out << YAML::Key << "ProjectName" << YAML::Value << m_ProjectName;
     out << YAML::Key << "DefaultScene" << YAML::Value << m_DefaultScene;
+
+    std::ofstream fout(path);
+    fout << out.c_str();
+}
+
+
+void ProjectFile::SerializeProject(const ProjectFile& project, std::filesystem::path& path){
+    YAML::Emitter out;
+    out << YAML::Key << "ProjectName" << YAML::Value << project.m_ProjectName;
+    out << YAML::Key << "DefaultScene" << YAML::Value << project.m_DefaultScene;
+
+    std::ofstream fout(path);
+    fout << out.c_str();
 }
 
 } // namespace zirconium

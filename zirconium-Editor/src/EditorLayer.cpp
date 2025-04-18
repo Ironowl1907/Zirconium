@@ -18,7 +18,8 @@ namespace zirconium {
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
-    , m_CameraController(1.6f / 0.9f, true) {}
+    , m_CameraController(1.6f / 0.9f, true)
+    , m_Project() {}
 
 void EditorLayer::OnAttach() {
 
@@ -511,8 +512,8 @@ void EditorLayer::OnImGuiRender() {
         static std::string path = "./";
         static std::string name = "";
 
-        ZR_CORE_WARN("Name {}",  name);
-        ZR_CORE_WARN("Path {}",  path);
+        // ZR_CORE_WARN("Name {}",  name);
+        // ZR_CORE_WARN("Path {}",  path);
 
         std::strcpy(nameBuffer, name.c_str());
         if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
@@ -520,7 +521,7 @@ void EditorLayer::OnImGuiRender() {
         }
 
         std::strcpy(pathBuffer, path.c_str());
-        if (ImGui::InputText("Folder Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+        if (ImGui::InputText("Proyect Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             path = std::string(pathBuffer);
         }
         ImGui::SameLine();
@@ -530,9 +531,10 @@ void EditorLayer::OnImGuiRender() {
         }
 
         if (ls_Browsing) {
-            if (FileDialogs::SaveFile(path, NULL)) {
+            if (FileDialogs::OpenFile(path, ".zr")) {
                 std::strcpy(pathBuffer, path.c_str());
                 ls_Browsing = false;
+                ZR_CORE_WARN(path);
             }
         }
 
@@ -543,6 +545,10 @@ void EditorLayer::OnImGuiRender() {
 
         ImGui::SameLine();
         if (ImGui::Button("Create Project")) {
+            ProjectFile project(name);
+            std::filesystem::path ppath(path);
+            ProjectFile::SerializeProject(project, ppath);
+            m_Project.Load(path);
             s_CreatingProject = false;
         }
 

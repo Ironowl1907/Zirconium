@@ -40,6 +40,7 @@ static void FileTree(const std::filesystem::path& path) {
 void ContentBrowserPannel::OnImGuiRender() {
     ImGui::Begin("Content Browser");
 
+
     FileTree(s_AssetsDirectory);
     ImGui::End();
 }
