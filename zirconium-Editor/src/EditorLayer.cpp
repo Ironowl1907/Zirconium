@@ -9,6 +9,7 @@
 #include "zirconium/Utils/PlatformUtils.h"
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
 #include <stdexcept>
@@ -510,13 +511,17 @@ void EditorLayer::OnImGuiRender() {
         static std::string path = "./";
         static std::string name = "";
 
-        std::strcpy(pathBuffer, path.c_str());
-        std::strcpy(nameBuffer, name.c_str());
+        ZR_CORE_WARN("Name {}",  name);
+        ZR_CORE_WARN("Path {}",  path);
 
-        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer))) {
+        std::strcpy(nameBuffer, name.c_str());
+        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            name = std::string(nameBuffer);
         }
 
-        if (ImGui::InputText("Folder Path", pathBuffer, sizeof(pathBuffer))) {
+        std::strcpy(pathBuffer, path.c_str());
+        if (ImGui::InputText("Folder Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            path = std::string(pathBuffer);
         }
         ImGui::SameLine();
 
@@ -526,6 +531,7 @@ void EditorLayer::OnImGuiRender() {
 
         if (ls_Browsing) {
             if (FileDialogs::SaveFile(path, NULL)) {
+                std::strcpy(pathBuffer, path.c_str());
                 ls_Browsing = false;
             }
         }
