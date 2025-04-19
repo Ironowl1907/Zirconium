@@ -17,6 +17,10 @@ public:
     static void SerializeProject(const ProjectFile& project, std::filesystem::path& path);
     void Serialize(std::filesystem::path& path);
 
+    std::filesystem::path GetProjectFile() {
+        return m_SelfPath;
+    }
+
 private:
 private:
     std::string m_ProjectName;

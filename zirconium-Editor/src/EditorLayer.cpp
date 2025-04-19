@@ -374,7 +374,7 @@ void EditorLayer::OnImGuiRender() {
     }
 
     m_SceneHierarchyPanel.OnImGuiRender();
-    m_ContentBrowserPanel.OnImGuiRender();
+    m_ContentBrowserPanel.OnImGuiRender(m_Project.GetProjectFile());
 
     ImGui::Begin("Settings");
     ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);

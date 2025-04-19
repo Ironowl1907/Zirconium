@@ -8,8 +8,9 @@ class ContentBrowserPannel {
 public:
     ContentBrowserPannel();
 
-    void OnImGuiRender();
+    void OnImGuiRender(const std::string& path);
+
 private:
-std::filesystem::path m_CurrentDirectory;
+    std::filesystem::path m_CurrentDirectory;
 };
 } // namespace zirconium
