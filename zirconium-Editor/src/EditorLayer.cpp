@@ -227,6 +227,7 @@ static bool s_Opening = false;
 static bool s_SavingTo = false;
 static std::string s_FilePath = "";
 static bool s_CreatingProject = false;
+static bool s_OpeningProject = false;
 
 void EditorLayer::OnImGuiRender() {
 
@@ -358,6 +359,7 @@ void EditorLayer::OnImGuiRender() {
                 s_CreatingProject = true;
             }
             if (ImGui::MenuItem("Open Project...", "")) {
+                s_OpeningProject = true;
             }
 
             ImGui::Spacing();
@@ -553,6 +555,14 @@ void EditorLayer::OnImGuiRender() {
         }
 
         ImGui::End();
+    }
+    if (s_OpeningProject) {
+        std::string path;
+        if (FileDialogs::SaveFile(path, ".zr")) {
+            s_OpeningProject = false;
+            m_Project.Load(std::filesystem::path(path));
+            ZR_CORE_WARN(path);
+        }
     }
 }
 
