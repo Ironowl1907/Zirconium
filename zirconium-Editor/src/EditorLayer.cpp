@@ -548,7 +548,7 @@ void EditorLayer::OnImGuiRender() {
             ProjectFile project(name);
             std::filesystem::path ppath(path);
             ProjectFile::SerializeProject(project, ppath);
-            m_Project.Load(path);
+            m_Project.Load(ppath);
             s_CreatingProject = false;
         }
 
