@@ -13,13 +13,16 @@ includedirs({
     -- IncludeDir["GLFW"],
     -- IncludeDir["Glad"],
     IncludeDir["ImGui"],
-    -- IncludeDir["glm"],
+    IncludeDir["glm"],
     -- IncludeDir["stb_image"],
     IncludeDir["entt"],
     -- IncludeDir["ImGuiFD"],
     -- IncludeDir["yaml-cpp"],
     IncludeDir["Box2D"],
     IncludeDir["Sol2"],
+
+    path.join(dependenciesBaseDir, "zirconium/vendor/glslang/lib"),
+    path.join(dependenciesBaseDir, "zirconium/vendor/SPIRV-Tools/lib")
 })
 
 libdirs {
@@ -39,6 +42,10 @@ links({
     "Box2D",
     "ImGuiFileDialog",
     "shaderc_combined",
+    "glslang",
+    "SPIRV",
+    "SPIRV-Tools",
+    "SPIRV-Tools-opt",
     "spirv-cross",
     "yaml-cpp",
     "Glad",

@@ -1,7 +1,7 @@
 #include "SceneHireachyPanel.h"
 #include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/Utils/PlatformUtils.h"
-#include "zirconium/scene/Components.h"
+#include "zirconium/Scene/Components.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"

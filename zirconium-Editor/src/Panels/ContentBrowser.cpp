@@ -8,16 +8,11 @@
 
 namespace zirconium {
 
-// Delete these asap
-const std::filesystem::path s_AssetsDirectory = ".";
-
-ContentBrowserPannel::ContentBrowserPannel() {
-    m_CurrentDirectory = s_AssetsDirectory;
-}
+ContentBrowserPannel::ContentBrowserPannel() {}
 
 static void FileTree(const std::filesystem::path& path) {
     for (auto& p : std::filesystem::directory_iterator(path)) {
-        auto relativePath = std::filesystem::relative(p.path(), s_AssetsDirectory);
+        auto relativePath = std::filesystem::relative(p.path(), path);
         std::string filename = relativePath.filename().string();
 
         if (p.is_directory()) {
@@ -37,10 +32,14 @@ static void FileTree(const std::filesystem::path& path) {
     }
 }
 
-void ContentBrowserPannel::OnImGuiRender() {
+void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
     ImGui::Begin("Content Browser");
 
-    FileTree(s_AssetsDirectory);
+    if (path.empty()) {
+        ImGui::Text("No Project Selected");
+    } else {
+        FileTree(path);
+    }
     ImGui::End();
 }
 } // namespace zirconium

@@ -25,13 +25,13 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Debug/zirconium-Editor
   DEFINES += -DZIR_DEBUG -DZR_ENABLE_ASSERTS -DGLFW_INCLUDE_NONE
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/glm -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include -Izirconium/vendor/glslang/lib -Izirconium/vendor/SPIRV-Tools/lib
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -Og -g -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -Og -g -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Debug/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lspirv-cross -lfmt -llua
+  LIBS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Debug/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lglslang -lSPIRV -lSPIRV-Tools -lSPIRV-Tools-opt -lspirv-cross -lfmt -llua
   LDDEPS += ../zirconium/bin/Debug/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Debug/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a
   ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/libshaderc -L../zirconium/vendor/spirv-cross -L../zirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/shaderc/libshaderc -Lzirconium/vendor/spirv-cross -Lzirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
@@ -61,13 +61,13 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Release/zirconium-Editor
   DEFINES += -DZIR_RELEASE -DZIR_DEBUG -DZR_ENABLE_ASSERTS
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/glm -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include -Izirconium/vendor/glslang/lib -Izirconium/vendor/SPIRV-Tools/lib
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Release/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lspirv-cross -lfmt -llua
+  LIBS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Release/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lglslang -lSPIRV -lSPIRV-Tools -lSPIRV-Tools-opt -lspirv-cross -lfmt -llua
   LDDEPS += ../zirconium/bin/Release/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Release/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a
   ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/libshaderc -L../zirconium/vendor/spirv-cross -L../zirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/shaderc/libshaderc -Lzirconium/vendor/spirv-cross -Lzirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
@@ -97,13 +97,13 @@ ifeq ($(config),dist)
   TARGET = $(TARGETDIR)/zirconium-Editor
   OBJDIR = bin-int/Dist/zirconium-Editor
   DEFINES += -DZIR_DIST
-  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include
+  INCLUDES += -I../zirconium/src -I../zirconium/vendor/imgui -I../zirconium/vendor/glm -I../zirconium/vendor/entt/src/entt -I../zirconium/vendor/Box2D/include -I../zirconium/vendor/sol2/include -Izirconium/vendor/glslang/lib -Izirconium/vendor/SPIRV-Tools/lib
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -pthread
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++20 -pthread
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Dist/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lspirv-cross -lfmt -llua
+  LIBS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Dist/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a -lshaderc_combined -lglslang -lSPIRV -lSPIRV-Tools -lSPIRV-Tools-opt -lspirv-cross -lfmt -llua
   LDDEPS += ../zirconium/bin/Dist/libzirconium.a ../zirconium/vendor/Box2D/bin/Box2D/libBox2D.a ../zirconium/vendor/ImGuiFileDialog/bin/ImGuiFileDialog/libImGuiFileDialog.a ../zirconium/vendor/yaml-cpp/bin/Dist/libyaml-cpp.a ../zirconium/vendor/glad/bin/Glad/libGlad.a ../zirconium/vendor/glfw/bin/GLFW/libGLFW.a ../zirconium/vendor/imgui/bin/ImGui/libImGui.a
   ALL_LDFLAGS += $(LDFLAGS) -L../zirconium/vendor/shaderc/libshaderc -L../zirconium/vendor/spirv-cross -L../zirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/shaderc/libshaderc -Lzirconium/vendor/spirv-cross -Lzirconium/vendor/yaml-cpp/bin/Release -Lzirconium/vendor/lua/lua-5.4.7/install/lib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)

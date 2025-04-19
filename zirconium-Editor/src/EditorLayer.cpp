@@ -5,9 +5,11 @@
 #include "imgui.h"
 #include "zirconium.h"
 
+#include "zirconium/Scene/SceneSerializer.h"
 #include "zirconium/Utils/PlatformUtils.h"
-#include "zirconium/scene/SceneSerializer.h"
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
 #include <stdexcept>
@@ -16,7 +18,8 @@ namespace zirconium {
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
-    , m_CameraController(1.6f / 0.9f, true) {}
+    , m_CameraController(1.6f / 0.9f, true)
+    , m_Project() {}
 
 void EditorLayer::OnAttach() {
 
@@ -190,9 +193,9 @@ void EditorLayer::OnScenePlay() {
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
     if (!m_ActiveScene->OnRuntimeStart()) {
-            m_SceneState = SceneState::Edit;
-            return;
-        }
+        m_SceneState = SceneState::Edit;
+        return;
+    }
 }
 void EditorLayer::OnSceneStop() {
     if (m_SceneState == SceneState::Edit)
@@ -223,6 +226,8 @@ void EditorLayer::OnSimulationPlay() {
 static bool s_Opening = false;
 static bool s_SavingTo = false;
 static std::string s_FilePath = "";
+static bool s_CreatingProject = false;
+static bool s_OpeningProject = false;
 
 void EditorLayer::OnImGuiRender() {
 
@@ -301,29 +306,8 @@ void EditorLayer::OnImGuiRender() {
     style.WindowMinSize.x = minWinSize;
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows,
-            // which we can't undo at the moment without finer window depth/z control.
 
-            if (ImGui::MenuItem("New", "Ctrl+N")) {
-                NewFile();
-            }
-            if (ImGui::MenuItem("Open...", "Ctrl+O")) {
-                s_Opening = true;
-            }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) {
-                Save();
-            }
-            if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
-                s_SavingTo = true;
-            }
-
-            if (ImGui::MenuItem("Exit"))
-                Application::Get().Close();
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Editor")) {
+        if (ImGui::BeginMenu("Scene")) {
             if (ImGui::MenuItem("Play", "Ctrl+L", false, m_SceneState != SceneState::Play)) {
                 if (m_SceneState == SceneState::Edit)
                     OnScenePlay();
@@ -343,6 +327,48 @@ void EditorLayer::OnImGuiRender() {
             if (ImGui::MenuItem("Stop", "Ctrl+W")) {
                 OnSceneStop();
             }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("New", "Ctrl+N")) {
+                NewSceneFile();
+            }
+            if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+                s_Opening = true;
+            }
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {
+                SaveScene();
+            }
+            if (ImGui::MenuItem("Save to...", "Ctrl+Shift+S")) {
+                s_SavingTo = true;
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("Exit"))
+                Application::Get().Close();
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Project")) {
+            if (ImGui::MenuItem("New Project", "")) {
+                s_CreatingProject = true;
+            }
+            if (ImGui::MenuItem("Open Project...", "")) {
+                s_OpeningProject = true;
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::MenuItem("Settings", "")) {
+            }
+
             ImGui::EndMenu();
         }
 
@@ -350,7 +376,7 @@ void EditorLayer::OnImGuiRender() {
     }
 
     m_SceneHierarchyPanel.OnImGuiRender();
-    m_ContentBrowserPanel.OnImGuiRender();
+    m_ContentBrowserPanel.OnImGuiRender(m_Project.GetProjectFile());
 
     ImGui::Begin("Settings");
     ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
@@ -443,7 +469,7 @@ void EditorLayer::OnImGuiRender() {
             const char* data = reinterpret_cast<const char*>(payload->Data);
             const int dataSize = payload->DataSize;
             try {
-                OpenFile(std::string(data));
+                OpenSceneFile(std::string(data));
             } catch (const std::runtime_error& e) {
                 ZR_CORE_ERROR("Coundn't open file! {}", e.what());
             }
@@ -460,22 +486,89 @@ void EditorLayer::OnImGuiRender() {
     ImGui::End();
 
     if (s_Opening) {
-        if (FileDialogs::OpenFile(s_FilePath)) {
-            OpenFile(s_FilePath);
+        if (FileDialogs::OpenFile(s_FilePath, ".zscene")) {
+            OpenSceneFile(s_FilePath);
             s_Opening = false;
         }
     }
     if (s_SavingTo) {
-        if (FileDialogs::SaveFile(s_FilePath)) {
-            SaveToFile(s_FilePath);
+        if (FileDialogs::SaveFile(s_FilePath, ".zscene")) {
+            SaveSceneToFile(s_FilePath);
             s_SavingTo = false;
+        }
+    }
+
+    if (s_CreatingProject) {
+        static bool ls_Browsing = false;
+
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Create Project", 0,
+                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_AlwaysAutoResize);
+
+        ImGui::Text("New Project");
+
+        char pathBuffer[128];
+        char nameBuffer[128];
+        static std::string path = "./";
+        static std::string name = "";
+
+        // ZR_CORE_WARN("Name {}",  name);
+        // ZR_CORE_WARN("Path {}",  path);
+
+        std::strcpy(nameBuffer, name.c_str());
+        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            name = std::string(nameBuffer);
+        }
+
+        std::strcpy(pathBuffer, path.c_str());
+        if (ImGui::InputText("Proyect Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+            path = std::string(pathBuffer);
+        }
+        ImGui::SameLine();
+
+        if (ImGui::Button("Browse")) {
+            ls_Browsing = true;
+        }
+
+        if (ls_Browsing) {
+            if (FileDialogs::OpenFile(path, ".zr")) {
+                std::strcpy(pathBuffer, path.c_str());
+                ls_Browsing = false;
+                ZR_CORE_WARN(path);
+            }
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::Button("Cancel"))
+            s_CreatingProject = false;
+
+        ImGui::SameLine();
+        if (ImGui::Button("Create Project")) {
+            ProjectFile project(name);
+            std::filesystem::path ppath(path);
+            ProjectFile::SerializeProject(project, ppath);
+            m_Project.Load(ppath);
+            s_CreatingProject = false;
+        }
+
+        ImGui::End();
+    }
+    if (s_OpeningProject) {
+        std::string path;
+        if (FileDialogs::SaveFile(path, ".zr")) {
+            s_OpeningProject = false;
+            m_Project.Load(std::filesystem::path(path));
+            ZR_CORE_WARN(path);
         }
     }
 }
 
 void EditorLayer::UI_ToolBar() {}
 
-void EditorLayer::NewFile() {
+void EditorLayer::NewSceneFile() {
     ZR_CORE_WARN("NewFile");
     m_ActiveScene = std::make_shared<Scene>();
     m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -483,12 +576,12 @@ void EditorLayer::NewFile() {
 
     m_CurrentScenePath = std::filesystem::path();
 }
-void EditorLayer::OpenFile(const std::string path) {
+void EditorLayer::OpenSceneFile(const std::string path) {
 
     if (m_SceneState != SceneState::Edit)
         m_SceneState = SceneState::Edit;
 
-    ZR_CORE_WARN("OpenFile: {}", path);
+    ZR_CORE_WARN("Open Scene File: {}", path);
     if (path.empty())
         return;
 
@@ -506,15 +599,15 @@ void EditorLayer::OpenFile(const std::string path) {
     m_CurrentScenePath = path;
 }
 
-void EditorLayer::OpenFile(const std::filesystem::path path) {
-    OpenFile(path.string());
+void EditorLayer::OpenSceneFile(const std::filesystem::path path) {
+    OpenSceneFile(path.string());
 }
 
-void EditorLayer::Save() {
+void EditorLayer::SaveScene() {
     if (!m_CurrentScenePath.empty())
-        SaveToFile(m_CurrentScenePath);
+        SaveSceneToFile(m_CurrentScenePath);
 }
-void EditorLayer::SaveToFile(const std::string path) {
+void EditorLayer::SaveSceneToFile(const std::string path) {
     ZR_CORE_WARN("SaveToFile: {}", path);
     if (!path.empty()) {
         SceneSerializer serializer(m_ActiveScene);
@@ -564,7 +657,7 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
             if (shift)
                 s_SavingTo = true;
             else
-                Save();
+                SaveScene();
         }
         break;
     }
@@ -578,7 +671,7 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
 
     case ZR_KEY_N: {
         if (control) {
-            NewFile();
+            NewSceneFile();
         }
         break;
     }

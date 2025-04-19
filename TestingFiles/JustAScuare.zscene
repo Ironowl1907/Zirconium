@@ -1,0 +1,11 @@
+Scene: Untitled
+Entities:
+  - Entity: 14618507320681095104
+    TagComponent:
+      Tag: Squre
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.88967973, 0.16463827, 0.16463827, 1]

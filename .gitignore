@@ -3,6 +3,7 @@ bin-int/
 build/
 .zed/
 cache/
+__pycache__/
 
 zirconium/vendor/shaderc
 zirconium/vendor/lua

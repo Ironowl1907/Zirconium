@@ -36,10 +36,10 @@
 #include "zirconium/Renderer/Texture.h"
 #include "zirconium/Renderer/VertexArray.h"
 
-#include "zirconium/scene/Components.h"
-#include "zirconium/scene/Scene.h"
-#include "zirconium/scene/Entity.h"
-#include "zirconium/scene/NativeScript.h"
+#include "zirconium/Scene/Components.h"
+#include "zirconium/Scene/Scene.h"
+#include "zirconium/Scene/Entity.h"
+#include "zirconium/Scene/NativeScript.h"
 
 // --- Helpers ---
 #include "zirconium/Core/Transform.h"
