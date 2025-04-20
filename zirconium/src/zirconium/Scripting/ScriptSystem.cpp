@@ -32,6 +32,16 @@ bool ScriptingSystem::InitScripts() {
     ZR_ASSERT(m_Scene, "Scene is NULL!");
     auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
+    // Expose Input handling
+
+    m_LuaState.set_function("IsKeyPressed", [](uint32_t keycode) -> bool {
+        return Input::IsKeyPresed(keycode);
+    });
+
+    m_LuaState.set_function("IsMouseButtonPressed", [](uint32_t keycode) -> bool {
+        return Input::IsMouseButtonPressed(keycode);
+    });
+
     // Expose Components
     RegisterAllComponentsToLua(m_LuaState, m_Scene->m_Registry);
 
