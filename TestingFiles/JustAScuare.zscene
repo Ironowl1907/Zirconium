@@ -3,9 +3,29 @@ Entities:
   - Entity: 14618507320681095104
     TagComponent:
       Tag: Squre
+    LuaScriptComponent:
+      Path: ""
     TransformComponent:
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0.88967973, 0.16463827, 0.16463827, 1]
+  - Entity: 7831533851428977505
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        PerspectiveFOV: 0.7853982
+        ProjectionType: 1
+        ProjectionNear: -0.01
+        ProjectionFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false

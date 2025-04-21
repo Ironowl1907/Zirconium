@@ -1,4 +1,5 @@
 #include "ScriptSystem.h"
+#include "zirconium/Core/input.h"
 #include "zrpch.h"
 #include <cstdint>
 #include <filesystem>
@@ -32,6 +33,16 @@ bool ScriptingSystem::InitScripts() {
     ZR_ASSERT(m_Scene, "Scene is NULL!");
     auto view = m_Scene->GetAllEntitiesWith<LuaScriptComponent>();
 
+    // Expose Input handling
+
+    m_LuaState.set_function("Input_IsKeyPressed", [](uint32_t keycode) -> bool {
+        return Input::IsKeyPressed(keycode);
+    });
+
+    m_LuaState.set_function("Input_IsMouseButtonPressed", [](uint32_t keycode) -> bool {
+        return Input::IsMouseButtonPressed(keycode);
+    });
+
     // Expose Components
     RegisterAllComponentsToLua(m_LuaState, m_Scene->m_Registry);
 
@@ -63,6 +74,7 @@ bool ScriptingSystem::InitScripts() {
 
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
     ZR_CORE_TRACE("Loaded script");
+    entity.GetComponent<LuaScriptComponent>().ScriptPath = scriptPath;
     return true; // TODO: Fix returning
 }
 
