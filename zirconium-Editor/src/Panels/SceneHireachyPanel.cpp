@@ -1,7 +1,7 @@
 #include "SceneHireachyPanel.h"
+#include "zirconium/Scene/Components.h"
 #include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/Utils/PlatformUtils.h"
-#include "zirconium/Scene/Components.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
@@ -301,11 +301,13 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         ImGui::SetNextItemWidth(200);
         if (ImGui::InputText("Script Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
-            if (std::filesystem::exists(path))
-                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
+            if (std::filesystem::exists(path)) {
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
                     m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
-                else
+                } else {
                     ZR_ASSERT(false, "Error Loading script!");
+                }
+            }
         }
 
         if (ImGui::BeginDragDropTarget()) {
@@ -332,7 +334,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
         if (BrowsingScript) {
             std::string path;
-            if (FileDialogs::SaveFile(path, ".lua")) {
+            if (FileDialogs::OpenFile(path, ".lua")) {
                 if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, std::filesystem::path(path)) &&
                     !path.empty())
                     ZR_ASSERT(false, "Error Loading script!");
@@ -360,9 +362,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
             if (ImGui::Button("Browse")) {
                 BrowseOnCreatingScript = true;
+                // path = "./LuaScript.lua";
             }
 
             if (BrowseOnCreatingScript) {
+                ZR_CORE_TRACE("Here");
                 if (FileDialogs::SaveFile(path, ".lua")) {
                     BrowseOnCreatingScript = false;
                 }

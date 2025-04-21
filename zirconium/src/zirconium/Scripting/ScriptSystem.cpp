@@ -1,4 +1,5 @@
 #include "ScriptSystem.h"
+#include "zirconium/Core/input.h"
 #include "zrpch.h"
 #include <cstdint>
 #include <filesystem>
@@ -34,11 +35,11 @@ bool ScriptingSystem::InitScripts() {
 
     // Expose Input handling
 
-    m_LuaState.set_function("IsKeyPressed", [](uint32_t keycode) -> bool {
-        return Input::IsKeyPresed(keycode);
+    m_LuaState.set_function("Input_IsKeyPressed", [](uint32_t keycode) -> bool {
+        return Input::IsKeyPressed(keycode);
     });
 
-    m_LuaState.set_function("IsMouseButtonPressed", [](uint32_t keycode) -> bool {
+    m_LuaState.set_function("Input_IsMouseButtonPressed", [](uint32_t keycode) -> bool {
         return Input::IsMouseButtonPressed(keycode);
     });
 
@@ -73,6 +74,7 @@ bool ScriptingSystem::InitScripts() {
 
 bool ScriptingSystem::LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath) {
     ZR_CORE_TRACE("Loaded script");
+    entity.GetComponent<LuaScriptComponent>().ScriptPath = scriptPath;
     return true; // TODO: Fix returning
 }
 
