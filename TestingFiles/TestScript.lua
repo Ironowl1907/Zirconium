@@ -1,7 +1,7 @@
 return {
-	onCreate = function(this)
-		SetSpriteTexture(this, "zirconium-Editor/res/textures/textureTest.png")
-	end,
+    onCreate = function(this)
+    end,
 
-	onUpdate = function(this, deltaTime) end,
+    onUpdate = function(this, deltaTime)
+    end
 }

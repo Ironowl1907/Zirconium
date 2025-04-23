@@ -16,7 +16,7 @@ void ProjectFile::Load(const std::filesystem::path& path) {
     YAML::Node data = YAML::Load(strStream.str());
     ZR_CORE_WARN(strStream.str());
     if (!data["ProjectName"])
-        ZR_ASSERT(false, "Not Compatible .zr file. Can't find project name!");
+        ZR_CORE_ERROR("Not Compatible .zr file. Can't find project name!");
 
     m_ProjectName = data["ProjectName"].as<std::string>();
     m_DefaultScene = data["DefaultScene"].as<std::string>();
