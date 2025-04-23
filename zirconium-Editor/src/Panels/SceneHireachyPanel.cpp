@@ -6,6 +6,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <cfloat>
 #include <cstring>
 #include <filesystem>
 #include <memory>
@@ -81,7 +82,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
 }
 
 static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f,
-                            float columnWidth = 100.0f) {
+                            bool allowNegative = true, float columnWidth = 100.0f) {
 
     ImGuiIO& io = ImGui::GetIO();
     auto boldFont = io.Fonts->Fonts[0];
@@ -109,7 +110,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##X", &values.x, 0.1f);
+    ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -123,7 +124,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##Y", &values.y, 0.1f);
+    ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -137,7 +138,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##Z", &values.z, 0.1f);
+    ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -258,7 +259,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         glm::vec3 rotation = glm::degrees(tc.Rotation);
         DrawVec3Control("Rotation", rotation);
         tc.Rotation = glm::radians(rotation);
-        DrawVec3Control("Scale", tc.Scale, 1.0f);
+        DrawVec3Control("Scale", tc.Scale, 1.0f, false);
     });
 
     DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [this](auto& component) {
