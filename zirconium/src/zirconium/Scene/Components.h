@@ -167,6 +167,11 @@ struct RigidBodyComponent {
             return rb ? static_cast<int>(rb->Type) : -1;
         });
 
+        lua.set_function("RigidBodyComponent_GetRuntimeBody", [&registry](entt::entity entity) -> int {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? static_cast<int>(rb->Type) : -1;
+        });
+
         lua.set_function("RigidBodyComponent_SetBodyType", [&registry](entt::entity entity, int type) {
             auto* rb = registry.try_get<RigidBodyComponent>(entity);
             if (rb && type >= 0 && type <= 2)

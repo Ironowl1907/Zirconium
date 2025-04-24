@@ -22,6 +22,7 @@ public:
     void Init(Scene* scene);
     void UpdateScripts(TimeStep& deltatime);
     bool InitScripts();
+    void MethodExposer(sol::state& lua);
 
     bool LoadScript2Entity(Entity& entity, std::filesystem::path scriptPath);
     ScriptingSystem(const ScriptingSystem&) = delete;
