@@ -88,8 +88,6 @@ void ScriptingSystem::MethodExposer(sol::state& lua) {
         return Input::IsMouseButtonPressed(keycode);
     });
 
-    //Box 2D Physics
-
 }
 
 } // namespace zirconium
