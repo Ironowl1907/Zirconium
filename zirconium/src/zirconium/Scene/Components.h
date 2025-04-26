@@ -7,6 +7,7 @@
 #include "zirconium/Core/UUID.h"
 #include "zirconium/Renderer/Texture.h"
 
+#include "box2d/box2d.h"
 #include "box2d/id.h"
 #include "entt.hpp"
 #include "sol/sol.hpp"
@@ -179,212 +180,202 @@ struct RigidBodyComponent {
         });
 
         lua.set_function("RigidBodyComponent_SetTransformation",
-                     [&registry](entt::entity entity, float posx, float posy, float rotSen, float rotCos) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetTransform(rb->RuntimeBody, {posx, posy}, {rotSen, rotCos});
-                         }
-                     });
+                         [&registry](entt::entity entity, float posx, float posy, float rotSen, float rotCos) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_SetTransform(rb->RuntimeBody, {posx, posy}, {rotSen, rotCos});
+                             }
+                         });
 
-        lua.set_function("RigidBodyComponent_GetLinearVelocity",
-                     [&registry, &lua](entt::entity entity) -> sol::table {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (!rb)
-                             return sol::nil;
+        lua.set_function("RigidBodyComponent_GetLinearVelocity", [&registry, &lua](entt::entity entity) -> sol::table {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (!rb)
+                return sol::nil;
 
-                         auto velocity = b2Body_GetLinearVelocity(rb->RuntimeBody);
-                         sol::table result = lua.create_table();
-                         result["x"] = velocity.x;
-                         result["y"] = velocity.y;
-                         return result;
-                     });
+            auto velocity = b2Body_GetLinearVelocity(rb->RuntimeBody);
+            sol::table result = lua.create_table();
+            result["x"] = velocity.x;
+            result["y"] = velocity.y;
+            return result;
+        });
 
-        lua.set_function("RigidBodyComponent_GetAngularVelocity",
-                     [&registry](entt::entity entity) -> float {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_GetAngularVelocity(rb->RuntimeBody) : 0.0f;
-                     });
+        lua.set_function("RigidBodyComponent_GetAngularVelocity", [&registry](entt::entity entity) -> float {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_GetAngularVelocity(rb->RuntimeBody) : 0.0f;
+        });
 
         lua.set_function("RigidBodyComponent_SetLinearVelocity",
-                     [&registry](entt::entity entity, float velx, float vely) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetLinearVelocity(rb->RuntimeBody, {velx, vely});
-                         }
-                     });
+                         [&registry](entt::entity entity, float velx, float vely) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_SetLinearVelocity(rb->RuntimeBody, {velx, vely});
+                             }
+                         });
 
         lua.set_function("RigidBodyComponent_SetAngularVelocity",
-                     [&registry](entt::entity entity, float angularVelocity) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetAngularVelocity(rb->RuntimeBody, angularVelocity);
-                         }
-                     });
+                         [&registry](entt::entity entity, float angularVelocity) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_SetAngularVelocity(rb->RuntimeBody, angularVelocity);
+                             }
+                         });
 
-        lua.set_function("RigidBodyComponent_SetTargetTransform",
-                     [&registry](entt::entity entity, float posx, float posy, float rotSen, float rotCos, float timeStep) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Transform target = {{posx, posy}, {rotSen, rotCos}};
-                             b2Body_SetTargetTransform(rb->RuntimeBody, target, timeStep);
-                         }
-                     });
+        lua.set_function(
+            "RigidBodyComponent_SetTargetTransform",
+            [&registry](entt::entity entity, float posx, float posy, float rotSen, float rotCos, float timeStep) {
+                auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                if (rb) {
+                    b2Transform target = {{posx, posy}, {rotSen, rotCos}};
+                    b2Body_SetTargetTransform(rb->RuntimeBody, target, timeStep);
+                }
+            });
 
         lua.set_function("RigidBodyComponent_GetLocalPointVelocity",
-                     [&registry, &lua](entt::entity entity, float pointx, float pointy) -> sol::table {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (!rb)
-                             return sol::nil;
+                         [&registry, &lua](entt::entity entity, float pointx, float pointy) -> sol::table {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (!rb)
+                                 return sol::nil;
 
-                         auto velocity = b2Body_GetLocalPointVelocity(rb->RuntimeBody, {pointx, pointy});
-                         sol::table result = lua.create_table();
-                         result["x"] = velocity.x;
-                         result["y"] = velocity.y;
-                         return result;
-                     });
+                             auto velocity = b2Body_GetLocalPointVelocity(rb->RuntimeBody, {pointx, pointy});
+                             sol::table result = lua.create_table();
+                             result["x"] = velocity.x;
+                             result["y"] = velocity.y;
+                             return result;
+                         });
 
         lua.set_function("RigidBodyComponent_GetWorldPointVelocity",
-                     [&registry, &lua](entt::entity entity, float pointx, float pointy) -> sol::table {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (!rb)
-                             return sol::nil;
+                         [&registry, &lua](entt::entity entity, float pointx, float pointy) -> sol::table {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (!rb)
+                                 return sol::nil;
 
-                         auto velocity = b2Body_GetWorldPointVelocity(rb->RuntimeBody, {pointx, pointy});
-                         sol::table result = lua.create_table();
-                         result["x"] = velocity.x;
-                         result["y"] = velocity.y;
-                         return result;
-                     });
+                             auto velocity = b2Body_GetWorldPointVelocity(rb->RuntimeBody, {pointx, pointy});
+                             sol::table result = lua.create_table();
+                             result["x"] = velocity.x;
+                             result["y"] = velocity.y;
+                             return result;
+                         });
 
-        lua.set_function("RigidBodyComponent_ApplyForce",
-                     [&registry](entt::entity entity, float forcex, float forcey, float pointx, float pointy, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyForce(rb->RuntimeBody, {forcex, forcey}, {pointx, pointy}, wake);
-                         }
-                     });
+        lua.set_function("RigidBodyComponent_ApplyForce", [&registry](entt::entity entity, float forcex, float forcey,
+                                                                      float pointx, float pointy, bool wake) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb) {
+                b2Body_ApplyForce(rb->RuntimeBody, {forcex, forcey}, {pointx, pointy}, wake);
+            }
+        });
 
         lua.set_function("RigidBodyComponent_ApplyForceToCenter",
-                     [&registry](entt::entity entity, float forcex, float forcey, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyForceToCenter(rb->RuntimeBody, {forcex, forcey}, wake);
-                         }
-                     });
+                         [&registry](entt::entity entity, float forcex, float forcey, bool wake) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_ApplyForceToCenter(rb->RuntimeBody, {forcex, forcey}, wake);
+                             }
+                         });
 
-        lua.set_function("RigidBodyComponent_ApplyTorque",
-                     [&registry](entt::entity entity, float torque, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyTorque(rb->RuntimeBody, torque, wake);
-                         }
-                     });
+        lua.set_function("RigidBodyComponent_ApplyTorque", [&registry](entt::entity entity, float torque, bool wake) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb) {
+                b2Body_ApplyTorque(rb->RuntimeBody, torque, wake);
+            }
+        });
 
-        lua.set_function("RigidBodyComponent_ApplyLinearImpulse",
-                     [&registry](entt::entity entity, float impulsex, float impulsey, float pointx, float pointy, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyLinearImpulse(rb->RuntimeBody, {impulsex, impulsey}, {pointx, pointy}, wake);
-                         }
-                     });
+        lua.set_function(
+            "RigidBodyComponent_ApplyLinearImpulse",
+            [&registry](entt::entity entity, float impulsex, float impulsey, float pointx, float pointy, bool wake) {
+                auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                if (rb) {
+                    b2Body_ApplyLinearImpulse(rb->RuntimeBody, {impulsex, impulsey}, {pointx, pointy}, wake);
+                }
+            });
 
         lua.set_function("RigidBodyComponent_ApplyLinearImpulseToCenter",
-                     [&registry](entt::entity entity, float impulsex, float impulsey, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyLinearImpulseToCenter(rb->RuntimeBody, {impulsex, impulsey}, wake);
-                         }
-                     });
+                         [&registry](entt::entity entity, float impulsex, float impulsey, bool wake) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_ApplyLinearImpulseToCenter(rb->RuntimeBody, {impulsex, impulsey}, wake);
+                             }
+                         });
 
         lua.set_function("RigidBodyComponent_ApplyAngularImpulse",
-                     [&registry](entt::entity entity, float impulse, bool wake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_ApplyAngularImpulse(rb->RuntimeBody, impulse, wake);
-                         }
-                     });
+                         [&registry](entt::entity entity, float impulse, bool wake) {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (rb) {
+                                 b2Body_ApplyAngularImpulse(rb->RuntimeBody, impulse, wake);
+                             }
+                         });
 
-        lua.set_function("RigidBodyComponent_GetMass",
-                     [&registry](entt::entity entity) -> float {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_GetMass(rb->RuntimeBody) : 0.0f;
-                     });
+        lua.set_function("RigidBodyComponent_GetMass", [&registry](entt::entity entity) -> float {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_GetMass(rb->RuntimeBody) : 0.0f;
+        });
 
-        lua.set_function("RigidBodyComponent_GetRotationalInertia",
-                     [&registry](entt::entity entity) -> float {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_GetRotationalInertia(rb->RuntimeBody) : 0.0f;
-                     });
+        lua.set_function("RigidBodyComponent_GetRotationalInertia", [&registry](entt::entity entity) -> float {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_GetRotationalInertia(rb->RuntimeBody) : 0.0f;
+        });
 
         lua.set_function("RigidBodyComponent_GetLocalCenterOfMass",
-                     [&registry, &lua](entt::entity entity) -> sol::table {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (!rb)
-                             return sol::nil;
+                         [&registry, &lua](entt::entity entity) -> sol::table {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (!rb)
+                                 return sol::nil;
 
-                         auto center = b2Body_GetLocalCenterOfMass(rb->RuntimeBody);
-                         sol::table result = lua.create_table();
-                         result["x"] = center.x;
-                         result["y"] = center.y;
-                         return result;
-                     });
+                             auto center = b2Body_GetLocalCenterOfMass(rb->RuntimeBody);
+                             sol::table result = lua.create_table();
+                             result["x"] = center.x;
+                             result["y"] = center.y;
+                             return result;
+                         });
 
         lua.set_function("RigidBodyComponent_GetWorldCenterOfMass",
-                     [&registry, &lua](entt::entity entity) -> sol::table {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (!rb)
-                             return sol::nil;
+                         [&registry, &lua](entt::entity entity) -> sol::table {
+                             auto* rb = registry.try_get<RigidBodyComponent>(entity);
+                             if (!rb)
+                                 return sol::nil;
 
-                         auto center = b2Body_GetWorldCenterOfMass(rb->RuntimeBody);
-                         sol::table result = lua.create_table();
-                         result["x"] = center.x;
-                         result["y"] = center.y;
-                         return result;
-                     });
+                             auto center = b2Body_GetWorldCenterOfMass(rb->RuntimeBody);
+                             sol::table result = lua.create_table();
+                             result["x"] = center.x;
+                             result["y"] = center.y;
+                             return result;
+                         });
 
-        lua.set_function("RigidBodyComponent_SetAwake",
-                     [&registry](entt::entity entity, bool awake) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetAwake(rb->RuntimeBody, awake);
-                         }
-                     });
+        lua.set_function("RigidBodyComponent_SetAwake", [&registry](entt::entity entity, bool awake) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb) {
+                b2Body_SetAwake(rb->RuntimeBody, awake);
+            }
+        });
 
-        lua.set_function("RigidBodyComponent_IsAwake",
-                     [&registry](entt::entity entity) -> bool {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_IsAwake(rb->RuntimeBody) : false;
-                     });
+        lua.set_function("RigidBodyComponent_IsAwake", [&registry](entt::entity entity) -> bool {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_IsAwake(rb->RuntimeBody) : false;
+        });
 
-        lua.set_function("RigidBodyComponent_SetBullet",
-                     [&registry](entt::entity entity, bool flag) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetBullet(rb->RuntimeBody, flag);
-                         }
-                     });
+        lua.set_function("RigidBodyComponent_SetBullet", [&registry](entt::entity entity, bool flag) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb) {
+                b2Body_SetBullet(rb->RuntimeBody, flag);
+            }
+        });
 
-        lua.set_function("RigidBodyComponent_IsBullet",
-                     [&registry](entt::entity entity) -> bool {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_IsBullet(rb->RuntimeBody) : false;
-                     });
+        lua.set_function("RigidBodyComponent_IsBullet", [&registry](entt::entity entity) -> bool {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_IsBullet(rb->RuntimeBody) : false;
+        });
 
-        lua.set_function("RigidBodyComponent_SetFixedRotation",
-                     [&registry](entt::entity entity, bool flag) {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         if (rb) {
-                             b2Body_SetFixedRotation(rb->RuntimeBody, flag);
-                         }
-                     });
+        lua.set_function("RigidBodyComponent_SetFixedRotation", [&registry](entt::entity entity, bool flag) {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            if (rb) {
+                b2Body_SetFixedRotation(rb->RuntimeBody, flag);
+            }
+        });
 
-        lua.set_function("RigidBodyComponent_IsFixedRotation",
-                     [&registry](entt::entity entity) -> bool {
-                         auto* rb = registry.try_get<RigidBodyComponent>(entity);
-                         return rb ? b2Body_IsFixedRotation(rb->RuntimeBody) : false;
-                     });
+        lua.set_function("RigidBodyComponent_IsFixedRotation", [&registry](entt::entity entity) -> bool {
+            auto* rb = registry.try_get<RigidBodyComponent>(entity);
+            return rb ? b2Body_IsFixedRotation(rb->RuntimeBody) : false;
+        });
     }
-};
 };
 
 struct BoxColiderComponent {

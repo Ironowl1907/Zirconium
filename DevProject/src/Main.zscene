@@ -1,17 +1,48 @@
 Scene: Untitled
 Entities:
-  - Entity: 4592708004513264552
+  - Entity: 13946213808992121255
     TagComponent:
-      Tag: Floor
+      Tag: Camera
     TransformComponent:
-      Translation: [0, -1.1, 1]
+      Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [20, 0.5, 1]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        PerspectiveFOV: 0.7853982
+        ProjectionType: 1
+        ProjectionNear: -0.01
+        ProjectionFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -14
+        OrthographicFar: 18
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 8754798042569144911
+    TagComponent:
+      Tag: Player
+    LuaScriptComponent:
+      Path: /home/ironowl/dev/Zirconium/TestingFiles/TestingCreation.lua
+    TransformComponent:
+      Translation: [0, 0, 1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        PerspectiveFOV: 0.7853982
+        ProjectionType: 1
+        ProjectionNear: -0.01
+        ProjectionFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: false
+      FixedAspectRatio: false
     SpriteRendererComponent:
-      Color: [0.59430605, 0.59430605, 0.59430605, 1]
+      Color: [1, 0.34875447, 0.34875447, 1]
     RigidBodyComponent:
       FixedRotation: false
-      Type: Static
+      Type: Dynamic
     BoxColiderComponent:
       Offset: [0, 0]
       Size: [0.5, 0.5]
@@ -27,29 +58,18 @@ Entities:
       Scale: [20, 20, 1]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
-  - Entity: 8754798042569144911
+  - Entity: 4592708004513264552
     TagComponent:
-      Tag: Player
+      Tag: Floor
     TransformComponent:
-      Translation: [0, 0, 1]
+      Translation: [0, -1.1, 1]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        PerspectiveFOV: 0.7853982
-        ProjectionType: 1
-        ProjectionNear: -0.01
-        ProjectionFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
+      Scale: [20, 0.5, 1]
     SpriteRendererComponent:
-      Color: [1, 0.34875447, 0.34875447, 1]
+      Color: [0.59430605, 0.59430605, 0.59430605, 1]
     RigidBodyComponent:
       FixedRotation: false
-      Type: Dynamic
+      Type: Static
     BoxColiderComponent:
       Offset: [0, 0]
       Size: [0.5, 0.5]
