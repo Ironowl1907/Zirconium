@@ -4,9 +4,9 @@
 #include "zrpch.h"
 
 #include "zirconium/Renderer/Renderer2D.h"
-#include "zirconium/Scripting/ScriptSystem.h"
 #include "zirconium/Scene/Components.h"
 #include "zirconium/Scene/Entity.h"
+#include "zirconium/Scripting/ScriptSystem.h"
 #include <cstdint>
 #include <glm/trigonometric.hpp>
 #include <memory>
@@ -153,11 +153,14 @@ void Scene::OnPhysicsInit() {
             b2Polygon colider = b2MakeBox(b2cc.Size.x * transform.Scale.x, b2cc.Size.y * transform.Scale.y);
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
+            b2SurfaceMaterial material = b2DefaultSurfaceMaterial();
 
             ZR_ASSERT(b2cc.Density, "Density can't be 0");
             shapeDef.density = b2cc.Density;
-            shapeDef.friction = b2cc.Friction;
-            shapeDef.restitution = b2cc.Restitution;
+            material.friction = b2cc.Friction;
+            material.restitution = b2cc.Restitution;
+
+            shapeDef.material = material;
 
             b2CreatePolygonShape(bodyId, &shapeDef, &colider);
         }
@@ -168,11 +171,14 @@ void Scene::OnPhysicsInit() {
             b2Circle colider = {{cc2b.Offset.x, cc2b.Offset.y}, transform.Scale.x * cc2b.Radius};
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
+            b2SurfaceMaterial material = b2DefaultSurfaceMaterial();
 
             ZR_ASSERT(cc2b.Density, "Density can't be 0");
             shapeDef.density = cc2b.Density;
-            shapeDef.friction = cc2b.Friction;
-            shapeDef.restitution = cc2b.Restitution;
+            material.friction = cc2b.Friction;
+            material.restitution = cc2b.Restitution;
+
+            shapeDef.material = material;
 
             b2CreateCircleShape(bodyId, &shapeDef, &colider);
         }
