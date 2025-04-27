@@ -2,6 +2,7 @@
 #include "zrpch.h"
 
 #include "EditorLayer.h"
+#include "ImGuizmo.h"
 #include "imgui.h"
 #include "zirconium.h"
 
@@ -12,6 +13,7 @@
 #include <cstring>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
 namespace zirconium {
@@ -462,6 +464,16 @@ void EditorLayer::OnImGuiRender() {
     }
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+    // Gizmos
+    if (m_SceneHierarchyPanel.GetSelectedEntity()){
+        glm::mat4 viewMat = m_EditorCamera.GetViewMatrix();
+        glm::mat4 projMat = m_EditorCamera.GetProjectionMatrix();
+        glm::mat4 transform =
+            m_SceneHierarchyPanel.GetSelectedEntity().GetComponent<TransformComponent>().GetTransform();
+        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
+                             glm::value_ptr(transform));
+    }
 
     if (ImGui::BeginDragDropTarget()) {
 

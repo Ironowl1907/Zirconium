@@ -20,6 +20,7 @@ includedirs({
     -- IncludeDir["yaml-cpp"],
     IncludeDir["Box2D"],
     IncludeDir["Sol2"],
+    IncludeDir["ImGuizmo"],
 
     path.join(dependenciesBaseDir, "zirconium/vendor/glslang/lib"),
     path.join(dependenciesBaseDir, "zirconium/vendor/SPIRV-Tools/lib")
@@ -53,6 +54,7 @@ links({
     "ImGui",
     "fmt",
     "lua",
+    "ImGuizmo"
 })
 -- Linux-specific settings
 filter("system:linux")
