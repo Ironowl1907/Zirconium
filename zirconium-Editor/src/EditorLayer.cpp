@@ -232,6 +232,9 @@ static std::string s_FilePath = "";
 static bool s_CreatingProject = false;
 static bool s_OpeningProject = false;
 
+static ::ImGuizmo::OPERATION s_GizmoOperation = ::ImGuizmo::TRANSLATE;
+static ::ImGuizmo::MODE s_GizmoMode = ::ImGuizmo::WORLD;
+
 void EditorLayer::OnImGuiRender() {
 
     ZR_PROFILE_FUNCTION();
@@ -496,7 +499,7 @@ void EditorLayer::OnImGuiRender() {
         auto& tc = selectedEntity.GetComponent<TransformComponent>();
         glm::mat4 transformMat = tc.GetTransform();
 
-        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
+        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), s_GizmoOperation, s_GizmoMode,
                              glm::value_ptr(transformMat));
 
         if (ImGuizmo::IsUsing()) {
@@ -690,7 +693,22 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
                 s_SavingTo = true;
             else
                 SaveScene();
+        } else {
+            s_GizmoOperation = ImGuizmo::SCALE;
+            ZR_CORE_WARN("Setting Gizmo to SCALE");
         }
+        break;
+    }
+
+    case ZR_KEY_G: {
+        s_GizmoOperation = ImGuizmo::TRANSLATE;
+        ZR_CORE_WARN("Setting Gizmo to TRANSLATE");
+        break;
+    }
+
+    case ZR_KEY_R: {
+        s_GizmoOperation = ImGuizmo::ROTATE;
+        ZR_CORE_WARN("Setting Gizmo to ROTATE");
         break;
     }
 
