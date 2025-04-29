@@ -135,6 +135,7 @@ OBJECTS := \
 	$(OBJDIR)/imguiLayer.o \
 	$(OBJDIR)/Layer.o \
 	$(OBJDIR)/StackLayer.o \
+	$(OBJDIR)/Math.o \
 	$(OBJDIR)/OpenGLBuffer.o \
 	$(OBJDIR)/OpenGLContext.o \
 	$(OBJDIR)/OpenGLFramebuffer.o \
@@ -254,6 +255,9 @@ $(OBJDIR)/Layer.o: src/zirconium/Layers/Layer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/StackLayer.o: src/zirconium/Layers/StackLayer.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Math.o: src/zirconium/Math/Math.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/OpenGLBuffer.o: src/zirconium/Platform/OpenGL/OpenGLBuffer.cpp

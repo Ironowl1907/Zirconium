@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "zirconium.h"
 
+#include "zirconium/Math/Math.h"
 #include "zirconium/Scene/SceneSerializer.h"
 #include "zirconium/Utils/PlatformUtils.h"
 #include <cstddef>
@@ -492,9 +493,21 @@ void EditorLayer::OnImGuiRender() {
 
         glm::mat4 viewMat = m_EditorCamera.GetViewMatrix();
         glm::mat4 projMat = m_EditorCamera.GetProjectionMatrix();
-        glm::mat4 transform = selectedEntity.GetComponent<TransformComponent>().GetTransform();
+        auto& tc = selectedEntity.GetComponent<TransformComponent>();
+        glm::mat4 transformMat = tc.GetTransform();
+
         ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
-                             glm::value_ptr(transform));
+                             glm::value_ptr(transformMat));
+
+        if (ImGuizmo::IsUsing()) {
+            glm::vec3 translation, rotation, scale;
+            Math::DecomposeTransform(transformMat, translation, rotation, scale);
+
+            glm::vec3 deltaRotation = rotation - tc.Rotation;
+            tc.Translation = translation;
+            tc.Rotation += deltaRotation;
+            tc.Scale = scale;
+        }
     }
 
     ImGui::End();
