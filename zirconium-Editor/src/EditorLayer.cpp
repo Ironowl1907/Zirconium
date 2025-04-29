@@ -465,16 +465,6 @@ void EditorLayer::OnImGuiRender() {
     uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
     ImGui::Image(textureID, {m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
-    // Gizmos
-    if (m_SceneHierarchyPanel.GetSelectedEntity()){
-        glm::mat4 viewMat = m_EditorCamera.GetViewMatrix();
-        glm::mat4 projMat = m_EditorCamera.GetProjectionMatrix();
-        glm::mat4 transform =
-            m_SceneHierarchyPanel.GetSelectedEntity().GetComponent<TransformComponent>().GetTransform();
-        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
-                             glm::value_ptr(transform));
-    }
-
     if (ImGui::BeginDragDropTarget()) {
 
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
@@ -488,6 +478,23 @@ void EditorLayer::OnImGuiRender() {
         }
 
         ImGui::EndDragDropTarget();
+    }
+
+    // Gizmos
+    auto selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+    if (selectedEntity) {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        glm::mat4 viewMat = m_EditorCamera.GetViewMatrix();
+        glm::mat4 projMat = m_EditorCamera.GetProjectionMatrix();
+        glm::mat4 transform = selectedEntity.GetComponent<TransformComponent>().GetTransform();
+        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
+                             glm::value_ptr(transform));
     }
 
     ImGui::End();
