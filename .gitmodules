@@ -33,3 +33,6 @@
 [submodule "zirconium/vendor/sol2"]
 	path = zirconium/vendor/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "zirconium/vendor/imguizmo"]
+	path = zirconium/vendor/imguizmo
+	url = https://github.com/Ironowl1907/ImGuizmo.git

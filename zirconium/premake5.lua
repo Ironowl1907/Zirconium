@@ -33,6 +33,7 @@ includedirs({
     IncludeDir["spirv-cross"],
     IncludeDir["Box2D"],
     IncludeDir["Sol2"],
+    IncludeDir["ImGuizmo"],
 })
 -- links({ "yaml-cpp", "spdLog", "fmt", "Glad", "GLFW", "ImGui", "GL", "m", "dl", "X11", "pthread", "ImGuiFileDialog" })
 
@@ -53,6 +54,7 @@ links({
     "opengl32.lib",
     "Box2D",
     "lua",
+    "ImGuizmo"
 })
 
 pic("On") -- Enable Position Independent Code for shared libraries (optional for StaticLib)

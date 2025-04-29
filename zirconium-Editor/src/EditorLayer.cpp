@@ -2,9 +2,11 @@
 #include "zrpch.h"
 
 #include "EditorLayer.h"
+#include "ImGuizmo.h"
 #include "imgui.h"
 #include "zirconium.h"
 
+#include "zirconium/Math/Math.h"
 #include "zirconium/Scene/SceneSerializer.h"
 #include "zirconium/Utils/PlatformUtils.h"
 #include <cstddef>
@@ -12,6 +14,7 @@
 #include <cstring>
 #include <filesystem>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
 namespace zirconium {
@@ -228,6 +231,9 @@ static bool s_SavingTo = false;
 static std::string s_FilePath = "";
 static bool s_CreatingProject = false;
 static bool s_OpeningProject = false;
+
+static ::ImGuizmo::OPERATION s_GizmoOperation = ::ImGuizmo::TRANSLATE;
+static ::ImGuizmo::MODE s_GizmoMode = ::ImGuizmo::WORLD;
 
 void EditorLayer::OnImGuiRender() {
 
@@ -478,6 +484,35 @@ void EditorLayer::OnImGuiRender() {
         ImGui::EndDragDropTarget();
     }
 
+    // Gizmos
+    auto selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+    if (selectedEntity) {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        glm::mat4 viewMat = m_EditorCamera.GetViewMatrix();
+        glm::mat4 projMat = m_EditorCamera.GetProjectionMatrix();
+        auto& tc = selectedEntity.GetComponent<TransformComponent>();
+        glm::mat4 transformMat = tc.GetTransform();
+
+        ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), s_GizmoOperation, s_GizmoMode,
+                             glm::value_ptr(transformMat));
+
+        if (ImGuizmo::IsUsing()) {
+            glm::vec3 translation, rotation, scale;
+            Math::DecomposeTransform(transformMat, translation, rotation, scale);
+
+            glm::vec3 deltaRotation = rotation - tc.Rotation;
+            tc.Translation = translation;
+            tc.Rotation += deltaRotation;
+            tc.Scale = scale;
+        }
+    }
+
     ImGui::End();
     ImGui::PopStyleVar();
 
@@ -658,7 +693,22 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
                 s_SavingTo = true;
             else
                 SaveScene();
+        } else {
+            s_GizmoOperation = ImGuizmo::SCALE;
+            ZR_CORE_WARN("Setting Gizmo to SCALE");
         }
+        break;
+    }
+
+    case ZR_KEY_G: {
+        s_GizmoOperation = ImGuizmo::TRANSLATE;
+        ZR_CORE_WARN("Setting Gizmo to TRANSLATE");
+        break;
+    }
+
+    case ZR_KEY_R: {
+        s_GizmoOperation = ImGuizmo::ROTATE;
+        ZR_CORE_WARN("Setting Gizmo to ROTATE");
         break;
     }
 
