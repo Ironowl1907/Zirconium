@@ -345,7 +345,6 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
 
             auto luaScriptComponent = entity["LuaScriptComponent"];
             if (luaScriptComponent) {
-              ZR_CORE_TRACE("Heyy");
                 auto& src = deserializedEntity.AddComponent<LuaScriptComponent>();
                 src.ScriptPath = std::filesystem::path(luaScriptComponent["Path"].as<std::string>());
                 ZR_CORE_TRACE("   Deserialized Lua Script component with uuid {0}", uuid);
