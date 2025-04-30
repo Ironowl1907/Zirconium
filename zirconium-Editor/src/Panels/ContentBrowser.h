@@ -14,7 +14,7 @@ public:
     void OnImGuiRender(const std::string& path);
 
 private:
-    std::filesystem::path m_CurrentDirectory;
+    std::filesystem::path m_CurrentDirectory = "./";
     Ref<Texture2D> m_FolderIcon;
     Ref<Texture2D> m_FileIcon;
 };
