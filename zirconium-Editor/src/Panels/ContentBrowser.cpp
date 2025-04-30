@@ -41,13 +41,13 @@ void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
     ImGui::Begin("Content Browser");
 
     if (m_CurrentDirectory != std::filesystem::path("./")) {
-        if (ImGui::Button("..")) {
+        if (ImGui::Button("<-")) {
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
         }
     }
 
-    static float padding = 16.0f;
-    static float thumbnailSize = 128.0f;
+    static float padding = 32.0f;
+    static float thumbnailSize = 50.0f;
     float cellSize = thumbnailSize + padding;
 
     float panelWidth = ImGui::GetContentRegionAvail().x;
@@ -64,33 +64,28 @@ void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
         ImGui::PushID(filenameString.c_str());
         Ref<Texture2D> icon = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-        ImGui::ImageButton("Icon", (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+        ImGui::ImageButton("But", (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+
         if (ImGui::BeginDragDropSource()) {
             std::filesystem::path relativePath(path);
             std::string pathStr = relativePath.string();
             ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr.c_str(), (pathStr.length() + 1) * sizeof(char));
-
-            ImGui::PopStyleColor();
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                if (directoryEntry.is_directory())
-                    m_CurrentDirectory /= path.filename();
-            }
-            ImGui::TextWrapped("%s", filenameString.c_str());
-
-            ImGui::NextColumn();
-
-            ImGui::PopID();
+            ImGui::EndDragDropSource();
         }
 
-        ImGui::Columns(1);
+        ImGui::PopStyleColor();
+        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+            if (directoryEntry.is_directory())
+                m_CurrentDirectory /= path.filename();
+        }
+        ImGui::TextWrapped("%s", filenameString.c_str());
 
-        ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
-        ImGui::SliderFloat("Padding", &padding, 0, 32);
-
+        ImGui::NextColumn();
 
         ImGui::PopID();
-        ImGui::PopStyleColor();
-        ImGui::End();
     }
+
+    // TODO: status bar
+    ImGui::End();
 }
 } // namespace zirconium
