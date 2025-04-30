@@ -22,7 +22,10 @@ namespace zirconium {
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
     , m_CameraController(1.6f / 0.9f, true)
-    , m_Project() {}
+    , m_Project() {
+
+      Texture2DLibrary::Init();
+    }
 
 void EditorLayer::OnAttach() {
 
@@ -46,9 +49,11 @@ void EditorLayer::OnAttach() {
 
     ZR_CORE_TRACE("Current working path: {}", std::filesystem::current_path().string());
 
-    m_IconPlay = Texture2D::Create("zirconium-Editor/res/editorImg/PlayButton.png");
-    m_IconStop = Texture2D::Create("zirconium-Editor/res/editorImg/StopButton.png");
-    m_IconSimulate = Texture2D::Create("zirconium-Editor/res/editorImg/SimulateButton.png");
+    m_IconPlay = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/PlayButton.png");
+    m_IconStop = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/StopButton.png");
+    m_IconSimulate = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/SimulateButton.png");
+
+    m_ContentBrowserPanel.Init();
 }
 void EditorLayer::OnDetach() {}
 

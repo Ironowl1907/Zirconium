@@ -10,6 +10,11 @@ namespace zirconium {
 
 ContentBrowserPannel::ContentBrowserPannel() {}
 
+void ContentBrowserPannel::Init() {
+    m_FileIcon = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/FileIcon.png");
+    m_FolderIcon = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/FolderIcon.png");
+}
+
 static void FileTree(const std::filesystem::path& path) {
     for (auto& p : std::filesystem::directory_iterator(path)) {
         auto relativePath = std::filesystem::relative(p.path(), path);
@@ -34,12 +39,6 @@ static void FileTree(const std::filesystem::path& path) {
 
 void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
     ImGui::Begin("Content Browser");
-
-    if (path.empty()) {
-        ImGui::Text("No Project Selected");
-    } else {
-        FileTree(path);
-    }
     ImGui::End();
 }
 } // namespace zirconium

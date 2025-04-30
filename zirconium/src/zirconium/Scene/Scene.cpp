@@ -113,7 +113,6 @@ Ref<Scene> Scene::Copy(Ref<Scene> other) {
 
 Scene::Scene() {
     m_Registry = entt::registry();
-    Texture2DLibrary::Init();
 };
 
 Scene::~Scene() {}
