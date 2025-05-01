@@ -3,6 +3,7 @@
 #include "core.h"
 #include "zirconium/Scene/Entity.h"
 #include "zirconium/Scene/Scene.h"
+#include "zirconium/Scene/Components.h"
 
 namespace zirconium {
 class SceneHierarchyPanel {
@@ -15,6 +16,7 @@ public:
     }
     void SetSelectedEntity(const Entity& entity) {
         m_SelectionContext.Entity = entity;
+        m_SelectionContext.Component = Components::None;
     }
 
     void SetContext(const Ref<Scene>& context);
