@@ -20,6 +20,20 @@
 
 namespace zirconium {
 
+enum class Components {
+    None,
+    IDComponent,
+    TagComponent,
+    RigidBodyComponent,
+    SpriteRendererComponent,
+    TransformComponent,
+    CircleColiderComponent,
+    CircleRendererComponent,
+    BoxColiderComponent,
+    LuaScriptComponent,
+    CameraComponent,
+};
+
 struct IDComponent {
     UUID ID;
 

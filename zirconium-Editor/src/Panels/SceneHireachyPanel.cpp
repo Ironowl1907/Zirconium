@@ -13,6 +13,12 @@
 
 namespace zirconium {
 
+struct EntityComponentSelection {
+    Entity Entity = {};
+    Components Component = Components::None;
+};
+static EntityComponentSelection selection;
+
 SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
     SetContext(context);
 }
@@ -77,6 +83,37 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     }
 
     if (opened) {
+        struct ComponentInfo {
+            const char* name;
+            Components type;
+            bool hasComponent;
+        };
+
+        // clang-format off
+        ComponentInfo components[] = {
+            { "TagComponent", Components::TagComponent, m_SelectionContext.HasComponent<TagComponent>() },
+            { "SpriteRendererComponent", Components::SpriteRendererComponent, m_SelectionContext.HasComponent<SpriteRendererComponent>() },
+            { "CameraComponent", Components::CameraComponent, m_SelectionContext.HasComponent<CameraComponent>() },
+            { "RigidBodyComponent", Components::RigidBodyComponent, m_SelectionContext.HasComponent<RigidBodyComponent>() },
+            { "BoxColiderComponent", Components::BoxColiderComponent, m_SelectionContext.HasComponent<BoxColiderComponent>() },
+            { "CircleRendererComponent", Components::CircleRendererComponent, m_SelectionContext.HasComponent<CircleRendererComponent>() },
+            { "CircleColiderComponent", Components::CircleColiderComponent, m_SelectionContext.HasComponent<CircleColiderComponent>() },
+            { "LuaScriptComponent", Components::LuaScriptComponent, m_SelectionContext.HasComponent<LuaScriptComponent>() }
+        };
+        // clang-format on
+
+        for (const auto& component : components) {
+            if (component.hasComponent)
+                continue;
+
+            bool isSelected = (selection.Component == component.type && selection.Entity == entity);
+
+            if (ImGui::Selectable(component.name, isSelected)) {
+                selection.Component = component.type;
+                selection.Entity = entity;
+            }
+        }
+
         ImGui::TreePop();
     }
 }
@@ -110,7 +147,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
+    ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, allowNegative ? 0.0f : FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -124,7 +161,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
+    ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, allowNegative ? 0.0f : FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -138,7 +175,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
     ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
-    ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, allowNegative? 0.0f: FLT_MAX);
+    ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, allowNegative ? 0.0f : FLT_MAX);
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
@@ -367,7 +404,6 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
             }
 
             if (BrowseOnCreatingScript) {
-                ZR_CORE_TRACE("Here");
                 if (FileDialogs::SaveFile(path, ".lua")) {
                     BrowseOnCreatingScript = false;
                 }
