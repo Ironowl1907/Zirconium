@@ -91,14 +91,14 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
 
         // clang-format off
         ComponentInfo components[] = {
-            { "TagComponent", Components::TagComponent, m_SelectionContext.HasComponent<TagComponent>() },
-            { "SpriteRendererComponent", Components::SpriteRendererComponent, m_SelectionContext.HasComponent<SpriteRendererComponent>() },
-            { "CameraComponent", Components::CameraComponent, m_SelectionContext.HasComponent<CameraComponent>() },
-            { "RigidBodyComponent", Components::RigidBodyComponent, m_SelectionContext.HasComponent<RigidBodyComponent>() },
-            { "BoxColiderComponent", Components::BoxColiderComponent, m_SelectionContext.HasComponent<BoxColiderComponent>() },
-            { "CircleRendererComponent", Components::CircleRendererComponent, m_SelectionContext.HasComponent<CircleRendererComponent>() },
-            { "CircleColiderComponent", Components::CircleColiderComponent, m_SelectionContext.HasComponent<CircleColiderComponent>() },
-            { "LuaScriptComponent", Components::LuaScriptComponent, m_SelectionContext.HasComponent<LuaScriptComponent>() }
+            { "Tag", Components::TagComponent, m_SelectionContext.HasComponent<TagComponent>() },
+            { "SpriteRenderer", Components::SpriteRendererComponent, m_SelectionContext.HasComponent<SpriteRendererComponent>() },
+            { "Camera", Components::CameraComponent, m_SelectionContext.HasComponent<CameraComponent>() },
+            { "RigidBody", Components::RigidBodyComponent, m_SelectionContext.HasComponent<RigidBodyComponent>() },
+            { "BoxColider", Components::BoxColiderComponent, m_SelectionContext.HasComponent<BoxColiderComponent>() },
+            { "CircleRenderer", Components::CircleRendererComponent, m_SelectionContext.HasComponent<CircleRendererComponent>() },
+            { "CircleColider", Components::CircleColiderComponent, m_SelectionContext.HasComponent<CircleColiderComponent>() },
+            { "LuaScript", Components::LuaScriptComponent, m_SelectionContext.HasComponent<LuaScriptComponent>() }
         };
         // clang-format on
 
