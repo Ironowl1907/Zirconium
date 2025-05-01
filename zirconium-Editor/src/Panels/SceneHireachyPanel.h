@@ -11,10 +11,10 @@ public:
     SceneHierarchyPanel(const Ref<Scene>& context);
 
     Entity GetSelectedEntity() const {
-        return m_SelectionContext;
+        return m_SelectionContext.Entity;
     }
     void SetSelectedEntity(const Entity& entity) {
-        m_SelectionContext = entity;
+        m_SelectionContext.Entity = entity;
     }
 
     void SetContext(const Ref<Scene>& context);
@@ -26,7 +26,13 @@ private:
 
 private:
     Ref<Scene> m_Context;
-    Entity m_SelectionContext;
+
+    struct EntityComponentSelection {
+        Entity Entity = {};
+        Components Component = Components::None;
+    };
+
+    EntityComponentSelection m_SelectionContext;
 
     friend class Scene;
 };

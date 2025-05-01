@@ -13,12 +13,6 @@
 
 namespace zirconium {
 
-struct EntityComponentSelection {
-    Entity Entity = {};
-    Components Component = Components::None;
-};
-static EntityComponentSelection selection;
-
 SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
     SetContext(context);
 }
@@ -54,8 +48,8 @@ void SceneHierarchyPanel::OnImGuiRender() {
 
     ImGui::Begin("Properties");
 
-    if (m_SelectionContext) {
-        DrawComponents(m_SelectionContext);
+    if (m_SelectionContext.Entity) {
+        DrawComponents(m_SelectionContext.Entity);
     }
     ImGui::End();
 }
@@ -64,7 +58,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     auto& tag = entity.GetComponent<TagComponent>().Tag;
 
     ImGuiTreeNodeFlags flags =
-        ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+        ((m_SelectionContext.Entity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
     flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, "%s", tag.c_str());
@@ -79,7 +73,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
     }
 
     if (ImGui::IsItemClicked()) {
-        m_SelectionContext = entity;
+        m_SelectionContext.Entity = entity;
     }
 
     if (opened) {
@@ -91,14 +85,14 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
 
         // clang-format off
         ComponentInfo components[] = {
-            { "Tag", Components::TagComponent, m_SelectionContext.HasComponent<TagComponent>() },
-            { "SpriteRenderer", Components::SpriteRendererComponent, m_SelectionContext.HasComponent<SpriteRendererComponent>() },
-            { "Camera", Components::CameraComponent, m_SelectionContext.HasComponent<CameraComponent>() },
-            { "RigidBody", Components::RigidBodyComponent, m_SelectionContext.HasComponent<RigidBodyComponent>() },
-            { "BoxColider", Components::BoxColiderComponent, m_SelectionContext.HasComponent<BoxColiderComponent>() },
-            { "CircleRenderer", Components::CircleRendererComponent, m_SelectionContext.HasComponent<CircleRendererComponent>() },
-            { "CircleColider", Components::CircleColiderComponent, m_SelectionContext.HasComponent<CircleColiderComponent>() },
-            { "LuaScript", Components::LuaScriptComponent, m_SelectionContext.HasComponent<LuaScriptComponent>() }
+            { "Tag", Components::TagComponent, m_SelectionContext.Entity.HasComponent<TagComponent>() },
+            { "SpriteRenderer", Components::SpriteRendererComponent, m_SelectionContext.Entity.HasComponent<SpriteRendererComponent>() },
+            { "Camera", Components::CameraComponent, m_SelectionContext.Entity.HasComponent<CameraComponent>() },
+            { "RigidBody", Components::RigidBodyComponent, m_SelectionContext.Entity.HasComponent<RigidBodyComponent>() },
+            { "BoxColider", Components::BoxColiderComponent, m_SelectionContext.Entity.HasComponent<BoxColiderComponent>() },
+            { "CircleRenderer", Components::CircleRendererComponent, m_SelectionContext.Entity.HasComponent<CircleRendererComponent>() },
+            { "CircleColider", Components::CircleColiderComponent, m_SelectionContext.Entity.HasComponent<CircleColiderComponent>() },
+            { "LuaScript", Components::LuaScriptComponent, m_SelectionContext.Entity.HasComponent<LuaScriptComponent>() }
         };
         // clang-format on
 
@@ -106,11 +100,11 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
             if (component.hasComponent)
                 continue;
 
-            bool isSelected = (selection.Component == component.type && selection.Entity == entity);
+            bool isSelected = (m_SelectionContext.Component == component.type && m_SelectionContext.Entity == entity);
 
             if (ImGui::Selectable(component.name, isSelected)) {
-                selection.Component = component.type;
-                selection.Entity = entity;
+                m_SelectionContext.Component = component.type;
+                m_SelectionContext.Entity = entity;
             }
         }
 
@@ -244,45 +238,45 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
 
     if (ImGui::BeginPopup("AddComponent")) {
 
-        if (!m_SelectionContext.HasComponent<CameraComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<CameraComponent>())
             if (ImGui::MenuItem("Camera")) {
-                m_SelectionContext.AddComponent<CameraComponent>();
+                m_SelectionContext.Entity.AddComponent<CameraComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<SpriteRendererComponent>())
             if (ImGui::MenuItem("Sprite Renderer")) {
-                m_SelectionContext.AddComponent<SpriteRendererComponent>();
+                m_SelectionContext.Entity.AddComponent<SpriteRendererComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<CircleRendererComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<CircleRendererComponent>())
             if (ImGui::MenuItem("Circle Renderer")) {
-                m_SelectionContext.AddComponent<CircleRendererComponent>();
+                m_SelectionContext.Entity.AddComponent<CircleRendererComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<RigidBodyComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<RigidBodyComponent>())
             if (ImGui::MenuItem("Rigidbody 2D")) {
-                m_SelectionContext.AddComponent<RigidBodyComponent>();
+                m_SelectionContext.Entity.AddComponent<RigidBodyComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<BoxColiderComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<BoxColiderComponent>())
             if (ImGui::MenuItem("Box Colider 2D")) {
-                m_SelectionContext.AddComponent<BoxColiderComponent>();
+                m_SelectionContext.Entity.AddComponent<BoxColiderComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<CircleColiderComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<CircleColiderComponent>())
             if (ImGui::MenuItem("Circle Colider 2D")) {
-                m_SelectionContext.AddComponent<CircleColiderComponent>();
+                m_SelectionContext.Entity.AddComponent<CircleColiderComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
-        if (!m_SelectionContext.HasComponent<LuaScriptComponent>())
+        if (!m_SelectionContext.Entity.HasComponent<LuaScriptComponent>())
             if (ImGui::MenuItem("Lua Script")) {
-                m_SelectionContext.AddComponent<LuaScriptComponent>();
+                m_SelectionContext.Entity.AddComponent<LuaScriptComponent>();
                 ImGui::CloseCurrentPopup();
             }
 
@@ -303,7 +297,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         ImGui::SliderFloat("Tiling Factor", &component.TilingFactor, 0.0f, 100.f);
 
-        auto& pathName = m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture->GetPath();
+        auto& pathName = m_SelectionContext.Entity.GetComponent<SpriteRendererComponent>().Texture->GetPath();
         char buffer[128];
         std::strcpy(buffer, pathName.c_str());
 
@@ -311,7 +305,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::InputText("Texture Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path))
-                m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
+                m_SelectionContext.Entity.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
             else {
                 ZR_CORE_ERROR("Invalid path for loading texture! {}", path.c_str());
             }
@@ -322,7 +316,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 const int dataSize = payload->DataSize;
 
                 std::filesystem::path path(data);
-                m_SelectionContext.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
+                m_SelectionContext.Entity.GetComponent<SpriteRendererComponent>().Texture = Texture2DLibrary::Get()->Add(path);
             }
             ImGui::EndDragDropTarget();
         }
@@ -332,7 +326,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
     static bool CreatingScript = false;
     static bool BrowseOnCreatingScript = false;
     DrawComponent<LuaScriptComponent>("Script", entity, [this](auto& component) {
-        auto& pathName = m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath;
+        auto& pathName = m_SelectionContext.Entity.GetComponent<LuaScriptComponent>().ScriptPath;
         char buffer[128];
         std::strcpy(buffer, pathName.c_str());
 
@@ -340,8 +334,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (ImGui::InputText("Script Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
             std::filesystem::path path(buffer);
             if (std::filesystem::exists(path)) {
-                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
-                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext.Entity, path)) {
+                    m_SelectionContext.Entity.GetComponent<LuaScriptComponent>().ScriptPath = path;
                 } else {
                     ZR_ASSERT(false, "Error Loading script!");
                 }
@@ -354,8 +348,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 const int dataSize = payload->DataSize;
 
                 std::filesystem::path path(data);
-                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path))
-                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext.Entity, path))
+                    m_SelectionContext.Entity.GetComponent<LuaScriptComponent>().ScriptPath = path;
                 else
                     ZR_ASSERT(false, "Error Loading script!");
             }
@@ -373,7 +367,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
         if (BrowsingScript) {
             std::string path;
             if (FileDialogs::OpenFile(path, ".lua")) {
-                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, std::filesystem::path(path)) &&
+                if (!ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext.Entity, std::filesystem::path(path)) &&
                     !path.empty())
                     ZR_ASSERT(false, "Error Loading script!");
 
@@ -415,8 +409,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity) {
                 CreatingScript = false;
             ImGui::SameLine();
             if (ImGui::Button("Create Script")) {
-                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext, path)) {
-                    m_SelectionContext.GetComponent<LuaScriptComponent>().ScriptPath = path;
+                if (ScriptingSystem::Get()->LoadScript2Entity(m_SelectionContext.Entity, path)) {
+                    m_SelectionContext.Entity.GetComponent<LuaScriptComponent>().ScriptPath = path;
                     CopyFiles("zirconium/src/zirconium/Scripting/ScriptTemplates/BasicTemplate.lua", path);
                 } else
                     ZR_ASSERT(false, "Error Loading script!");
