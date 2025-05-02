@@ -64,6 +64,52 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
 
     if (ImGui::BeginPopupContextItem()) {
 
+        if (!entity.HasComponent<CameraComponent>())
+            if (ImGui::MenuItem("Camera")) {
+                entity.AddComponent<CameraComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<SpriteRendererComponent>())
+            if (ImGui::MenuItem("Sprite Renderer")) {
+                entity.AddComponent<SpriteRendererComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<CircleRendererComponent>())
+            if (ImGui::MenuItem("Circle Renderer")) {
+                entity.AddComponent<CircleRendererComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<RigidBodyComponent>())
+            if (ImGui::MenuItem("Rigidbody 2D")) {
+                entity.AddComponent<RigidBodyComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<BoxColiderComponent>())
+            if (ImGui::MenuItem("Box Colider 2D")) {
+                entity.AddComponent<BoxColiderComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<CircleColiderComponent>())
+            if (ImGui::MenuItem("Circle Colider 2D")) {
+                entity.AddComponent<CircleColiderComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+        if (!entity.HasComponent<LuaScriptComponent>())
+            if (ImGui::MenuItem("Lua Script")) {
+                entity.AddComponent<LuaScriptComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
         if (ImGui::MenuItem("Delete Entity")) {
             m_Context->DeleteEntity(entity);
         }
