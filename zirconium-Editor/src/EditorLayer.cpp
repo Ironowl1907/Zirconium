@@ -668,7 +668,7 @@ void EditorLayer::OnEvent(Event& event) {
 
 bool EditorLayer::OnMousePressed(MousePressedButtonEvent& e) {
     if (e.GetMouseButton() == ZR_MOUSE_BUTTON_LEFT) {
-        if (m_ViewportHovered && !Input::IsKeyPressed(ZR_KEY_LEFT_ALT))
+        if (m_ViewportHovered && !Input::IsKeyPressed(ZR_KEY_LEFT_ALT) && !ImGuizmo::IsOver())
             m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
     }
     return false;
