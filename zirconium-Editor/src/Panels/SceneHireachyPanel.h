@@ -1,11 +1,17 @@
 #pragma once
 
 #include "core.h"
+#include "zirconium/Scene/Components.h"
 #include "zirconium/Scene/Entity.h"
 #include "zirconium/Scene/Scene.h"
-#include "zirconium/Scene/Components.h"
 
 namespace zirconium {
+
+struct EntityComponentSelection {
+    Entity Entity = {};
+    Components Component = Components::None;
+};
+
 class SceneHierarchyPanel {
 public:
     SceneHierarchyPanel() = default;
@@ -24,15 +30,10 @@ public:
 
 private:
     void DrawEntityNode(Entity entity);
-    void DrawComponents(Entity ent);
+    void DrawComponents(EntityComponentSelection& selection);
 
 private:
     Ref<Scene> m_Context;
-
-    struct EntityComponentSelection {
-        Entity Entity = {};
-        Components Component = Components::None;
-    };
 
     EntityComponentSelection m_SelectionContext;
 
