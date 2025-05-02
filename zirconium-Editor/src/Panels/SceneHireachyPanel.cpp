@@ -106,9 +106,9 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
                 ImGui::CloseCurrentPopup();
             }
 
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
 
         if (ImGui::MenuItem("Delete Entity")) {
             m_Context->DeleteEntity(entity);
@@ -151,6 +151,51 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
             if (ImGui::Selectable(component.name, isSelected)) {
                 m_SelectionContext.Component = component.type;
                 m_SelectionContext.Entity = entity;
+            }
+            bool removeComponent = false;
+            if (ImGui::BeginPopupContextItem()) {
+
+                if (ImGui::MenuItem("Delete Component")) {
+                    removeComponent = true;
+                }
+                ImGui::EndPopup();
+            }
+            if (removeComponent) {
+                switch (component.type) {
+                case Components::None:
+                    ZR_ASSERT(false, "Removing 'None' Component");
+                    break;
+                case Components::IDComponent:
+                    entity.RemoveComponent<IDComponent>();
+                    break;
+                case Components::TagComponent:
+                    entity.RemoveComponent<TagComponent>();
+                    break;
+                case Components::RigidBodyComponent:
+                    entity.RemoveComponent<RigidBodyComponent>();
+                    break;
+                case Components::SpriteRendererComponent:
+                    entity.RemoveComponent<SpriteRendererComponent>();
+                    break;
+                case Components::TransformComponent:
+                    entity.RemoveComponent<TransformComponent>();
+                    break;
+                case Components::CircleColiderComponent:
+                    entity.RemoveComponent<CircleColiderComponent>();
+                    break;
+                case Components::CircleRendererComponent:
+                    entity.RemoveComponent<CircleRendererComponent>();
+                    break;
+                case Components::BoxColiderComponent:
+                    entity.RemoveComponent<BoxColiderComponent>();
+                    break;
+                case Components::LuaScriptComponent:
+                    entity.RemoveComponent<LuaScriptComponent>();
+                    break;
+                case Components::CameraComponent:
+                    entity.RemoveComponent<CameraComponent>();
+                    break;
+                }
             }
         }
 
