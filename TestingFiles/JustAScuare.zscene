@@ -1,16 +1,5 @@
 Scene: Untitled
 Entities:
-  - Entity: 14618507320681095104
-    TagComponent:
-      Tag: Squre
-    LuaScriptComponent:
-      Path: ""
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.88967973, 0.16463827, 0.16463827, 1]
   - Entity: 7831533851428977505
     TagComponent:
       Tag: Camera
@@ -29,3 +18,14 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 14618507320681095104
+    TagComponent:
+      Tag: Square
+    LuaScriptComponent:
+      Path: ""
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.88967973, 0.16463827, 0.16463827, 1]

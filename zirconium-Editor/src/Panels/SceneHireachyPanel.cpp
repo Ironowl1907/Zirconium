@@ -316,6 +316,19 @@ void SceneHierarchyPanel::DrawComponents(EntityComponentSelection& selection) {
     case Components::None:
         break;
 
+    case Components::TagComponent:
+        DrawComponent<TagComponent>("Tag", selection.Entity, [](auto& component) {
+            auto& tag =component.Tag;
+
+            static char buffer[256];
+            memset(buffer, 0, sizeof(buffer));
+            strcpy(buffer, tag.c_str());
+
+            if (ImGui::InputText("##Tag", buffer, sizeof(buffer))) {
+                tag = std::string(buffer);
+            }
+        });
+        break;
     case Components::TransformComponent:
         DrawComponent<TransformComponent>("Transform", selection.Entity, [](auto& component) {
             auto& tc = component;
