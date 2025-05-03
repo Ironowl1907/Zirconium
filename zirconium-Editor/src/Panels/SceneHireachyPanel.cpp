@@ -69,6 +69,11 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
                 entity.AddComponent<CameraComponent>();
                 ImGui::CloseCurrentPopup();
             }
+        if (!entity.HasComponent<TransformComponent>())
+            if (ImGui::MenuItem("Transform")) {
+                entity.AddComponent<TransformComponent>();
+                ImGui::CloseCurrentPopup();
+            }
 
         if (!entity.HasComponent<SpriteRendererComponent>())
             if (ImGui::MenuItem("Sprite Renderer")) {
@@ -138,6 +143,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
             { "BoxColider", Components::BoxColiderComponent, entity.HasComponent<BoxColiderComponent>() },
             { "CircleRenderer", Components::CircleRendererComponent, entity.HasComponent<CircleRendererComponent>() },
             { "CircleColider", Components::CircleColiderComponent, entity.HasComponent<CircleColiderComponent>() },
+            { "Transform", Components::TransformComponent, entity.HasComponent<TransformComponent>() },
             { "LuaScript", Components::LuaScriptComponent, entity.HasComponent<LuaScriptComponent>() }
         };
         // clang-format on
@@ -318,7 +324,7 @@ void SceneHierarchyPanel::DrawComponents(EntityComponentSelection& selection) {
 
     case Components::TagComponent:
         DrawComponent<TagComponent>("Tag", selection.Entity, [](auto& component) {
-            auto& tag =component.Tag;
+            auto& tag = component.Tag;
 
             static char buffer[256];
             memset(buffer, 0, sizeof(buffer));
