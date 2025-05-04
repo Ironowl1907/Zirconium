@@ -1,6 +1,9 @@
 #pragma once
 
+#include "core.h"
 #include <cstdint>
+#include <unordered_map>
+
 namespace zirconium {
 class Texture {
 public:
@@ -27,6 +30,7 @@ public:
 class Texture2DLibrary {
 public:
     static Texture2DLibrary* Get() {
+        ZR_CORE_ASSERT(m_Instance, "Texture2DLibrary not initialized!");
         return m_Instance;
     }
     static void Init();

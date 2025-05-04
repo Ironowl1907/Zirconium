@@ -1,4 +1,6 @@
 #include <memory>
+#include <assert.h>
+#include "zirconium/Core/log/log.h"
 #define BIT(x) (1 << x)
 
 #ifdef __GNUC__

@@ -32,6 +32,7 @@ Ref<Texture2D> Texture2D::Create(const uint32_t& width, const uint32_t& height) 
 }
 
 void Texture2DLibrary::Init() {
+  ZR_CORE_TRACE("Init Texture2DLibrary");
     m_Instance = new Texture2DLibrary();
 }
 
