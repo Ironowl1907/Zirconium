@@ -21,11 +21,10 @@ namespace zirconium {
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
-    , m_CameraController(1.6f / 0.9f, true)
-    , m_Project() {
+    , m_CameraController(1.6f / 0.9f, true) {
 
-      Texture2DLibrary::Init();
-    }
+    Texture2DLibrary::Init();
+}
 
 void EditorLayer::OnAttach() {
 
@@ -387,7 +386,7 @@ void EditorLayer::OnImGuiRender() {
     }
 
     m_SceneHierarchyPanel.OnImGuiRender();
-    m_ContentBrowserPanel.OnImGuiRender(m_Project.GetProjectFile());
+    m_ContentBrowserPanel.OnImGuiRender("./");
 
     ImGui::Begin("Settings");
     ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
@@ -539,70 +538,6 @@ void EditorLayer::OnImGuiRender() {
     }
 
     if (s_CreatingProject) {
-        static bool ls_Browsing = false;
-
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Create Project", 0,
-                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_AlwaysAutoResize);
-
-        ImGui::Text("New Project");
-
-        char pathBuffer[128];
-        char nameBuffer[128];
-        static std::string path = "./";
-        static std::string name = "";
-
-        // ZR_CORE_WARN("Name {}",  name);
-        // ZR_CORE_WARN("Path {}",  path);
-
-        std::strcpy(nameBuffer, name.c_str());
-        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            name = std::string(nameBuffer);
-        }
-
-        std::strcpy(pathBuffer, path.c_str());
-        if (ImGui::InputText("Proyect Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            path = std::string(pathBuffer);
-        }
-        ImGui::SameLine();
-
-        if (ImGui::Button("Browse")) {
-            ls_Browsing = true;
-        }
-
-        if (ls_Browsing) {
-            if (FileDialogs::OpenFile(path, ".zr")) {
-                std::strcpy(pathBuffer, path.c_str());
-                ls_Browsing = false;
-                ZR_CORE_WARN(path);
-            }
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::Button("Cancel"))
-            s_CreatingProject = false;
-
-        ImGui::SameLine();
-        if (ImGui::Button("Create Project")) {
-            ProjectFile project(name);
-            std::filesystem::path ppath(path);
-            ProjectFile::SerializeProject(project, ppath);
-            m_Project.Load(ppath);
-            s_CreatingProject = false;
-        }
-
-        ImGui::End();
-    }
-    if (s_OpeningProject) {
-        std::string path;
-        if (FileDialogs::SaveFile(path, ".zr")) {
-            s_OpeningProject = false;
-            m_Project.Load(std::filesystem::path(path));
-            ZR_CORE_WARN(path);
-        }
     }
 }
 

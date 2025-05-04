@@ -1,31 +1,46 @@
 #pragma once
 
+#include "core.h"
 #include <filesystem>
-#include <map>
+
 namespace zirconium {
 
-class ProjectFile {
+struct ProjectConfig {
+    std::string Name;
+
+    std::filesystem::path StarterScene;
+    std::filesystem::path AssetPath;
+};
+
+class Project {
 public:
-    ProjectFile() {}
-    ProjectFile(std::string& name, const std::string& defScene = "", const std::string& selfPath = "")
-        : m_ProjectName(name)
-        , m_DefaultScene(defScene)
-        , m_SelfPath(selfPath) {}
-
-    void Load(const std::filesystem::path& path);
-
-    static void SerializeProject(const ProjectFile& project, std::filesystem::path& path);
-    void Serialize(std::filesystem::path& path);
-
-    std::filesystem::path GetProjectFile() {
-        return m_SelfPath;
+    static std::string GetProjectName() {
+        return m_CurrentProject->m_ProjectConfig.Name;
+    }
+    static std::filesystem::path GetStarterScene() {
+        return m_CurrentProject->m_ProjectConfig.StarterScene;
+    }
+    static std::filesystem::path GetAssetPath() {
+        return m_CurrentProject->m_ProjectConfig.AssetPath;
     }
 
+    static Ref<Project> GetActive() {
+        return m_CurrentProject;
+    }
+
+    ProjectConfig* GetConfing() {
+        return &m_ProjectConfig;
+    }
+
+    static void New(const std::filesystem::path& path);
+    static void Load(const std::filesystem::path& path);
+    static void SaveCurrent(const std::filesystem::path& path);
+
 private:
 private:
-    std::string m_ProjectName;
-    std::string m_DefaultScene = "";
-    std::filesystem::path m_SelfPath;
+    ProjectConfig m_ProjectConfig;
+    static Ref<Project> m_CurrentProject;
+    std::filesystem::path m_ProjectDirectory;
 };
 
 } // namespace zirconium

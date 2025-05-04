@@ -41,7 +41,7 @@ void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
     ImGui::Begin("Content Browser");
 
     if (m_CurrentDirectory != std::filesystem::path("./")) {
-        if (ImGui::Button("<-")) {
+        if (ImGui::Button("..")) {
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
         }
     }
