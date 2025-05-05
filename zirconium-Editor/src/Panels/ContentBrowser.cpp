@@ -1,4 +1,5 @@
 #include "ContentBrowser.h"
+#include "zirconium/Project/ProjectFile.h"
 #include "zrpch.h"
 
 #include <cstring>
@@ -39,6 +40,20 @@ static void FileTree(const std::filesystem::path& path) {
 
 void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
     ImGui::Begin("Content Browser");
+
+    if (!Project::GetActive()) {
+        const char* message = "No Project Selected!";
+        ImVec2 textSize = ImGui::CalcTextSize(message);
+        ImVec2  windowSize = ImGui::GetWindowSize();
+        float posX = (windowSize.x - textSize.x) * 0.5f;
+        float posY = (windowSize.y - textSize.y) * 0.5f;
+        ImGui::SetCursorPosX(posX);
+        ImGui::SetCursorPosY(posY);
+
+        ImGui::Text("%s", message);
+        ImGui::End();
+        return;
+    }
 
     if (m_CurrentDirectory != std::filesystem::path("./")) {
         if (ImGui::Button("..")) {

@@ -8,6 +8,8 @@
 
 namespace zirconium {
 
+Ref<Project> Project::s_CurrentProject = nullptr;
+
 Ref<Project> Project::New(const std::filesystem::path& path) {
     s_CurrentProject = std::make_shared<Project>();
     return s_CurrentProject;

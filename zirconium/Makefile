@@ -148,6 +148,7 @@ OBJECTS := \
 	$(OBJDIR)/linux.o \
 	$(OBJDIR)/linuxInput.o \
 	$(OBJDIR)/ProjectFile.o \
+	$(OBJDIR)/ProjectSerializer.o \
 	$(OBJDIR)/Buffer.o \
 	$(OBJDIR)/EditorCamera.o \
 	$(OBJDIR)/FrameBuffer.o \
@@ -294,6 +295,9 @@ $(OBJDIR)/linuxInput.o: src/zirconium/Platform/linux/linuxInput.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ProjectFile.o: src/zirconium/Project/ProjectFile.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ProjectSerializer.o: src/zirconium/Project/ProjectSerializer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Buffer.o: src/zirconium/Renderer/Buffer.cpp

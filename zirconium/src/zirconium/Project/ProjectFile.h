@@ -8,7 +8,7 @@ namespace zirconium {
 struct ProjectConfig {
     std::string Name;
 
-    std::filesystem::path StarterScene;
+    std::filesystem::path StartScene;
     std::filesystem::path AssetPath;
 };
 
@@ -18,7 +18,7 @@ public:
         return s_CurrentProject->m_ProjectConfig.Name;
     }
     static std::filesystem::path GetStarterScene() {
-        return s_CurrentProject->m_ProjectConfig.StarterScene;
+        return s_CurrentProject->m_ProjectConfig.StartScene;
     }
     static std::filesystem::path GetAssetPath() {
         return s_CurrentProject->m_ProjectConfig.AssetPath;
@@ -28,7 +28,7 @@ public:
         return s_CurrentProject;
     }
 
-    ProjectConfig* GetConfing() {
+    ProjectConfig* GetConfig() {
         return &m_ProjectConfig;
     }
 
