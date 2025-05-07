@@ -418,7 +418,7 @@ void EditorLayer::OnImGuiRender() {
     }
 
     m_SceneHierarchyPanel.OnImGuiRender();
-    m_ContentBrowserPanel.OnImGuiRender("./");
+    m_ContentBrowserPanel.OnImGuiRender();
 
     if (m_SceneHierarchyPanel.GetSelectedComponent() == Components::BoxColiderComponent) {
         m_ShowPhysicsColiders = true;
@@ -583,9 +583,16 @@ void EditorLayer::OnImGuiRender() {
 
         char pathBuffer[128];
         char nameBuffer[128];
+        char assetPathBuffer[128];
 
         static std::string path = "./";
         static std::string name = "";
+        static std::string asset = "";
+
+        ZR_CORE_WARN(path);
+        ZR_CORE_WARN(name);
+        ZR_CORE_WARN(asset);
+        ZR_CORE_WARN("----");
 
         std::strcpy(nameBuffer, name.c_str());
         std::strcpy(pathBuffer, path.c_str());
@@ -604,6 +611,13 @@ void EditorLayer::OnImGuiRender() {
             browse = true;
         }
 
+        ImGui::Spacing();
+
+        std::strcpy(assetPathBuffer, asset.c_str());
+        if (ImGui::InputText("AssetPath", assetPathBuffer, sizeof(assetPathBuffer))) {
+            asset = assetPathBuffer;
+        }
+
         if (browse) {
             if (FileDialogs::SaveFile(path, ".zr")) {
                 browse = false;
@@ -619,6 +633,7 @@ void EditorLayer::OnImGuiRender() {
         ImGui::SameLine();
         if (ImGui::Button("Create")) {
             auto project = Project::New(path, ProjectConfig(name.c_str()));
+            project->GetConfig()->AssetPath = std::filesystem::path(asset);
             Project::SaveCurrent(path);
             ZR_CORE_TRACE("Creating Project '{0}' in path {1}", project->GetProjectName(), path);
             s_NewProject = false;

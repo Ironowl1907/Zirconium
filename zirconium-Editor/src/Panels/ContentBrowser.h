@@ -1,8 +1,8 @@
 #pragma once
 
-#include <filesystem>
-#include "zirconium/Renderer/Texture.h"
 #include "core.h"
+#include "zirconium/Renderer/Texture.h"
+#include <filesystem>
 
 namespace zirconium {
 class ContentBrowserPannel {
@@ -11,7 +11,10 @@ public:
     ContentBrowserPannel();
 
     void Init();
-    void OnImGuiRender(const std::string& path);
+    void OnImGuiRender();
+    void SetCurrentDirectory(const std::filesystem::path& path) {
+        m_CurrentDirectory = path;
+    }
 
 private:
     std::filesystem::path m_CurrentDirectory = "./";

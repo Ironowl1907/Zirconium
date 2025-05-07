@@ -27,8 +27,12 @@ public:
         return s_CurrentProject->s_ProjectConfig.StartScene;
     }
     static std::filesystem::path GetAssetPath() {
-        ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
-        return s_CurrentProject->s_ProjectConfig.AssetPath;
+        if (!s_CurrentProject->s_ProjectConfig.AssetPath.empty())
+            return s_CurrentProject->s_ProjectConfig.AssetPath;
+        return "";
+    }
+    static std::filesystem::path GetResolutionFilepath() {
+        return s_ResolutionFilePath;
     }
 
     static Ref<Project> GetActive() {

@@ -24,6 +24,8 @@ Ref<Project> Project::New(const std::filesystem::path& path, const ProjectConfig
     s_ProjectConfig.AssetPath = config.AssetPath;
     s_ProjectConfig.StartScene = config.StartScene;
     s_ProjectConfig.Name = config.Name;
+
+
     return s_CurrentProject;
 }
 Ref<Project> Project::Load(const std::filesystem::path& path) {
