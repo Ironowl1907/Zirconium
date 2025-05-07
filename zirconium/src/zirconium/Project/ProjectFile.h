@@ -18,7 +18,8 @@ struct ProjectConfig {
 class Project {
 public:
     static std::string GetProjectName() {
-        ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
+        if (!s_CurrentProject)
+            return "";
         return s_CurrentProject->s_ProjectConfig.Name;
     }
     static std::filesystem::path GetStarterScene() {

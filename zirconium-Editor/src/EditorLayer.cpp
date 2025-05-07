@@ -382,6 +382,8 @@ void EditorLayer::OnImGuiRender() {
             ImGui::EndMenu();
         }
 
+        ImGui::Text("%s", Project::GetProjectName().c_str());
+
         ImGui::EndMenuBar();
     }
 
@@ -557,12 +559,12 @@ void EditorLayer::OnImGuiRender() {
         std::strcpy(pathBuffer, path.c_str());
 
         if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
-          name = nameBuffer;
+            name = nameBuffer;
         }
         ImGui::Spacing();
 
         if (ImGui::InputText("Solution Filepath", pathBuffer, sizeof(pathBuffer))) {
-          path = pathBuffer;
+            path = pathBuffer;
         }
         ImGui::SameLine();
 
