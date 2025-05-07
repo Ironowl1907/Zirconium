@@ -382,7 +382,36 @@ void EditorLayer::OnImGuiRender() {
             ImGui::EndMenu();
         }
 
-        ImGui::Text("%s", Project::GetProjectName().c_str());
+        // Center the project name text
+        std::string projectName = Project::GetProjectName();
+        if (projectName.empty()) projectName = "Untitled";
+        float windowWidth = ImGui::GetWindowWidth();
+        float textWidth = ImGui::CalcTextSize(projectName.c_str()).x;
+        float centeredPosX = (windowWidth - textWidth) * 0.5f;
+
+        // Calculate the current cursor position after the menus
+        float currentPosX = ImGui::GetCursorPosX();
+
+        // Add spacing to position the text at the center
+        if (centeredPosX > currentPosX) {
+            ImGui::SetCursorPosX(centeredPosX);
+        }
+
+        ImGui::Text("%s", projectName.c_str());
+        const char* stateText;
+        switch (m_SceneState) {
+
+        case SceneState::Edit:
+            stateText = "Editing";
+            break;
+        case SceneState::Play:
+            stateText = "Playing";
+            break;
+        case SceneState::Simulate:
+            stateText = "Simulating";
+            break;
+        }
+        ImGui::Text("- %s", stateText);
 
         ImGui::EndMenuBar();
     }
