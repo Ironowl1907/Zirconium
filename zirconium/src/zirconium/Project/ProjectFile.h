@@ -6,6 +6,9 @@
 namespace zirconium {
 
 struct ProjectConfig {
+    ProjectConfig(const char* name)
+        : Name(name) {}
+
     std::string Name;
 
     std::filesystem::path StartScene;
@@ -15,13 +18,16 @@ struct ProjectConfig {
 class Project {
 public:
     static std::string GetProjectName() {
-        return s_CurrentProject->m_ProjectConfig.Name;
+        ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
+        return s_CurrentProject->s_ProjectConfig.Name;
     }
     static std::filesystem::path GetStarterScene() {
-        return s_CurrentProject->m_ProjectConfig.StartScene;
+        ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
+        return s_CurrentProject->s_ProjectConfig.StartScene;
     }
     static std::filesystem::path GetAssetPath() {
-        return s_CurrentProject->m_ProjectConfig.AssetPath;
+        ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
+        return s_CurrentProject->s_ProjectConfig.AssetPath;
     }
 
     static Ref<Project> GetActive() {
@@ -29,18 +35,19 @@ public:
     }
 
     ProjectConfig* GetConfig() {
-        return &m_ProjectConfig;
+        return &s_ProjectConfig;
     }
 
-    static Ref<Project> New(const std::filesystem::path& path);
+    static Ref<Project> New();
+    static Ref<Project> New(const std::filesystem::path& path, const ProjectConfig config);
     static Ref<Project> Load(const std::filesystem::path& path);
     static bool SaveCurrent(const std::filesystem::path& path);
 
 private:
 private:
-    ProjectConfig m_ProjectConfig;
+    static ProjectConfig s_ProjectConfig;
     static Ref<Project> s_CurrentProject;
-    std::filesystem::path m_ProjectDirectory;
+    static std::filesystem::path s_ResolutionFilePath;
 };
 
 } // namespace zirconium

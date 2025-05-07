@@ -233,8 +233,8 @@ void EditorLayer::OnSimulationPlay() {
 static bool s_Opening = false;
 static bool s_SavingTo = false;
 static std::string s_FilePath = "";
-static bool s_CreatingProject = false;
-static bool s_OpeningProject = false;
+static bool s_NewProject = false;
+static bool s_LoadingProject = false;
 
 static ::ImGuizmo::OPERATION s_GizmoOperation = ::ImGuizmo::TRANSLATE;
 static ::ImGuizmo::MODE s_GizmoMode = ::ImGuizmo::WORLD;
@@ -366,10 +366,10 @@ void EditorLayer::OnImGuiRender() {
 
         if (ImGui::BeginMenu("Project")) {
             if (ImGui::MenuItem("New Project", "")) {
-                s_CreatingProject = true;
+                s_NewProject = true;
             }
-            if (ImGui::MenuItem("Open Project...", "")) {
-                s_OpeningProject = true;
+            if (ImGui::MenuItem("Load Project...", "")) {
+                s_LoadingProject = true;
             }
 
             ImGui::Spacing();
@@ -537,7 +537,60 @@ void EditorLayer::OnImGuiRender() {
         }
     }
 
-    if (s_CreatingProject) {
+    static bool browse = false;
+    if (s_NewProject) {
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("New Project", 0,
+                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_AlwaysAutoResize);
+
+        ImGui::Text("New Project");
+
+        char pathBuffer[128];
+        char nameBuffer[128];
+
+        static std::string path = "./";
+        static std::string name = "";
+
+        std::strcpy(nameBuffer, name.c_str());
+        std::strcpy(pathBuffer, path.c_str());
+
+        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
+          name = nameBuffer;
+        }
+        ImGui::Spacing();
+
+        if (ImGui::InputText("Solution Filepath", pathBuffer, sizeof(pathBuffer))) {
+          path = pathBuffer;
+        }
+        ImGui::SameLine();
+
+        if (ImGui::Button("Browse")) {
+            browse = true;
+        }
+
+        if (browse) {
+            if (FileDialogs::SaveFile(path, ".zr")) {
+                browse = false;
+            }
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Cancel"))
+            s_NewProject = false;
+        ImGui::SameLine();
+        if (ImGui::Button("Create")) {
+            auto project = Project::New(path, ProjectConfig(name.c_str()));
+            Project::SaveCurrent(path);
+            ZR_CORE_TRACE("Creating Project '{0}' in path {1}", project->GetProjectName(), path);
+            s_NewProject = false;
+        }
+
+        ImGui::End();
     }
 }
 
