@@ -594,6 +594,13 @@ void EditorLayer::OnImGuiRender() {
 
         ImGui::End();
     }
+
+    if (s_LoadingProject) {
+        if (FileDialogs::OpenFile(s_FilePath, ".zr")) {
+            Project::Load(s_FilePath);
+            s_LoadingProject = false;
+        }
+    }
 }
 
 void EditorLayer::UI_ToolBar() {}
