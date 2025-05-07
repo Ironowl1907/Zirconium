@@ -384,7 +384,8 @@ void EditorLayer::OnImGuiRender() {
 
         // Center the project name text
         std::string projectName = Project::GetProjectName();
-        if (projectName.empty()) projectName = "Untitled";
+        if (projectName.empty())
+            projectName = "Untitled";
         float windowWidth = ImGui::GetWindowWidth();
         float textWidth = ImGui::CalcTextSize(projectName.c_str()).x;
         float centeredPosX = (windowWidth - textWidth) * 0.5f;
@@ -419,9 +420,11 @@ void EditorLayer::OnImGuiRender() {
     m_SceneHierarchyPanel.OnImGuiRender();
     m_ContentBrowserPanel.OnImGuiRender("./");
 
-    ImGui::Begin("Settings");
-    ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
-    ImGui::End();
+    if (m_SceneHierarchyPanel.GetSelectedComponent() == Components::BoxColiderComponent) {
+        m_ShowPhysicsColiders = true;
+    } else {
+        m_ShowPhysicsColiders = false;
+    }
 
     if (m_ShowRenderStats) {
         static int location = 3;

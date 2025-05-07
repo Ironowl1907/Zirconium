@@ -20,6 +20,11 @@ public:
     Entity GetSelectedEntity() const {
         return m_SelectionContext.Entity;
     }
+
+    Components GetSelectedComponent() const {
+        return m_SelectionContext.Component;
+    }
+
     void SetSelectedEntity(const Entity& entity) {
         m_SelectionContext.Entity = entity;
         m_SelectionContext.Component = Components::None;
@@ -39,5 +44,4 @@ private:
 
     friend class Scene;
 };
-
 } // namespace zirconium

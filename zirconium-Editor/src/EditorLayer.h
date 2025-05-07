@@ -38,6 +38,10 @@ public:
 
     void OnDuplicateEntity();
 
+    void SetShowColiders(const bool show) {
+        m_ShowPhysicsColiders = show;
+    }
+
 private:
     bool OnKeyPressed(KeyPressedEvent& e);
     bool OnMousePressed(MousePressedButtonEvent& e);
