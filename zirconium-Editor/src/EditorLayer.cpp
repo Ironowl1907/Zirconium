@@ -21,11 +21,10 @@ namespace zirconium {
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer")
-    , m_CameraController(1.6f / 0.9f, true)
-    , m_Project() {
+    , m_CameraController(1.6f / 0.9f, true) {
 
-      Texture2DLibrary::Init();
-    }
+    Texture2DLibrary::Init();
+}
 
 void EditorLayer::OnAttach() {
 
@@ -234,8 +233,8 @@ void EditorLayer::OnSimulationPlay() {
 static bool s_Opening = false;
 static bool s_SavingTo = false;
 static std::string s_FilePath = "";
-static bool s_CreatingProject = false;
-static bool s_OpeningProject = false;
+static bool s_NewProject = false;
+static bool s_LoadingProject = false;
 
 static ::ImGuizmo::OPERATION s_GizmoOperation = ::ImGuizmo::TRANSLATE;
 static ::ImGuizmo::MODE s_GizmoMode = ::ImGuizmo::WORLD;
@@ -367,10 +366,10 @@ void EditorLayer::OnImGuiRender() {
 
         if (ImGui::BeginMenu("Project")) {
             if (ImGui::MenuItem("New Project", "")) {
-                s_CreatingProject = true;
+                s_NewProject = true;
             }
-            if (ImGui::MenuItem("Open Project...", "")) {
-                s_OpeningProject = true;
+            if (ImGui::MenuItem("Load Project...", "")) {
+                s_LoadingProject = true;
             }
 
             ImGui::Spacing();
@@ -383,15 +382,49 @@ void EditorLayer::OnImGuiRender() {
             ImGui::EndMenu();
         }
 
+        // Center the project name text
+        std::string projectName = Project::GetProjectName();
+        if (projectName.empty())
+            projectName = "Untitled";
+        float windowWidth = ImGui::GetWindowWidth();
+        float textWidth = ImGui::CalcTextSize(projectName.c_str()).x;
+        float centeredPosX = (windowWidth - textWidth) * 0.5f;
+
+        // Calculate the current cursor position after the menus
+        float currentPosX = ImGui::GetCursorPosX();
+
+        // Add spacing to position the text at the center
+        if (centeredPosX > currentPosX) {
+            ImGui::SetCursorPosX(centeredPosX);
+        }
+
+        ImGui::Text("%s", projectName.c_str());
+        const char* stateText;
+        switch (m_SceneState) {
+
+        case SceneState::Edit:
+            stateText = "Editing";
+            break;
+        case SceneState::Play:
+            stateText = "Playing";
+            break;
+        case SceneState::Simulate:
+            stateText = "Simulating";
+            break;
+        }
+        ImGui::Text("- %s", stateText);
+
         ImGui::EndMenuBar();
     }
 
     m_SceneHierarchyPanel.OnImGuiRender();
-    m_ContentBrowserPanel.OnImGuiRender(m_Project.GetProjectFile());
+    m_ContentBrowserPanel.OnImGuiRender();
 
-    ImGui::Begin("Settings");
-    ImGui::Checkbox("Show Physics Colides", &m_ShowPhysicsColiders);
-    ImGui::End();
+    if (m_SceneHierarchyPanel.GetSelectedComponent() == Components::BoxColiderComponent) {
+        m_ShowPhysicsColiders = true;
+    } else {
+        m_ShowPhysicsColiders = false;
+    }
 
     if (m_ShowRenderStats) {
         static int location = 3;
@@ -538,12 +571,11 @@ void EditorLayer::OnImGuiRender() {
         }
     }
 
-    if (s_CreatingProject) {
-        static bool ls_Browsing = false;
-
+    static bool browse = false;
+    if (s_NewProject) {
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Create Project", 0,
+        ImGui::Begin("New Project", 0,
                      ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                          ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -551,57 +583,69 @@ void EditorLayer::OnImGuiRender() {
 
         char pathBuffer[128];
         char nameBuffer[128];
+        char assetPathBuffer[128];
+
         static std::string path = "./";
         static std::string name = "";
+        static std::string asset = "";
 
-        // ZR_CORE_WARN("Name {}",  name);
-        // ZR_CORE_WARN("Path {}",  path);
+        ZR_CORE_WARN(path);
+        ZR_CORE_WARN(name);
+        ZR_CORE_WARN(asset);
+        ZR_CORE_WARN("----");
 
         std::strcpy(nameBuffer, name.c_str());
-        if (ImGui::InputText("Projet Name", nameBuffer, sizeof(nameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            name = std::string(nameBuffer);
-        }
-
         std::strcpy(pathBuffer, path.c_str());
-        if (ImGui::InputText("Proyect Path", pathBuffer, sizeof(pathBuffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            path = std::string(pathBuffer);
+
+        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
+            name = nameBuffer;
+        }
+        ImGui::Spacing();
+
+        if (ImGui::InputText("Solution Filepath", pathBuffer, sizeof(pathBuffer))) {
+            path = pathBuffer;
         }
         ImGui::SameLine();
 
         if (ImGui::Button("Browse")) {
-            ls_Browsing = true;
+            browse = true;
         }
 
-        if (ls_Browsing) {
-            if (FileDialogs::OpenFile(path, ".zr")) {
-                std::strcpy(pathBuffer, path.c_str());
-                ls_Browsing = false;
-                ZR_CORE_WARN(path);
+        ImGui::Spacing();
+
+        std::strcpy(assetPathBuffer, asset.c_str());
+        if (ImGui::InputText("AssetPath", assetPathBuffer, sizeof(assetPathBuffer))) {
+            asset = assetPathBuffer;
+        }
+
+        if (browse) {
+            if (FileDialogs::SaveFile(path, ".zr")) {
+                browse = false;
             }
         }
 
+        ImGui::Spacing();
         ImGui::Separator();
+        ImGui::Spacing();
 
         if (ImGui::Button("Cancel"))
-            s_CreatingProject = false;
-
+            s_NewProject = false;
         ImGui::SameLine();
-        if (ImGui::Button("Create Project")) {
-            ProjectFile project(name);
-            std::filesystem::path ppath(path);
-            ProjectFile::SerializeProject(project, ppath);
-            m_Project.Load(ppath);
-            s_CreatingProject = false;
+        if (ImGui::Button("Create")) {
+            auto project = Project::New(path, ProjectConfig(name.c_str()));
+            project->GetConfig()->AssetPath = std::filesystem::path(asset);
+            Project::SaveCurrent(path);
+            ZR_CORE_TRACE("Creating Project '{0}' in path {1}", project->GetProjectName(), path);
+            s_NewProject = false;
         }
 
         ImGui::End();
     }
-    if (s_OpeningProject) {
-        std::string path;
-        if (FileDialogs::SaveFile(path, ".zr")) {
-            s_OpeningProject = false;
-            m_Project.Load(std::filesystem::path(path));
-            ZR_CORE_WARN(path);
+
+    if (s_LoadingProject) {
+        if (FileDialogs::OpenFile(s_FilePath, ".zr")) {
+            Project::Load(s_FilePath);
+            s_LoadingProject = false;
         }
     }
 }

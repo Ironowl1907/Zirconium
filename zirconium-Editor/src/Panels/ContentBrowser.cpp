@@ -1,4 +1,5 @@
 #include "ContentBrowser.h"
+#include "zirconium/Project/ProjectFile.h"
 #include "zrpch.h"
 
 #include <cstring>
@@ -15,6 +16,7 @@ void ContentBrowserPannel::Init() {
     m_FolderIcon = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/FolderIcon.png");
 }
 
+#ifdef IGNORE
 static void FileTree(const std::filesystem::path& path) {
     for (auto& p : std::filesystem::directory_iterator(path)) {
         auto relativePath = std::filesystem::relative(p.path(), path);
@@ -36,12 +38,31 @@ static void FileTree(const std::filesystem::path& path) {
         }
     }
 }
+#endif
 
-void ContentBrowserPannel::OnImGuiRender(const std::string& path) {
+void ContentBrowserPannel::OnImGuiRender() {
     ImGui::Begin("Content Browser");
 
-    if (m_CurrentDirectory != std::filesystem::path("./")) {
-        if (ImGui::Button("<-")) {
+    if (!Project::GetActive()) {
+        const char* message = "No Project Selected!";
+        ImVec2 textSize = ImGui::CalcTextSize(message);
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        float posX = (windowSize.x - textSize.x) * 0.5f;
+        float posY = (windowSize.y - textSize.y) * 0.5f;
+        ImGui::SetCursorPosX(posX);
+        ImGui::SetCursorPosY(posY);
+
+        ImGui::Text("%s", message);
+        ImGui::End();
+        return;
+    }
+    if (m_CurrentDirectory.empty()) {
+        m_RootDirectory = Project::GetResolutionFilepath() / Project::GetAssetPath();
+        m_CurrentDirectory = m_RootDirectory;
+    }
+
+    if (m_CurrentDirectory != m_RootDirectory) {
+        if (ImGui::Button("..")) {
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
         }
     }

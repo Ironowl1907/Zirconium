@@ -1,49 +1,53 @@
 #include "ProjectFile.h"
 #include "zrpch.h"
 
-#include <fstream>
-#include <sstream>
-#include <yaml-cpp/emittermanip.h>
+#include <filesystem>
+#include <memory>
 #include <yaml-cpp/yaml.h>
+
+
+#include "ProjectSerializer.h"
 
 namespace zirconium {
 
-void ProjectFile::Load(const std::filesystem::path& path) {
-    std::ifstream stream(path);
-    std::stringstream strStream;
-    strStream << stream.rdbuf();
+Ref<Project> Project::s_CurrentProject = nullptr;
+ProjectConfig Project::s_ProjectConfig("Untitled");
+std::filesystem::path Project::s_ResolutionFilePath = "";
 
-    YAML::Node data = YAML::Load(strStream.str());
-    ZR_CORE_WARN(strStream.str());
-    if (!data["ProjectName"])
-        ZR_CORE_ERROR("Not Compatible .zr file. Can't find project name!");
+Ref<Project> Project::New() {
+    s_CurrentProject = std::make_shared<Project>();
+    s_ProjectConfig.AssetPath = ".";
+    return s_CurrentProject;
+}
+Ref<Project> Project::New(const std::filesystem::path& path, const ProjectConfig config) {
+    s_CurrentProject = std::make_shared<Project>();
+    s_ResolutionFilePath = path;
+    s_ProjectConfig.AssetPath = config.AssetPath;
+    s_ProjectConfig.StartScene = config.StartScene;
+    s_ProjectConfig.Name = config.Name;
 
-    m_ProjectName = data["ProjectName"].as<std::string>();
-    m_DefaultScene = data["DefaultScene"].as<std::string>();
 
-    m_SelfPath = path.parent_path().string();
+    return s_CurrentProject;
+}
+Ref<Project> Project::Load(const std::filesystem::path& path) {
+    Ref<Project> project = std::make_shared<Project>();
+
+    ProjectSerializer serializer(s_CurrentProject);
+    if (serializer.Deserialize(path)) {
+        project->s_ResolutionFilePath = path.parent_path();
+        s_CurrentProject = project;
+        return s_CurrentProject;
+    }
+    return nullptr;
 }
 
-void ProjectFile::Serialize(std::filesystem::path& path) {
-    YAML::Emitter out;
-    out << YAML::BeginMap;
-    out << YAML::Key << "ProjectName" << YAML::Value << m_ProjectName;
-    out << YAML::Key << "DefaultScene" << YAML::Value << m_DefaultScene;
-    out << YAML::EndMap;
-
-    std::ofstream fout(path);
-    fout << out.c_str();
+bool Project::SaveCurrent(const std::filesystem::path& path) {
+    ZR_CORE_ASSERT(s_CurrentProject, "Current Project is Null!");
+    ProjectSerializer serializer(s_CurrentProject);
+    if (serializer.Serialize(path)) {
+        s_CurrentProject->s_ResolutionFilePath = path.parent_path();
+        return true;
+    }
+    return false;
 }
-
-void ProjectFile::SerializeProject(const ProjectFile& project, std::filesystem::path& path) {
-    YAML::Emitter out;
-    out << YAML::BeginMap;
-    out << YAML::Key << "ProjectName" << YAML::Value << project.m_ProjectName;
-    out << YAML::Key << "DefaultScene" << YAML::Value << project.m_DefaultScene;
-    out << YAML::EndMap;
-
-    std::ofstream fout(path);
-    fout << out.c_str();
-}
-
 } // namespace zirconium

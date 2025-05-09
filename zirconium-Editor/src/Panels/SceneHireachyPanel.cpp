@@ -159,6 +159,10 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity) {
                 m_SelectionContext.Entity = entity;
             }
             bool removeComponent = false;
+
+            if (m_SelectionContext.Component == Components::BoxColiderComponent) {
+            }
+
             if (ImGui::BeginPopupContextItem()) {
 
                 if (ImGui::MenuItem("Delete Component")) {

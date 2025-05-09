@@ -4,8 +4,8 @@
 
 #include "Panels/ContentBrowser.h"
 #include "Panels/SceneHireachyPanel.h"
-#include "zirconium/Renderer/EditorCamera.h"
 #include "zirconium/Project/ProjectFile.h"
+#include "zirconium/Renderer/EditorCamera.h"
 #include <filesystem>
 
 namespace zirconium {
@@ -37,6 +37,10 @@ public:
     void OnSimulationPlay();
 
     void OnDuplicateEntity();
+
+    void SetShowColiders(const bool show) {
+        m_ShowPhysicsColiders = show;
+    }
 
 private:
     bool OnKeyPressed(KeyPressedEvent& e);
@@ -91,7 +95,6 @@ private:
     bool m_ShowPhysicsColiders = false;
 
     // Editor Resourses
-    ProjectFile m_Project;
     Ref<Texture2D> m_IconPlay, m_IconStop, m_IconSimulate;
 };
 
