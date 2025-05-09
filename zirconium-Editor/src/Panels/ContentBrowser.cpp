@@ -16,6 +16,7 @@ void ContentBrowserPannel::Init() {
     m_FolderIcon = Texture2DLibrary::Get()->Add("zirconium-Editor/res/editorImg/FolderIcon.png");
 }
 
+#ifdef IGNORE
 static void FileTree(const std::filesystem::path& path) {
     for (auto& p : std::filesystem::directory_iterator(path)) {
         auto relativePath = std::filesystem::relative(p.path(), path);
@@ -37,6 +38,7 @@ static void FileTree(const std::filesystem::path& path) {
         }
     }
 }
+#endif
 
 void ContentBrowserPannel::OnImGuiRender() {
     ImGui::Begin("Content Browser");
@@ -54,8 +56,12 @@ void ContentBrowserPannel::OnImGuiRender() {
         ImGui::End();
         return;
     }
+    if (m_CurrentDirectory.empty()) {
+        m_RootDirectory = Project::GetResolutionFilepath() / Project::GetAssetPath();
+        m_CurrentDirectory = m_RootDirectory;
+    }
 
-    if (m_CurrentDirectory != path) {
+    if (m_CurrentDirectory != m_RootDirectory) {
         if (ImGui::Button("..")) {
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
         }

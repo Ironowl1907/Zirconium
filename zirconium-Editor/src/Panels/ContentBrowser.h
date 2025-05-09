@@ -12,12 +12,13 @@ public:
 
     void Init();
     void OnImGuiRender();
-    void SetCurrentDirectory(const std::filesystem::path& path) {
-        m_CurrentDirectory = path;
+    void SetRootDirectory(const std::filesystem::path& path) {
+        m_RootDirectory = path;
     }
 
 private:
-    std::filesystem::path m_CurrentDirectory = "./";
+    std::filesystem::path m_CurrentDirectory;
+    std::filesystem::path m_RootDirectory;
     Ref<Texture2D> m_FolderIcon;
     Ref<Texture2D> m_FileIcon;
 };
